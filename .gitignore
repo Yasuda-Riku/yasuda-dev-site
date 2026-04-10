@@ -24,3 +24,7 @@ yarn-error.log*
 
 # Claude Code
 .claude/
+
+# AI wallball logs (private)
+docs/Claude.txt
+docs/Gemini.txt

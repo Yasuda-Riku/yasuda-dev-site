@@ -438,6 +438,105 @@ ul { list-style: none; padding: 0; margin: 0; }
   transform: none;
 }
 
+/* ============== Apps page ============== */
+.apps-hero {
+  padding-top: 160px;
+  padding-bottom: var(--section-gap);
+}
+.apps-hero__inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.apps-hero__intro {
+  max-width: 48ch;
+  color: var(--muted);
+  margin: 0;
+}
+
+.apps-list {
+  padding-bottom: var(--section-gap);
+}
+.apps-list__inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.app-card {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 180ms var(--ease);
+}
+.app-card:hover { border-color: var(--muted); }
+
+.app-card__icon {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  background: #EFEDE6;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--muted);
+}
+.app-card__icon--alt { background: #F2EFE7; }
+
+.app-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-card__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.app-card__desc {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.app-card__links {
+  display: flex;
+  gap: 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.app-card__links a {
+  color: var(--fg);
+  text-decoration-color: var(--border);
+}
+.app-card__links a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+.app-card__soon {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+@media (max-width: 540px) {
+  .app-card { flex-direction: column; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
