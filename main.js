@@ -1,2 +1,27 @@
-// yasuda-dev-site
-console.log("yasuda-dev-site loaded");
+// yasuda-dev.com — main.js
+// Subtle scroll reveal. Nothing else.
+
+(function () {
+  if (!("IntersectionObserver" in window)) {
+    document.querySelectorAll(".reveal").forEach(function (el) {
+      el.classList.add("is-visible");
+    });
+    return;
+  }
+
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+  );
+
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    io.observe(el);
+  });
+})();
