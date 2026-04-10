@@ -438,6 +438,33 @@ ul { list-style: none; padding: 0; margin: 0; }
   transform: none;
 }
 
+/* ============== 404 page ============== */
+.error-page {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: 120px;
+}
+.error-page__inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.error-page__code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin: 0 0 16px;
+}
+.error-page__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--t-h1);
+  line-height: 1.1;
+  margin: 0 0 clamp(32px, 4vw, 56px);
+}
+
 /* ============== Apps page ============== */
 .apps-hero {
   padding-top: 160px;

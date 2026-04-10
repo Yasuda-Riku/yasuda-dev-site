@@ -1,23 +1,39 @@
-# yasuda-dev-site
+# yasuda-dev.com
 
-静的 HTML/CSS/JS で構築する個人サイト。GitHub にホストし、Cloudflare Pages から自動デプロイ。
+Personal portfolio site. Static HTML/CSS/JS — no build step, no frameworks, no npm.
 
-## 構成
+**Live:** https://yasuda-dev.com/
+
+## Structure
 
 ```
 .
-├── index.html   # エントリーポイント
-├── style.css    # スタイル
-├── main.js      # スクリプト
-└── README.md
+├── index.html           # Top page (Hero, Selected, About, Contact)
+├── apps/index.html      # App support hub
+├── 404.html             # Error page
+├── style.css            # All styles (design tokens + components)
+├── main.js              # Scroll reveal (IntersectionObserver, ~20 lines)
+├── favicon.svg          # "y" monogram
+├── apple-touch-icon.png # 180×180
+├── og.png               # OGP image 1200×630
+├── robots.txt
+├── sitemap.xml
+└── docs/
+    └── design-plan.md   # Design plan v3
 ```
 
-## ローカル確認
+## Local preview
 
-`index.html` をブラウザで直接開くだけで確認可能。
-ライブリロードしたい場合は VS Code の Live Server 拡張などを利用。
+Open `index.html` in a browser. No server required.
 
-## デプロイ
+For live reload, use VS Code Live Server extension.
 
-`main` ブランチへ push すると Cloudflare Pages が自動でビルド & デプロイする。
-ビルドコマンドなし、出力ディレクトリはリポジトリルート。
+## Deploy
+
+Push to `main` → Cloudflare auto-deploys. No build command, output directory is repo root.
+
+## Design
+
+Editorial Minimalism. Fraunces + Inter + JetBrains Mono. Warm off-white `#FAFAF7` with vermillion `#FF5A1F` accent.
+
+Full design plan: [docs/design-plan.md](docs/design-plan.md)
