@@ -227,12 +227,29 @@ ul { list-style: none; padding: 0; margin: 0; }
 }
 
 .work {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(32px, 5vw, 56px);
   margin-bottom: clamp(80px, 12vw, 160px);
 }
 .work:last-child { margin-bottom: 0; }
+
+/* Stretched link: title turns the entire card into a click target */
+.work__title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 180ms var(--ease);
+}
+.work__title-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.work__title-link:hover {
+  color: var(--accent);
+}
 
 @media (min-width: 900px) {
   .work {
@@ -355,6 +372,8 @@ ul { list-style: none; padding: 0; margin: 0; }
 }
 
 .work__cta {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: baseline;
   gap: 12px;
