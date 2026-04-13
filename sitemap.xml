@@ -2,13 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://yasuda-dev.com/</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://yasuda-dev.com/apps/</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -27,6 +27,24 @@
   <url>
     <loc>https://yasuda-dev.com/apps/joshirushi/terms/</loc>
     <lastmod>2026-04-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://yasuda-dev.com/apps/mentor-ai/</loc>
+    <lastmod>2026-04-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://yasuda-dev.com/apps/mentor-ai/privacy/</loc>
+    <lastmod>2026-04-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://yasuda-dev.com/apps/mentor-ai/terms/</loc>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
