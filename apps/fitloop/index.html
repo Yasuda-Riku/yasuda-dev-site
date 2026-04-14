@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>FitLoop Support — yasuda-dev</title>
+  <meta name="description" content="FitLoop の公式サポートページ。お問い合わせ、よくある質問、プライバシーポリシー、利用規約。">
+  <link rel="canonical" href="https://yasuda-dev.com/apps/fitloop/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yasuda-dev.com/apps/fitloop/">
+  <meta property="og:title" content="FitLoop Support">
+  <meta property="og:description" content="FitLoop の公式サポートページ。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/" aria-current="page">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="doc">
+    <div class="doc__inner">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/apps/">Apps</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">FitLoop</span>
+      </nav>
+
+      <header class="doc__head">
+        <p class="eyebrow">Support</p>
+        <h1 class="doc__title">FitLoop</h1>
+        <p class="doc__lead">
+          AI パーソナルコーチがあなた専用のトレーニングメニューを毎週自動生成する筋トレアプリです。ご利用中に困ったことがあれば、こちらからお問い合わせください。
+        </p>
+      </header>
+
+      <section class="doc__section">
+        <h2>お問い合わせ</h2>
+        <p>
+          ご質問・ご要望・不具合の報告は、下記のメールアドレスまでお気軽にご連絡ください。返信には数日かかる場合があります。
+        </p>
+        <dl class="doc__contact">
+          <div>
+            <dt>email</dt>
+            <dd><a href="mailto:yasudariku1214@gmail.com?subject=FitLoop%20Support">yasudariku1214@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>developer</dt>
+            <dd><a href="/">yasuda-dev</a></dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="doc__section">
+        <h2>よくある質問</h2>
+
+        <details class="faq">
+          <summary>AI メニューが生成されません</summary>
+          <p>
+            メニュー生成にはインターネット接続が必要です(Google Gemini API を使用しています)。Wi-Fi またはモバイルデータ通信が有効か確認してください。一時的な API の混雑で失敗することがありますので、数分後に再試行してください。
+          </p>
+        </details>
+
+        <details class="faq">
+          <summary>データは外部に送信されますか?</summary>
+          <p>
+            AI メニュー生成時に、ニックネーム・経験レベル・目標・先週のワークアウト記録が Google Gemini API に送信されます。それ以外のデータ(健康情報、位置情報、連絡先など)は一切送信されません。ワークアウト記録やプロフィールは端末内にのみ保存されます。詳しくは<a href="/apps/fitloop/privacy/">プライバシーポリシー</a>をご覧ください。
+          </p>
+        </details>
+
+        <details class="faq">
+          <summary>サブスクリプション(Pro)を解約したい</summary>
+          <p>
+            iOS の「設定 &gt; <em>あなたの名前</em> &gt; サブスクリプション」から、いつでも解約できます。解約後も有効期間終了までは引き続き Pro 機能をご利用いただけます。無料トライアル期間中にキャンセルした場合、課金は発生しません。
+          </p>
+        </details>
+
+        <details class="faq">
+          <summary>アプリを削除するとデータはどうなりますか?</summary>
+          <p>
+            トレーニング記録・プロフィール・メニュー等のデータはすべて端末内に保存されています。アプリを削除するとそれらのデータは失われ、復元はできません。設定タブの「WIPE ALL DATA」で個別にデータを消去することもできます。
+          </p>
+        </details>
+
+        <details class="faq">
+          <summary>通知が届きません</summary>
+          <p>
+            iOS の「設定 &gt; 通知 &gt; FitLoop」で通知を許可してください。通知はトレーニング日の朝 9 時にローカルで送信されます。端末の「おやすみモード」や「集中モード」がオンの場合は届かないことがあります。
+          </p>
+        </details>
+
+        <details class="faq">
+          <summary>バグを見つけたら</summary>
+          <p>
+            お手数ですが、上記のメールアドレスまで「発生した状況」「iOS のバージョン」「端末モデル」を添えてご連絡ください。可能であればスクリーンショットも一緒にお送りいただけると助かります。
+          </p>
+        </details>
+      </section>
+
+      <section class="doc__section">
+        <h2>規約とポリシー</h2>
+        <ul class="doc__linklist">
+          <li><a href="/apps/fitloop/privacy/">プライバシーポリシー</a></li>
+          <li><a href="/apps/fitloop/terms/">利用規約</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>

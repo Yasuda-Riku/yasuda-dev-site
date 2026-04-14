@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Privacy Policy — FitLoop — yasuda-dev</title>
+  <meta name="description" content="FitLoop のプライバシーポリシー。">
+  <link rel="canonical" href="https://yasuda-dev.com/apps/fitloop/privacy/">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/" aria-current="page">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="doc">
+    <div class="doc__inner">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/apps/">Apps</a>
+        <span aria-hidden="true">/</span>
+        <a href="/apps/fitloop/">FitLoop</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Privacy Policy</span>
+      </nav>
+
+      <header class="doc__head">
+        <p class="eyebrow">FitLoop</p>
+        <h1 class="doc__title">プライバシーポリシー</h1>
+        <p class="doc__updated">最終更新: 2026年4月14日</p>
+      </header>
+
+      <p>FitLoop(以下「本アプリ」)は、ユーザーのプライバシーを最も重要な価値として設計されています。本プライバシーポリシーは、本アプリにおける情報の取り扱いについて説明します。</p>
+      <p><strong>基本方針: あなたのデータは原則として端末の外に出ません。</strong></p>
+
+      <section class="doc__section">
+        <h2>第1条 収集する情報</h2>
+        <p>本アプリは以下の情報を取得・利用します。</p>
+        <h3>(a) ユーザープロフィール情報</h3>
+        <p>ニックネーム、経験レベル(未経験/〜半年/半年〜2年/2年以上)、目標(筋肥大/ダイエット/健康維持/体力向上)、週のトレーニング日数をユーザーが入力した際に取得します。これらは端末内のみに保存されます。</p>
+        <h3>(b) トレーニング予定・記録</h3>
+        <p>週単位のトレーニング予定と、実際に記録したワークアウト結果(種目名、セット数、重量、反復回数、RPE)を端末内に保存します。外部サーバーには送信されません。</p>
+        <h3>(c) Google Gemini API への送信データ</h3>
+        <p>AI による週間プラン生成およびメニュー更新の目的で、以下の情報のみが Google Gemini API(Google LLC)に送信されます。</p>
+        <ul>
+          <li>ニックネーム</li>
+          <li>経験レベル・目標</li>
+          <li>週のトレーニング日数</li>
+          <li>先週のワークアウト記録(種目名、重量、回数、RPE)</li>
+        </ul>
+        <p><strong>個人を特定する情報、健康状態、医療履歴、財務情報、位置情報、連絡先、写真、音声などは一切送信されません。</strong></p>
+        <h3>(d) 通知設定データ</h3>
+        <p>トレーニング日の朝 9 時に送信するローカル通知の設定情報は、端末内のみで処理されます。通知内容の生成・送信はすべて端末内で完結します。</p>
+        <h3>(e) 購入情報</h3>
+        <p>RevenueCat, Inc. を通じてサブスクリプションの状態を管理します。購入処理は Apple Inc. が行い、クレジットカード情報等は開発者に共有されません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>第2条 情報の利用目的</h2>
+        <p>取得した情報は以下の目的にのみ使用します。</p>
+        <ol>
+          <li>Google Gemini API を利用した AI 訓練プラン生成</li>
+          <li>ワークアウト記録の端末内での管理</li>
+          <li>トレーニング日の通知送信(端末内処理)</li>
+          <li>サブスクリプション状態の管理</li>
+          <li>アプリの改善・不具合修正</li>
+        </ol>
+      </section>
+
+      <section class="doc__section">
+        <h2>第3条 データの保存場所</h2>
+        <p>ニックネーム、トレーニング予定、ワークアウト記録、アプリ設定などすべてのユーザーデータは、ユーザーの端末内(Apple SwiftData)にのみ保存されます。</p>
+        <p>クラウドバックアップ、同期サーバー、または外部クラウドサービスへのデータ送信は原則として行いません(第1条(c)に記載の Gemini API への送信を除く)。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>第4条 Google Gemini API の利用について</h2>
+        <p>本アプリは Google Gemini API を利用して AI 訓練プラン生成機能を提供しています。</p>
+        <ul>
+          <li>通信は HTTPS による安全な接続で行われます</li>
+          <li>送信データは Google LLC の規定に従って処理されます</li>
+          <li>Google Gemini API のプライバシーポリシーもご確認ください</li>
+        </ul>
+      </section>
+
+      <section class="doc__section">
+        <h2>第5条 第三者サービス</h2>
+        <p>本アプリは以下の第三者サービスを利用しています。各サービスのプライバシーポリシーもご確認ください。</p>
+        <ul>
+          <li><strong>Google Gemini API</strong>(Google LLC) — AI による訓練プラン生成のために使用</li>
+          <li><strong>RevenueCat, Inc.</strong> — サブスクリプション状態の管理のために使用</li>
+          <li><strong>Apple UserNotifications</strong> — ローカル通知送信のために使用(端末内完結)</li>
+        </ul>
+      </section>
+
+      <section class="doc__section">
+        <h2>第6条 データの共有</h2>
+        <p>ユーザーの個人情報を第三者に販売・提供することはありません。ただし、以下の場合を除きます。</p>
+        <ol>
+          <li>法令に基づく開示要求があった場合</li>
+          <li>ユーザーの明示的な同意がある場合</li>
+        </ol>
+        <p>Gemini API への送信データについては、Google LLC のプライバシーポリシーに従って処理されます。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>第7条 データの削除</h2>
+        <p>以下の方法でデータを削除できます。</p>
+        <ol>
+          <li>アプリ内の「設定」タブ &gt; 「WIPE ALL DATA」ボタン — 端末内の全データを即時削除</li>
+          <li>アプリを端末から削除 — 端末内に保存されたすべてのデータが消去されます</li>
+        </ol>
+      </section>
+
+      <section class="doc__section">
+        <h2>第8条 お子様のプライバシー</h2>
+        <p>本アプリは 4 歳以上を対象としていますが、お子様が本アプリを利用される場合は保護者の監督の下で使用してください。本アプリは、保護者の同意なしに 13 歳未満のお子様から個人情報を意図的に収集することはありません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>第9条 ポリシーの変更</h2>
+        <p>本プライバシーポリシーは、必要に応じて変更される場合があります。変更後のポリシーは本ページおよびアプリ内に掲載した時点から効力を生じます。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>第10条 お問い合わせ</h2>
+        <p>本プライバシーポリシーに関するお問い合わせは、<a href="mailto:yasudariku1214@gmail.com?subject=FitLoop%20Privacy">yasudariku1214@gmail.com</a> までご連絡ください。</p>
+      </section>
+
+      <p class="doc__back">
+        <a href="/apps/fitloop/">← サポートトップに戻る</a>
+      </p>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
