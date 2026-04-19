@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+  <meta name="robots" content="noindex, nofollow">
+  <title>FX — JPY / USD / LTC</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap">
+
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --fg: #1A1A1A;
+      --muted: #636160;
+      --border: #E8E6E1;
+      --accent: #FF5A1F;
+      --font-display: "Fraunces", "Noto Serif JP", serif;
+      --font-body: "Inter", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+    }
+    main {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 0 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(28px, 7vw, 36px);
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin: 0 0 28px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      margin-bottom: 12px;
+      transition: border-color .15s;
+    }
+    .row:focus-within {
+      border-color: var(--accent);
+    }
+    .label {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--muted);
+      min-width: 44px;
+      letter-spacing: 0.04em;
+    }
+    .input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      text-align: right;
+      padding: 0;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .input::placeholder { color: #C8C5BF; }
+    .meta {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+    .meta__time { font-family: var(--font-mono); }
+    .meta__time.is-stale { color: #B0AEAA; }
+    button {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: var(--fg);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color .15s, color .15s;
+    }
+    button:hover, button:focus-visible { border-color: var(--accent); color: var(--accent); }
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .rates {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .rates__row { display: flex; justify-content: space-between; }
+    .err {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: #FFF1EC;
+      color: #C24500;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      display: none;
+    }
+    .err.is-visible { display: block; }
+    footer {
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 0 24px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>FX</h1>
+    <p class="sub">JPY · USD · LTC を相互換算</p>
+
+    <label class="row">
+      <span class="label">JPY</span>
+      <input class="input" id="jpy" inputmode="decimal" autocomplete="off" placeholder="0" data-currency="jpy">
+    </label>
+    <label class="row">
+      <span class="label">USD</span>
+      <input class="input" id="usd" inputmode="decimal" autocomplete="off" placeholder="0.00" data-currency="usd">
+    </label>
+    <label class="row">
+      <span class="label">LTC</span>
+      <input class="input" id="ltc" inputmode="decimal" autocomplete="off" placeholder="0.000000" data-currency="ltc">
+    </label>
+
+    <div class="meta">
+      <span class="meta__time" id="time">取得中…</span>
+      <button id="refresh" type="button">更新</button>
+    </div>
+
+    <div class="rates" id="rates" hidden>
+      <div class="rates__row"><span>1 USD</span><span id="r-usdjpy">—</span></div>
+      <div class="rates__row"><span>1 LTC</span><span id="r-ltcusd">—</span></div>
+      <div class="rates__row"><span>1 LTC</span><span id="r-ltcjpy">—</span></div>
+    </div>
+
+    <div class="err" id="err"></div>
+  </main>
+
+  <footer>
+    FX: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · LTC: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a>
+  </footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const inputs = {
+      jpy: $('jpy'),
+      usd: $('usd'),
+      ltc: $('ltc'),
+    };
+    const timeEl = $('time');
+    const refreshBtn = $('refresh');
+    const errEl = $('err');
+    const ratesEl = $('rates');
+    const rUsdJpy = $('r-usdjpy');
+    const rLtcUsd = $('r-ltcusd');
+    const rLtcJpy = $('r-ltcjpy');
+
+    let rates = null; // { usdJpy, ltcUsd, ltcJpy, fetchedAt }
+    let activeInput = null;
+    let staleTimer = null;
+
+    const fmt = {
+      jpy: (n) => Math.round(n).toLocaleString('en-US'),
+      usd: (n) => n.toFixed(2),
+      ltc: (n) => n.toFixed(6),
+    };
+
+    function parseNum(s) {
+      if (s == null) return NaN;
+      const cleaned = String(s).replace(/,/g, '').trim();
+      if (cleaned === '') return NaN;
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function recompute(source) {
+      if (!rates) return;
+      const raw = inputs[source].value;
+      const v = parseNum(raw);
+      const targets = ['jpy', 'usd', 'ltc'].filter(c => c !== source);
+      if (!Number.isFinite(v)) {
+        targets.forEach(c => { inputs[c].value = ''; });
+        return;
+      }
+      let jpy, usd, ltc;
+      if (source === 'jpy') { jpy = v; usd = v / rates.usdJpy; ltc = v / rates.ltcJpy; }
+      if (source === 'usd') { usd = v; jpy = v * rates.usdJpy; ltc = v / rates.ltcUsd; }
+      if (source === 'ltc') { ltc = v; usd = v * rates.ltcUsd; jpy = v * rates.ltcJpy; }
+      const vals = { jpy, usd, ltc };
+      targets.forEach(c => { inputs[c].value = fmt[c](vals[c]); });
+    }
+
+    function reformatAll() {
+      // Re-run from whichever input has a value (after a rate refresh).
+      const src = activeInput && parseNum(inputs[activeInput].value) ? activeInput
+                : ['jpy', 'usd', 'ltc'].find(c => parseNum(inputs[c].value));
+      if (src) recompute(src);
+    }
+
+    function showError(msg) {
+      errEl.textContent = msg;
+      errEl.classList.add('is-visible');
+    }
+    function clearError() {
+      errEl.classList.remove('is-visible');
+    }
+
+    function updateTimeDisplay() {
+      if (!rates) return;
+      const d = new Date(rates.fetchedAt);
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      timeEl.textContent = `as of ${hh}:${mm}`;
+      const ageMs = Date.now() - rates.fetchedAt;
+      timeEl.classList.toggle('is-stale', ageMs > 5 * 60 * 1000);
+    }
+
+    async function fetchRates() {
+      clearError();
+      timeEl.textContent = '取得中…';
+      timeEl.classList.remove('is-stale');
+      refreshBtn.disabled = true;
+      try {
+        const [fxRes, cgRes] = await Promise.all([
+          fetch('https://api.frankfurter.app/latest?from=USD&to=JPY'),
+          fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd'),
+        ]);
+        if (!fxRes.ok) throw new Error('FX API ' + fxRes.status);
+        if (!cgRes.ok) throw new Error('CoinGecko ' + cgRes.status);
+        const fx = await fxRes.json();
+        const cg = await cgRes.json();
+        const usdJpy = fx?.rates?.JPY;
+        const ltcUsd = cg?.litecoin?.usd;
+        if (!usdJpy || !ltcUsd) throw new Error('レート形式が不正');
+        rates = {
+          usdJpy,
+          ltcUsd,
+          ltcJpy: ltcUsd * usdJpy,
+          fetchedAt: Date.now(),
+        };
+        rUsdJpy.textContent = `¥${fmt.jpy(usdJpy)}`;
+        rLtcUsd.textContent = `$${fmt.usd(ltcUsd)}`;
+        rLtcJpy.textContent = `¥${fmt.jpy(rates.ltcJpy)}`;
+        ratesEl.hidden = false;
+        updateTimeDisplay();
+        if (staleTimer) clearInterval(staleTimer);
+        staleTimer = setInterval(updateTimeDisplay, 30 * 1000);
+        reformatAll();
+      } catch (e) {
+        timeEl.textContent = '取得失敗';
+        showError('レート取得に失敗しました: ' + (e.message || e));
+      } finally {
+        refreshBtn.disabled = false;
+      }
+    }
+
+    Object.entries(inputs).forEach(([key, el]) => {
+      el.addEventListener('focus', () => { activeInput = key; });
+      el.addEventListener('input', () => { activeInput = key; recompute(key); });
+    });
+
+    refreshBtn.addEventListener('click', fetchRates);
+    fetchRates();
+  </script>
+</body>
+</html>
