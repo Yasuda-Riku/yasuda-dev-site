@@ -190,7 +190,7 @@
   </main>
 
   <footer>
-    FX: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · LTC: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a>
+    FX: <a href="https://frankfurter.dev/" target="_blank" rel="noopener">Frankfurter</a> · LTC: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a>
   </footer>
 
   <script>
@@ -275,7 +275,7 @@
       refreshBtn.disabled = true;
       try {
         const [fxRes, cgRes] = await Promise.all([
-          fetch('https://api.frankfurter.app/latest?from=USD&to=JPY'),
+          fetch('https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY'),
           fetch('https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=usd'),
         ]);
         if (!fxRes.ok) throw new Error('FX API ' + fxRes.status);
