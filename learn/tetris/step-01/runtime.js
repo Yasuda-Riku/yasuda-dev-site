@@ -169,7 +169,7 @@
       logLine('[run] cheerpjRunMain MyTetris');
       const exit = await cheerpjRunMain(
         'MyTetris',
-        '/app/learn/tetris/sdk/sdk.v3.jar:/app/learn/tetris/step-01/step01.v3.jar'
+        '/app/learn/tetris/sdk/sdk.v4.jar:/app/learn/tetris/step-01/step01.v4.jar'
       );
       logLine('[run] main() returned (exit ' + exit + ')');
       if (exit !== 0) {
