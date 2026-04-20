@@ -43,6 +43,28 @@ public abstract class Game {
         final Game self = this;
         final Screen screen = Screen.INSTANCE;
 
+        // Non-daemon keeper thread: its only purpose is to prevent the
+        // JVM from exiting when main() returns. It sleeps for a long
+        // time between wakeups so CheerpJ's cooperative scheduler can
+        // leave it parked -- no CPU burn, no browser freeze.
+        Thread keeper = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(60 * 60 * 1000L); // 1 hour
+                    } catch (InterruptedException ex) {
+                        return;
+                    }
+                }
+            }
+        }, "tetris-keeper");
+        keeper.setDaemon(false);
+        keeper.start();
+
+        // Actual animation runs on the AWT event dispatch thread via a
+        // Swing Timer. CheerpJ implements Swing/AWT events over the
+        // browser event loop, so this does not block the page.
         Timer timer = new Timer(FRAME_MS, new ActionListener() {
             long lastNs = System.nanoTime();
 
