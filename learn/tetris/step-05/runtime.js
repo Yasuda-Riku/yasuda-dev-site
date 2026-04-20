@@ -1,21 +1,21 @@
 /*
  * Step 05 runtime.
  *
- * Loads CheerpJ, writes the SDK + student jars into /str/, loads them
- * as a CJ3Library (cheerpjRunLibrary, not cheerpjRunMain), invokes
- * MyTetris.main() so the student's "new MyTetris().run()" fires, then
- * drives the game loop from JS by calling tick(dtMs) on the instance
- * that run() parked in Game.current.
+ * Editor content is compiled at run time with javac (loaded from
+ * /app/learn/tetris/javac/tools.jar). The resulting classes are loaded
+ * via cheerpjRunLibrary along with the SDK (embedded below as base64),
+ * the student's static main() is called, and Game.current() becomes
+ * the tick target for the rAF loop.
  *
- * Auto-generated -- edit .claude/build-tetris.py and rerun, don't
+ * Auto-generated -- edit .claude/build-tetris.py, rerun, don't
  * hand-edit this file.
  */
 (function () {
   "use strict";
 
-  var SDK_JAR_B64  = "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";
-  var STEP_JAR_B64 = "UEsDBAoAAAgAAEO+lFwAAAAAAAAAAAAAAAAJAAQATUVUQS1JTkYv/soAAFBLAwQUAAgICABDvpRcAAAAAAAAAAAAAAAAFAAAAE1FVEEtSU5GL01BTklGRVNULk1G803My0xLLS7RDUstKs7Mz7NSMNQz4OVyLkpNLElN0XWqtFIwAoroWShoeKWWOBUlZuYVKxTrFenl62nycvFyAQBQSwcIX6bnKEEAAABAAAAAUEsDBBQACAgIAEO+lFwAAAAAAAAAAAAAAAAOAAAATXlUZXRyaXMuY2xhc3OFVE1PG1cUPc8z9uBhALeAQ8DQQD8wdoLThNC0gAnYQBwMTm2aiHYRD+MJdWPGkbGp2Oc3tKraTbNoNtkkCkRqpfyALLvKLn+h6ygqPe/ZQFSoisR7c+8779xzP55f/v37CwAT+MqED5oB3YIfAYFwyd1J7NrbjZKdqLv1Wnk7sWRvuQKB6bJXricFtOjYrSDaEDRgWmiHJdC2srumsPzcqFSde6lqRUBkJKzTQpfCqIN89XvpfM/C++gWaLcdp7HVqNj1ao0X0ibPNLmELZyRcrRaw5P2WQv9GBAwHNtbqe5Qjz+ayYx9HcQghgx8YOEchgV6T6pfdncF9OzC4prAmeyp51OS5UMLH0kKfz6zdH1Nej6xMCo9ejp3ezWIMcQMxC2cxwUynSRizjIJ/3x2LrUscPaUWAoyZSKBiwY+tXAJlwX6TuIKTs11PXI5FdcmZyT6n2SyF2O4YmFSygqm5/LLd5byc+syyFULn+MLlv5uuVLJu05d4Byrlsn8D9u0hRnJpuUX0kw/lcsWBDpSVW+7bnv1W3al4WocHpNn+dztgvzukbiFbFZ+9wlY6Xzu5p3CQiq3mi4EZv+C+pOYaom968qWPXe1sbXh1tbsjQo9+pZdZsLh6DfZ7+wdO1Gxvc1Egcq8TYri9DXul+y6BEbT0u4o1G3n3op9v3XfX/VUo/tPq5RssSKpuV7JZT0HT0M1i66AZqHaqDnuYllSdxwO97hUhmFOo4/JGOhDEhaTmqXlwzXac+/Y87RT79hp2gvoPrIXufLxqMJ0tXa+Ca4BYvxqvU7rKjR+scKx5xAxYw9GTNtDR6xzD6EnqqgZdVPn2sk1jCCfTiejBXEDyy2WUUaULO1/oG39OXr20Xt82VQJDXCP0JPFSutSjTJkQ6dj688QGnUYMcaPrh9/Rly5ujaliz6D/x16cR99Px28lkc0KPLRwZ9PVLIySj9TAp+pyRJ2Y0Q+OYzzzU1R3CpPdPjMi4ycw81W/B+kj/tm/Ckiv2FIRdJLMpaMxCKsKwdrQsTIEaL4b0Sxifj4EHGstoloqj2W2qxmnCLPs28XcJdCpUSWY2R4WOUy0NKYlz+f3IcGfoFfezwQMn+Ve0RZkVCPsvTHR9RhkoAPP4DLbNIEenCFVZ9U9AHoAcNvkPlL8jb5X9Ar61ai/ug+xrUZkj7EpJYcDJkPER0M9X07qUfk6o/36nqx168XQ+FQ+Ckm9vHZA008Onj1wMf1pcycuBmZPfdkPKIXBw/BUwQfF+CSGsgpDvkMhzPJgZplv66xY3PUmsQ0/fMc5xsc4zyW4FCrzCAE/S2C4i0M8QaxN8xVoKBY1/4BUEsHCMY+pyDrAwAAcgYAAFBLAQIKAAoAAAgAAEO+lFwAAAAAAAAAAAAAAAAJAAQAAAAAAAAAAAAAAAAAAABNRVRBLUlORi/+ygAAUEsBAhQAFAAICAgAQ76UXF+m5yhBAAAAQAAAABQAAAAAAAAAAAAAAAAAKwAAAE1FVEEtSU5GL01BTklGRVNULk1GUEsBAhQAFAAICAgAQ76UXMY+pyDrAwAAcgYAAA4AAAAAAAAAAAAAAAAArgAAAE15VGV0cmlzLmNsYXNzUEsFBgAAAAADAAMAuQAAANUEAAAAAA==";
-  var STEP_JAR_VFS = "/str/step-05.jar";
+  var SDK_JAR_B64  = "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";
+  var STARTER_CODE = "import dev.yasuda.tetris.*;\n\n/**\n * Step 5 -- Wall and floor collision.\n *\n * Goal: the block can no longer escape the board. Auto-fall stops at\n * the bottom row; arrow keys are clamped to the left/right edges.\n *\n * You'll learn:\n *  - writing a boolean helper method (canMove) that returns true/false\n *  - reusing the same check from BOTH update() and onKey()\n *  - the classic boundary pattern: col &lt; 0, col &gt;= COLS, etc.\n */\npublic class MyTetris extends Game {\n\n    static final int COLS = 10;\n    static final int ROWS = 20;\n    static final int CELL = 24;\n\n    static final double DROP_SECONDS = 1.0;\n\n    int blockCol = 4;\n    int blockRow = 0;\n    double accumulator = 0.0;\n\n    public static void main(String[] args) {\n        new MyTetris().run();\n    }\n\n    @Override\n    public void update(double dt) {\n        accumulator += dt;\n        while (accumulator >= DROP_SECONDS) {\n            accumulator -= DROP_SECONDS;\n            if (canMove(blockCol, blockRow + 1)) {\n                blockRow++;\n            }\n        }\n    }\n\n    @Override\n    public void onKey(Key key) {\n        if (key == Key.LEFT  && canMove(blockCol - 1, blockRow)) blockCol--;\n        if (key == Key.RIGHT && canMove(blockCol + 1, blockRow)) blockCol++;\n        if (key == Key.DOWN  && canMove(blockCol, blockRow + 1)) blockRow++;\n    }\n\n    /** True if (col, row) is inside the board. */\n    boolean canMove(int col, int row) {\n        if (col < 0)     return false;\n        if (col >= COLS) return false;\n        if (row < 0)     return false;\n        if (row >= ROWS) return false;\n        return true;\n    }\n\n    @Override\n    public void render(Screen screen) {\n        screen.clear(Color.BLACK);\n\n        for (int row = 0; row < ROWS; row++) {\n            for (int col = 0; col < COLS; col++) {\n                int x = col * CELL;\n                int y = row * CELL;\n                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);\n            }\n        }\n\n        int bx = blockCol * CELL;\n        int by = blockRow * CELL;\n        screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);\n    }\n}\n";
+  var STEP_ID      = "step-05";
 
   function b64ToBytes(b64) {
     var bin = atob(b64);
@@ -27,6 +27,8 @@
   var canvas    = document.getElementById("stage-canvas");
   var ctx       = canvas.getContext("2d");
   var runBtn    = document.getElementById("run-btn");
+  var resetBtn  = document.getElementById("reset-btn");
+  var editor    = document.getElementById("code-editor");
   var statusEl  = document.getElementById("run-status");
   var loadEl    = document.getElementById("loading-overlay");
   var consoleEl = document.getElementById("console-output");
@@ -44,9 +46,10 @@
     statusEl.textContent = text;
     statusEl.dataset.mode = mode || "idle";
   }
-  function logLine(msg) {
+  function logLine(msg, cls) {
     var line = document.createElement("div");
     line.textContent = msg;
+    if (cls) line.className = cls;
     consoleEl.appendChild(line);
     consoleEl.scrollTop = consoleEl.scrollHeight;
   }
@@ -60,7 +63,26 @@
     try { return JSON.stringify(e); } catch (_) { return String(e); }
   }
 
-  /* ---------- Screen natives ---------- */
+  /* ---------- Editor: load saved content, persist on input ---------- */
+  var LS_KEY = "tetris-editor-" + STEP_ID;
+  (function initEditor() {
+    var saved = null;
+    try { saved = localStorage.getItem(LS_KEY); } catch (_) {}
+    editor.value = (saved !== null) ? saved : STARTER_CODE;
+    editor.addEventListener("input", function () {
+      try { localStorage.setItem(LS_KEY, editor.value); } catch (_) {}
+    });
+  })();
+  if (resetBtn) {
+    resetBtn.addEventListener("click", function () {
+      if (confirm("参照コードに戻します。よろしいですか？")) {
+        editor.value = STARTER_CODE;
+        try { localStorage.removeItem(LS_KEY); } catch (_) {}
+      }
+    });
+  }
+
+  /* ---------- Screen natives (sync, no mid-render yields) ---------- */
   function nClear(_lib, r, g, b) {
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -83,11 +105,13 @@
   function nWidth(_lib)  { return canvas.width;  }
   function nHeight(_lib) { return canvas.height; }
 
-  /* ---------- Keyboard ----------
-     CheerpJ refuses to have two Java calls in-flight at once, so we
-     can't invoke handleKey() directly from the keydown listener while
-     the rAF loop's tick() is awaiting. Queue keys here; the frame loop
-     drains them at the top of each tick. */
+  async function nStarted(_lib) {
+    running = true;
+    setStatus("running", "running");
+    logLine("[java] setup done");
+  }
+
+  /* ---------- Keyboard queue ---------- */
   window.addEventListener("keydown", function (e) {
     if (!running || !gameInstance) return;
     if ([32, 37, 38, 39, 40].indexOf(e.keyCode) !== -1) {
@@ -96,7 +120,7 @@
     keyQueue.push(e.keyCode | 0);
   });
 
-  /* ---------- CheerpJ setup ---------- */
+  /* ---------- CheerpJ init + jar load ---------- */
   async function loadCheerpJScript() {
     if (typeof cheerpjInit !== "undefined") return;
     await new Promise(function (resolve, reject) {
@@ -126,12 +150,13 @@
         Java_dev_yasuda_tetris_Screen_jsText:       nText,
         Java_dev_yasuda_tetris_Screen_jsWidth:      nWidth,
         Java_dev_yasuda_tetris_Screen_jsHeight:     nHeight,
+        Java_dev_yasuda_tetris_Game_jsStarted:      nStarted,
       },
     });
 
+    // SDK jar available for compile + runtime classpath.
     await cheerpOSAddStringFile("/str/sdk.jar", b64ToBytes(SDK_JAR_B64));
-    await cheerpOSAddStringFile(STEP_JAR_VFS,   b64ToBytes(STEP_JAR_B64));
-    logLine("[init] jars loaded into /str/");
+    logLine("[init] sdk.jar mounted at /str/sdk.jar");
 
     cheerpjReady = true;
     showLoading(false);
@@ -139,7 +164,7 @@
     logLine("[init] CheerpJ ready");
   }
 
-  /* ---------- Frame loop (JS-driven) ---------- */
+  /* ---------- Frame loop ---------- */
   function startFrameLoop() {
     cancelAnimationFrame(rafId);
     lastT = performance.now();
@@ -171,41 +196,67 @@
     rafId = requestAnimationFrame(frame);
   }
 
-  /* ---------- Run button ---------- */
-  runBtn.addEventListener("click", async function () {
-    runBtn.disabled = true;
+  /* ---------- Compile + run ---------- */
+  async function compileAndRun() {
+    // Fresh state: stop any prior loop, clear console.
     running = false;
     gameInstance = null;
     cancelAnimationFrame(rafId);
+
+    await ensureCheerpJ();
+
+    // Write the editor's current Java source into CheerpJ's VFS.
+    await cheerpOSAddStringFile("/str/MyTetris.java", editor.value);
+
+    // Wipe previous compiled artefacts so stale classes don't linger.
+    // (cheerpOSAddStringFile with empty content is the simplest way.)
+    try { await cheerpOSAddStringFile("/files/MyTetris.class", new Uint8Array(0)); } catch (_) {}
+
+    setStatus("compiling...", "loading");
+    logLine("[compile] javac /str/MyTetris.java");
+    var compileCp = "/app/learn/tetris/javac/tools.jar:/str/sdk.jar:/files/";
+    var compileExit = await cheerpjRunMain(
+      "com.sun.tools.javac.Main",
+      compileCp,
+      "/str/MyTetris.java",
+      "-cp", "/str/sdk.jar",
+      "-d", "/files/",
+      "-Xlint:-options"
+    );
+    if (compileExit !== 0) {
+      setStatus("compile error", "error");
+      logLine("[compile] FAILED (exit " + compileExit + ")");
+      return;
+    }
+    logLine("[compile] OK");
+
+    setStatus("starting Java...", "loading");
+    logLine("[run] cheerpjRunLibrary /files/:/str/sdk.jar");
+    lib = await cheerpjRunLibrary("/files/:/str/sdk.jar");
+
+    var MyTetris = await lib.MyTetris;
+    await MyTetris.main([]);
+    logLine("[run] MyTetris.main() returned");
+
+    var GameClass = await lib.dev.yasuda.tetris.Game;
+    gameInstance = await GameClass.current();
+    if (!gameInstance) {
+      setStatus("error: Game.current was null", "error");
+      logLine("[error] Game.run() did not stash an instance");
+      return;
+    }
+
+    running = true;
+    setStatus("running", "running");
+    logLine("[run] frame loop starting");
+    try { canvas.focus(); } catch (_) {}
+    startFrameLoop();
+  }
+
+  runBtn.addEventListener("click", async function () {
+    runBtn.disabled = true;
     try {
-      await ensureCheerpJ();
-      setStatus("starting Java...", "loading");
-      logLine("[run] cheerpjRunLibrary");
-
-      // Fresh library each run.
-      lib = await cheerpjRunLibrary("/str/sdk.jar:" + STEP_JAR_VFS);
-
-      // Fire the student's main() -- new MyTetris().run() stashes
-      // the instance in Game.current.
-      var MyTetris = await lib.MyTetris;
-      await MyTetris.main([]);
-      logLine("[run] MyTetris.main() returned");
-
-      // Grab the instance.
-      var GameClass = await lib.dev.yasuda.tetris.Game;
-      gameInstance = await GameClass.current();
-      if (!gameInstance) {
-        setStatus("error: Game.current was null", "error");
-        logLine("[error] Game.run() did not stash an instance");
-        return;
-      }
-
-      running = true;
-      setStatus("running", "running");
-      logLine("[run] frame loop starting");
-      // Focus the canvas so the player can use arrow keys immediately.
-      try { canvas.focus(); } catch (_) {}
-      startFrameLoop();
+      await compileAndRun();
     } catch (e) {
       console.error(e);
       setStatus("error: " + describeError(e), "error");

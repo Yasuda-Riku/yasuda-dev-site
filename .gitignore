@@ -34,12 +34,15 @@ assets/works/**/*.png
 assets/works/**/*.jpg
 assets/works/**/*.jpeg
 
-# Tetris course: compiled .class / .jar are build artifacts (not served as
-# static assets — the Pages Function embeds jar bytes as base64). Only
-# .java sources and the middleware are committed.
+# Tetris course: compiled .class dirs are transient artifacts.
+# The SDK jar is embedded as base64 inside runtime.js at build time,
+# so no step-NN/*.jar is committed either. tools.jar IS committed —
+# it's the OpenJDK javac that runs in the browser for the editor.
 learn/tetris/**/classes/
-learn/tetris/**/*.jar
+learn/tetris/sdk/*.jar
+learn/tetris/step-*/*.jar
 learn/tetris/**/*.jar.b64
+.tmp-*.jar
 
 # Local Lighthouse reports
 lighthouse-report*.json

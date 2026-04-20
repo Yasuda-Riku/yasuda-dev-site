@@ -97,11 +97,27 @@
   background: var(--bg);
   letter-spacing: 0.04em;
 }
+
+.playground__code-reset {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--muted);
+  background: var(--bg);
+  cursor: pointer;
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.playground__code-reset:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 .playground__code textarea {
   display: block;
   width: 100%;
   border: 0;
-  resize: none;
+  resize: vertical;
   background: transparent;
   font-family: var(--font-mono);
   font-size: 13px;
@@ -110,12 +126,12 @@
   padding: 20px 24px;
   outline: none;
   overflow: auto;
-  min-height: 360px;
+  min-height: 420px;
   tab-size: 4;
+  white-space: pre;
 }
-.playground__code textarea[readonly] {
-  cursor: default;
-  color: var(--fg);
+.playground__code textarea:focus {
+  background: #FDFCFA;
 }
 
 /* ---------- Right column: canvas + controls ---------- */
