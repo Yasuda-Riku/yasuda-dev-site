@@ -1,10 +1,17 @@
 package dev.yasuda.tetris;
 
 /**
- * Drawing surface. All drawing happens via this class — students never
+ * Drawing surface. All drawing happens via this class -- students never
  * touch the HTML canvas directly.
+ *
+ * A single shared INSTANCE is provided to avoid allocating a new Screen
+ * per frame.
  */
 public final class Screen {
+
+    public static final Screen INSTANCE = new Screen();
+
+    private Screen() {}
 
     public void clear(Color c) {
         jsClear(c.r, c.g, c.b);

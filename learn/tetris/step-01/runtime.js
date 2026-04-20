@@ -1,30 +1,31 @@
 /*
- * Step 1 runtime -- loads CheerpJ, injects jar bytes into the CheerpJ
- * virtual filesystem (no HTTP requests for jars needed), wires Screen
- * native methods to the canvas, and runs MyTetris.
+ * Step 1 runtime.
  *
- * Why embed jars? Cloudflare Workers CDN doesnt honor HTTP Range on
- * static assets under ~2 MB, and CheerpJ refuses to run without Range.
- * Writing the jars directly to CheerpJs /str/ mount via
- * cheerpOSAddStringFile sidesteps the whole HTTP stack for class loading.
+ * Loads CheerpJ, writes SDK + student jars into CheerpJs /str/ virtual
+ * filesystem (so no HTTP jar fetches happen, sidestepping Cloudflare
+ * Range issues), then calls cheerpjRunMain. The game loop runs entirely
+ * inside Java (Game.run() while-loops with Thread.sleep) because CheerpJ
+ * 4.2 s JS->Java instance method bridge triggers WASM memory errors.
+ *
+ * JS -> Java flow:
+ *   - Canvas draw primitives (Screen.jsClear, jsFillRect, ...)
+ *   - Keyboard events are queued in JS; Java polls via Game.jsPollKey().
  */
 (function () {
   "use strict";
 
   /* ---------- Embedded jars (regenerate when SDK changes) ---------- */
-  var SDK_JAR_B64    = "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";
-  var STEP01_JAR_B64 = "UEsDBAoAAAgAAAR6lFwAAAAAAAAAAAAAAAAJAAQATUVUQS1JTkYv/soAAFBLAwQUAAgICAAEepRcAAAAAAAAAAAAAAAAFAAAAE1FVEEtSU5GL01BTklGRVNULk1G803My0xLLS7RDUstKs7Mz7NSMNQz4OVyLkpNLElN0XWqtFIwAoroWShoeKWWOBUlZuYVKxTrFenl62nycvFyAQBQSwcIX6bnKEEAAABAAAAAUEsDBBQACAgIAAR6lFwAAAAAAAAAAAAAAAAOAAAATXlUZXRyaXMuY2xhc3N9Ut1OE1EQ/k5326XL1i7aP6BV/IP+KNXE9EYkKVUJYZGkS2qIF3Joj7i63ZrtloR7XsBX4MZruCiJJj4AT+CzEKLOWWskAdxNZuabnflmvnP25OfX7wCe4LGOCBQNqoEoYgyZjtit7vH+oMOrgQh8p19d5l3BEFtwPCdYZFCKpZaGMYaxtb2NsEKHBkWacQOGJFH8gRfHNSQ1mAYmcJ0he5G30XN7PkN0yao3VhkmrStKnupIIa0hYyCLHEPuYp3d9oXwiKvtCk6c+eKVZKWW3GzKwLRcK/683lx9u9ysb8ohBQM3cYuUvXNctynaAcNMcYWe/7AxqI11y2ZgKwyJRs/rB9wLWtwdCIVOWKfvzfXXtoxTsvaFZck4J+Nehw42aTmeeDXobgt/g2+7lFG73CExmeIb6wPf5VWXeztVm6Z6O+HAmC+8jiCZhctk/jmLsDBhB7z9cY1/GhHrdm/gt8VLR4LE3+ubl0Nwm+4vQospyGGGEMMdQhHcJXzvHL5PePYcnqMOJv8dskXKFMgz8tHyMdghBQwlsrEwGae3jMqodI7aZXb8G7TNY8SH0P816OE2JvkJyjzAw1HTZ6KKkW9UjpAY4obyLG+mDlBTFgumfoBiwcy9r6l5aaOVtKpupaPqlpkxM0eYHCK/r7Avv37sR8ieHIYC5LBZ2gtI0xFkkSSBWUySkCkSP40a4QXKLNG/MR+upJ4hzs6gsVOUT0k6QzVkevQbUEsHCNXkMD8pAgAAVgMAAFBLAQIKAAoAAAgAAAR6lFwAAAAAAAAAAAAAAAAJAAQAAAAAAAAAAAAAAAAAAABNRVRBLUlORi/+ygAAUEsBAhQAFAAICAgABHqUXF+m5yhBAAAAQAAAABQAAAAAAAAAAAAAAAAAKwAAAE1FVEEtSU5GL01BTklGRVNULk1GUEsBAhQAFAAICAgABHqUXNXkMD8pAgAAVgMAAA4AAAAAAAAAAAAAAAAArgAAAE15VGV0cmlzLmNsYXNzUEsFBgAAAAADAAMAuQAAABMDAAAAAA==";
+  var SDK_JAR_B64    = "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";
+  var STEP01_JAR_B64 = "UEsDBAoAAAgAAJ17lFwAAAAAAAAAAAAAAAAJAAQATUVUQS1JTkYv/soAAFBLAwQUAAgICACde5RcAAAAAAAAAAAAAAAAFAAAAE1FVEEtSU5GL01BTklGRVNULk1G803My0xLLS7RDUstKs7Mz7NSMNQz4OVyLkpNLElN0XWqtFIwAoroWShoeKWWOBUlZuYVKxTrFenl62nycvFyAQBQSwcIX6bnKEEAAABAAAAAUEsDBBQACAgIAJ17lFwAAAAAAAAAAAAAAAAOAAAATXlUZXRyaXMuY2xhc3N9Ut1OE1EQ/k5326XL1i7aP6BV/IP+KNXE9EYkKVUJYZGkS2qIF3Joj7i63ZrtloR7XsBX4MZruCiJJj4AT+CzEKLOWWskAdxNZuabnflmvnP25OfX7wCe4LGOCBQNqoEoYgyZjtit7vH+oMOrgQh8p19d5l3BEFtwPCdYZFCKpZaGMYaxtb2NsEKHBkWacQOGJFH8gRfHNSQ1mAYmcJ0he5G30XN7PkN0yao3VhkmrStKnupIIa0hYyCLHEPuYp3d9oXwiKvtCk6c+eKVZKWW3GzKwLRcK/683lx9u9ysb8ohBQM3cYuUvXNctynaAcNMcYWe/7AxqI11y2ZgKwyJRs/rB9wLWtwdCIVOWKfvzfXXtoxTsvaFZck4J+Nehw42aTmeeDXobgt/g2+7lFG73CExmeIb6wPf5VWXeztVm6Z6O+HAmC+8jiCZhctk/jmLsDBhB7z9cY1/GhHrdm/gt8VLR4LE3+ubl0Nwm+4vQospyGGGEMMdQhHcJXzvHL5PePYcnqMOJv8dskXKFMgz8tHyMdghBQwlsrEwGae3jMqodI7aZXb8G7TNY8SH0P816OE2JvkJyjzAw1HTZ6KKkW9UjpAY4obyLG+mDlBTFgumfoBiwcy9r6l5aaOVtKpupaPqlpkxM0eYHCK/r7Avv37sR8ieHIYC5LBZ2gtI0xFkkSSBWUySkCkSP40a4QXKLNG/MR+upJ4hzs6gsVOUT0k6QzVkevQbUEsHCNXkMD8pAgAAVgMAAFBLAQIKAAoAAAgAAJ17lFwAAAAAAAAAAAAAAAAJAAQAAAAAAAAAAAAAAAAAAABNRVRBLUlORi/+ygAAUEsBAhQAFAAICAgAnXuUXF+m5yhBAAAAQAAAABQAAAAAAAAAAAAAAAAAKwAAAE1FVEEtSU5GL01BTklGRVNULk1GUEsBAhQAFAAICAgAnXuUXNXkMD8pAgAAVgMAAA4AAAAAAAAAAAAAAAAArgAAAE15VGV0cmlzLmNsYXNzUEsFBgAAAAADAAMAuQAAABMDAAAAAA==";
 
   function b64ToBytes(b64) {
-    // atob yields a binary string; convert to a proper Uint8Array so
-    // cheerpOSAddStringFile stores the raw bytes verbatim (a string
-    // would be subject to UTF-8 re-encoding and mangle bytes >= 0x80).
     var bin = atob(b64);
     var out = new Uint8Array(bin.length);
     for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
   }
 
+  /* ---------- DOM ---------- */
   var canvas    = document.getElementById("stage-canvas");
   var ctx       = canvas.getContext("2d");
   var runBtn    = document.getElementById("run-btn");
@@ -33,10 +34,8 @@
   var consoleEl = document.getElementById("console-output");
 
   var cheerpjReady = false;
-  var gameLoopInstance = null;
-  var frameId = 0;
-  var tickInFlight = false;
-  var loopActive = false;
+  var running = false;
+  var keyQueue = [];
 
   function setStatus(text, mode) {
     statusEl.textContent = text;
@@ -58,7 +57,7 @@
     try { return JSON.stringify(e); } catch (_) { return String(e); }
   }
 
-  /* ---------- Java -> JS natives ---------- */
+  /* ---------- Java -> JS natives (all async per CheerpJ convention) ---------- */
   async function nClear(lib, r, g, b) {
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -80,45 +79,27 @@
   }
   async function nWidth(lib)  { return canvas.width;  }
   async function nHeight(lib) { return canvas.height; }
-  async function nRegisterLoop(lib, inst) {
-    gameLoopInstance = inst;
-    logLine("[init] GameLoop instance registered");
+
+  async function nStarted(lib) {
+    running = true;
+    setStatus("running", "running");
+    logLine("[java] setup done, game loop running");
   }
 
-  /* ---------- Frame loop ---------- */
-  function startFrameLoop() {
-    if (loopActive) return;
-    loopActive = true;
-    cancelAnimationFrame(frameId);
-    function frame() {
-      if (!loopActive) return;
-      if (gameLoopInstance && !tickInFlight) {
-        tickInFlight = true;
-        gameLoopInstance.tick()
-          .catch(function (e) {
-            loopActive = false;
-            setStatus("error: " + describeError(e), "error");
-            logLine("[tick error] " + describeError(e));
-          })
-          .finally(function () { tickInFlight = false; });
-      }
-      frameId = requestAnimationFrame(frame);
-    }
-    frameId = requestAnimationFrame(frame);
-  }
-  function stopFrameLoop() {
-    loopActive = false;
-    cancelAnimationFrame(frameId);
+  // Java polls this each frame. Returns one queued keycode, or -1 if empty.
+  async function nPollKey(lib) {
+    if (keyQueue.length === 0) return -1;
+    return keyQueue.shift() | 0;
   }
 
-  /* ---------- Keyboard ---------- */
+  /* ---------- Keyboard queue ---------- */
   window.addEventListener("keydown", function (e) {
-    if (!gameLoopInstance) return;
+    if (!running) return;
     if ([32, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 &&
         document.activeElement && document.activeElement.tagName === "CANVAS") {
       e.preventDefault();
     }
-    try { gameLoopInstance.onKey(e.keyCode | 0); } catch (_) {}
+    keyQueue.push(e.keyCode | 0);
   });
 
   /* ---------- CheerpJ init + jar load ---------- */
@@ -145,19 +126,17 @@
       version: 8,
       status: "none",
       natives: {
-        Java_dev_yasuda_tetris_Screen_jsClear:          nClear,
-        Java_dev_yasuda_tetris_Screen_jsFillRect:       nFillRect,
-        Java_dev_yasuda_tetris_Screen_jsStrokeRect:     nStrokeRect,
-        Java_dev_yasuda_tetris_Screen_jsText:           nText,
-        Java_dev_yasuda_tetris_Screen_jsWidth:          nWidth,
-        Java_dev_yasuda_tetris_Screen_jsHeight:         nHeight,
-        Java_dev_yasuda_tetris_GameLoop_jsRegisterLoop: nRegisterLoop,
+        Java_dev_yasuda_tetris_Screen_jsClear:      nClear,
+        Java_dev_yasuda_tetris_Screen_jsFillRect:   nFillRect,
+        Java_dev_yasuda_tetris_Screen_jsStrokeRect: nStrokeRect,
+        Java_dev_yasuda_tetris_Screen_jsText:       nText,
+        Java_dev_yasuda_tetris_Screen_jsWidth:      nWidth,
+        Java_dev_yasuda_tetris_Screen_jsHeight:     nHeight,
+        Java_dev_yasuda_tetris_Game_jsStarted:      nStarted,
+        Java_dev_yasuda_tetris_Game_jsPollKey:      nPollKey,
       },
     });
 
-    // Write jars directly into /str/ so CheerpJ does not have to fetch
-    // them over HTTP (where Cloudflare blocks Range). atob yields a
-    // binary string of raw bytes.
     await cheerpOSAddStringFile("/str/sdk.jar",    b64ToBytes(SDK_JAR_B64));
     await cheerpOSAddStringFile("/str/step01.jar", b64ToBytes(STEP01_JAR_B64));
     logLine("[init] jars loaded into /str/");
@@ -171,31 +150,37 @@
   /* ---------- Run button ---------- */
   runBtn.addEventListener("click", async function () {
     runBtn.disabled = true;
-    stopFrameLoop();
-    gameLoopInstance = null;
+    running = false;
+    keyQueue.length = 0;
     try {
       await ensureCheerpJ();
-      setStatus("Java running...", "running");
+      setStatus("starting Java...", "loading");
       logLine("[run] cheerpjRunMain MyTetris");
-      var exit = await cheerpjRunMain("MyTetris", "/str/sdk.jar:/str/step01.jar");
-      logLine("[run] main() returned (exit " + exit + ")");
-      if (exit !== 0) {
-        setStatus("exit " + exit, "error");
-        return;
-      }
-      if (!gameLoopInstance) {
-        setStatus("Game instance was not registered", "error");
-        logLine("[error] nRegisterLoop was never invoked");
-        return;
-      }
-      setStatus("running", "running");
-      startFrameLoop();
+      // Java's main() enters an infinite game loop (see Game.run). This
+      // call effectively never resolves while the page is open, so we
+      // do NOT await it. nStarted() sets the 'running' status.
+      cheerpjRunMain("MyTetris", "/str/sdk.jar:/str/step01.jar")
+        .then(function (exit) {
+          running = false;
+          logLine("[run] main() returned (exit " + exit + ")");
+          setStatus("stopped (exit " + exit + ")", exit === 0 ? "idle" : "error");
+        })
+        .catch(function (e) {
+          running = false;
+          logLine("[run error] " + describeError(e));
+          setStatus("error: " + describeError(e), "error");
+        });
     } catch (e) {
       console.error(e);
       setStatus("error: " + describeError(e), "error");
       logLine("[error] " + describeError(e));
     } finally {
-      runBtn.disabled = false;
+      // Keep disabled until main returns — pressing Run again would
+      // try to start a second JVM, which CheerpJ doesn't support.
+      // Re-enable only on explicit stop/error.
+      setTimeout(function () {
+        if (!running) runBtn.disabled = false;
+      }, 2000);
     }
   });
 
