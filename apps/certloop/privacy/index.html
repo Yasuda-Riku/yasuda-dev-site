@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Privacy Policy — CertLoop — yasuda-dev</title>
+  <meta name="description" content="CertLoop のプライバシーポリシー。">
+  <link rel="canonical" href="https://yasuda-dev.com/apps/certloop/privacy/">
+  <meta name="robots" content="index, follow">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/" aria-current="page">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="doc">
+    <div class="doc__inner">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/apps/">Apps</a>
+        <span aria-hidden="true">/</span>
+        <a href="/apps/certloop/">CertLoop</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Privacy Policy</span>
+      </nav>
+
+      <header class="doc__head">
+        <p class="eyebrow">CertLoop</p>
+        <h1 class="doc__title">プライバシーポリシー</h1>
+        <p class="doc__updated">最終更新: 2026年4月20日</p>
+      </header>
+
+      <section class="doc__section">
+        <h2>1. はじめに</h2>
+        <p>CertLoop(以下「本アプリ」)は、AWS 認定資格 (Solutions Architect - Associate) の合格を支援する iOS アプリケーションです。本プライバシーポリシーは、本アプリにおける情報の取り扱いについて説明します。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>2. 収集する情報</h2>
+        <p>本アプリは以下の情報を取得・利用します。</p>
+
+        <h3>(a) ユーザーが入力する情報</h3>
+        <ul>
+          <li>表示名(ニックネーム)</li>
+          <li>AWS 経験レベル(初学者・経験者など)</li>
+          <li>受験予定時期</li>
+          <li>1日あたりの学習時間目標</li>
+        </ul>
+
+        <h3>(b) 学習履歴</h3>
+        <ul>
+          <li>各問題への回答(選択した選択肢、正誤)</li>
+          <li>回答時刻、所要時間</li>
+          <li>模試の受験結果(スコア、カテゴリ別正答率)</li>
+          <li>学習ストリーク、累計学習日数</li>
+        </ul>
+
+        <h3>(c) 購入情報</h3>
+        <p>StoreKit を通じてサブスクリプション(CertLoop Pro)の状態を管理します。購入処理は Apple Inc. が行い、クレジットカード情報等は開発者に共有されません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>3. データの保存場所</h2>
+        <p>上記 2(a)(b) のすべてのデータは、ユーザーの端末内(SwiftData)にのみ保存されます。開発者が運営するサーバーへのデータ送信は行いません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>4. AI 機能とデータ送信(重要)</h2>
+        <p>本アプリは AI 解説機能のため、Google Gemini API(Google LLC が提供)を使用しています。AI 機能を利用する際、以下のデータが Google のサーバーに送信されます。</p>
+        <ul>
+          <li>不正解だった問題 ID と問題文</li>
+          <li>あなたが選択した選択肢</li>
+          <li>正解の選択肢</li>
+          <li>あなたの AWS 経験レベル(プロンプトの調整に使用)</li>
+        </ul>
+        <p>送信されるデータには、氏名・メールアドレス等の個人を特定する情報は含まれません。Google による AI API の利用については、<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a> および <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API 利用規約</a> をご確認ください。</p>
+        <p>AI 機能を使わない問題演習(自分で解いて答え合わせをする部分)は、データの外部送信なしで動作します。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>5. 第三者サービス</h2>
+        <p>本アプリは以下の第三者サービスを利用しています。</p>
+        <ul>
+          <li><strong>Google Gemini API</strong>(Google LLC) — AI 解説生成のために使用</li>
+          <li><strong>Apple StoreKit</strong>(Apple Inc.) — サブスクリプション管理のために使用</li>
+        </ul>
+        <p>広告 SDK やアナリティクス SDK は使用していません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>6. 通知</h2>
+        <p>本アプリは学習リマインダーのため、ローカル通知(iOS の UserNotifications)を使用します。通知はあなたの端末内でスケジュールされ、外部サーバーは介在しません。通知の許可・拒否は iOS の設定からいつでも変更できます。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>7. データの共有</h2>
+        <p>ユーザーの個人情報を第三者に販売・提供することはありません。ただし、以下の場合を除きます。</p>
+        <ol>
+          <li>法令に基づく開示要求があった場合</li>
+          <li>ユーザーの同意がある場合</li>
+        </ol>
+      </section>
+
+      <section class="doc__section">
+        <h2>8. データの削除</h2>
+        <p>アプリ内の設定画面から「全データをリセット」できます。また、アプリをアンインストールすることで、端末内に保存されたすべてのデータが完全に削除されます。一度削除したデータは復元できません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>9. お子様のプライバシー</h2>
+        <p>本アプリは 13 歳未満のお子様を対象としていません。13 歳未満のお子様から意図的に個人情報を収集することはありません。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>10. ポリシーの変更</h2>
+        <p>本プライバシーポリシーは、必要に応じて変更される場合があります。変更後のポリシーはアプリ内に掲載した時点から効力を生じます。</p>
+      </section>
+
+      <section class="doc__section">
+        <h2>11. お問い合わせ</h2>
+        <p>本プライバシーポリシーに関するお問い合わせは、<a href="mailto:yasudariku1214@gmail.com?subject=CertLoop%20Privacy">yasudariku1214@gmail.com</a> までご連絡ください。</p>
+      </section>
+
+      <p class="doc__back">
+        <a href="/apps/certloop/">← サポートトップに戻る</a>
+      </p>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
