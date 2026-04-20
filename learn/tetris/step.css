@@ -135,6 +135,59 @@
   overflow: hidden;
   tab-size: 4;
 }
+.playground__code-gutter span {
+  display: inline;
+}
+.playground__code-gutter .gutter-error {
+  color: #B8322A;
+  font-weight: 600;
+}
+.playground__code-gutter .gutter-error::before {
+  content: "● ";
+}
+.playground__code-gutter .gutter-warn {
+  color: #8A6A12;
+  font-weight: 500;
+}
+.playground__code-gutter .gutter-warn::before {
+  content: "● ";
+}
+
+/* Error bar directly below the editor: clickable pills that jump the
+   caret to the offending line. */
+.playground__errors {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  background: #FBF2F0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.playground__errors[hidden] { display: none; }
+.playground__errors-item {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 140ms var(--ease), border-color 140ms var(--ease);
+}
+.playground__errors-item:hover {
+  background: #FFF;
+  border-color: var(--border);
+}
+.playground__errors-item--error {
+  color: #B8322A;
+}
+.playground__errors-item--warning {
+  color: #8A6A12;
+}
 .playground__code textarea {
   display: block;
   flex: 1 1 auto;
