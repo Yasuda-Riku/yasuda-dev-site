@@ -1,9 +1,5 @@
 package dev.yasuda.tetris;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
-
 /**
  * Base class for every step. Students extend this and implement
  * render(); update() and onKey() are optional.
@@ -15,17 +11,27 @@ import javax.swing.Timer;
  *   }
  * </pre>
  *
- * run() does first-frame setup + render, signals JS that the game is
- * live, then starts a Swing Timer. We use javax.swing.Timer (NOT
- * java.util.Timer) because CheerpJ 4.2 implements Swing's event queue
- * on top of browser timers — so actionPerformed fires from JS's event
- * loop without blocking the page. A java.util.Timer thread froze the
- * browser because CheerpJ's Thread.sleep does not actually yield under
- * persistent background work.
+ * The step runtime.js loads this jar via cheerpjRunLibrary (not
+ * cheerpjRunMain), invokes MyTetris.main() so the student's own
+ * "new MyTetris().run()" fires, and then drives per-frame updates
+ * from JavaScript by calling tick() on the instance that run()
+ * parked in a static field.
+ *
+ * This arrangement dodges three CheerpJ 4.2 pain points we hit:
+ *  - cheerpjRunMain blocks the browser main thread for the lifetime
+ *    of main(), so no in-Java game loop works.
+ *  - java.util.Timer / new Thread()+Thread.sleep keeps the JVM alive
+ *    but also stalls browser events.
+ *  - Swing Timer alone doesn't keep the JVM alive once main returns.
  */
 public abstract class Game {
 
-    private static final int FRAME_MS = 16;
+    private static Game current;
+
+    /** Called by JavaScript after cheerpjRunLibrary + main(). */
+    public static Game current() {
+        return current;
+    }
 
     public void setup() {}
 
@@ -36,50 +42,25 @@ public abstract class Game {
     public void onKey(Key key) {}
 
     public final void run() {
+        current = this;
         setup();
         render(Screen.INSTANCE);
-        jsStarted();
-
-        final Game self = this;
-        final Screen screen = Screen.INSTANCE;
-
-        // Non-daemon keeper thread: its only purpose is to prevent the
-        // JVM from exiting when main() returns. It sleeps for a long
-        // time between wakeups so CheerpJ's cooperative scheduler can
-        // leave it parked -- no CPU burn, no browser freeze.
-        Thread keeper = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(60 * 60 * 1000L); // 1 hour
-                    } catch (InterruptedException ex) {
-                        return;
-                    }
-                }
-            }
-        }, "tetris-keeper");
-        keeper.setDaemon(false);
-        keeper.start();
-
-        // Actual animation runs on the AWT event dispatch thread via a
-        // Swing Timer. CheerpJ implements Swing/AWT events over the
-        // browser event loop, so this does not block the page.
-        Timer timer = new Timer(FRAME_MS, new ActionListener() {
-            long lastNs = System.nanoTime();
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                long now = System.nanoTime();
-                double dt = (now - lastNs) / 1_000_000_000.0;
-                if (dt > 0.1) dt = 0.1;
-                lastNs = now;
-                self.update(dt);
-                self.render(screen);
-            }
-        });
-        timer.start();
     }
 
-    private static native void jsStarted();
+    /**
+     * JS drives this every animation frame. dt is passed in milliseconds
+     * (int) rather than seconds (double) because CheerpJ's JS-to-Java
+     * primitive marshaling is flakiest with doubles.
+     */
+    public final void tick(int dtMs) {
+        double dt = dtMs / 1000.0;
+        if (dt > 0.1) dt = 0.1;
+        update(dt);
+        render(Screen.INSTANCE);
+    }
+
+    /** JS calls this on keydown. */
+    public final void handleKey(int code) {
+        onKey(Key.fromCode(code));
+    }
 }
