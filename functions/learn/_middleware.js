@@ -2,13 +2,14 @@
  * Cloudflare Pages middleware for /learn/*.
  *
  * CheerpJ fetches .jar files via HTTP Range requests to stream class
- * bytecode lazily. Cloudflare's CDN, however, does not honor Range on
- * static assets under ~2 MB — it returns the full body with HTTP 200.
- * CheerpJ sees that as "Range unsupported" and bails.
- *
+ * bytecode lazily. Cloudflare's CDN does not honor Range on static
+ * assets under ~2 MB — it serves the full body with HTTP 200.
  * This middleware intercepts .jar requests, fetches the full body from
- * the static bucket, and serves the requested byte range with HTTP 206.
- * For non-Range requests and non-.jar paths it's a straight passthrough.
+ * the static bucket via next(), and serves the requested byte range
+ * with HTTP 206. Non-.jar paths pass through unchanged.
+ *
+ * DEBUG (temporary): a diagnostic header X-Middleware is set on every
+ * .jar response so we can confirm the middleware actually ran.
  */
 export async function onRequest(context) {
   const { request, next } = context;
@@ -24,17 +25,18 @@ export async function onRequest(context) {
   const body = await upstream.arrayBuffer();
   const total = body.byteLength;
 
-  // private + no-transform:
-  //  - "private" keeps Cloudflare edge from caching our Range-sensitive
-  //    responses (a cached 200 would be served back even for Range
-  //    requests, making the middleware pointless).
-  //  - browsers may still cache (their cache is per-user, not shared).
-  //  - no-transform guarantees no proxy re-compresses the bytes.
+  // no-store:
+  //   Cloudflare Pages appears to cache Function output despite
+  //   Cache-Control: private. Using no-store is a hard "don't cache"
+  //   that also prevents the Range-vs-no-Range cache-key collision
+  //   (same URL → different bodies depending on request header).
+  //   CheerpJ still gets browser-side HTTP/2 connection reuse, so the
+  //   cost is just a CF edge miss per Range chunk.
   const baseHeaders = {
     'Content-Type': 'application/octet-stream',
     'Accept-Ranges': 'bytes',
-    'Cache-Control': 'private, max-age=3600, no-transform',
-    'Vary': 'Range',
+    'Cache-Control': 'no-store',
+    'X-Middleware': 'tetris-jar-range',
   };
 
   const range = request.headers.get('Range');
