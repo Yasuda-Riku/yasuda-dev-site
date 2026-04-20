@@ -154,7 +154,7 @@ public class MyTetris extends Game {
         for (int r = 0; r < currentCells.length; r++) {
             for (int c = 0; c < currentCells[r].length; c++) {
                 if (currentCells[r][c] == 0) continue;
-                board[pieceRow + r][pieceCol + c] = 1;
+                board[pieceRow + r][pieceCol + c] = currentShape.ordinal() + 1;
             }
         }
     }
@@ -215,7 +215,8 @@ public class MyTetris extends Game {
             for (int col = 0; col < COLS; col++) {
                 int x = col * CELL;
                 int y = row * CELL;
-                Color c = (board[row][col] == 0) ? Color.DARK_GRAY : Color.GRAY;
+                int cell = board[row][col];
+                Color c = (cell == 0) ? Color.DARK_GRAY : bag[cell - 1].color;
                 screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, c);
             }
         }
