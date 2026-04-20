@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 01 · 盤面を描く — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java 全12ステップの Step 1。2次元ループで 10×20 のグリッドを描く。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-01/">
+  <title>Step 02 · ブロックを1つ置く — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java 全12ステップの Step 2。盤面の中央上にブロックを1つ描く。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-02/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-01/">
-  <meta property="og:title" content="Step 01 · 盤面を描く — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java 全12ステップの Step 1。2次元ループで 10×20 のグリッドを描く。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-02/">
+  <meta property="og:title" content="Step 02 · ブロックを1つ置く — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java 全12ステップの Step 2。盤面の中央上にブロックを1つ描く。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,13 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 01</span>
+          <span aria-current="page">Step 02</span>
         </nav>
-        <p class="step-hero__no">Step 01 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">盤面を描く</h1>
+        <p class="step-hero__no">Step 02 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">ブロックを1つ置く</h1>
         <p class="step-hero__goal">
-          画面に <strong>10列 × 20行のグリッド</strong>を並べます。
-          テトリスの土台になる盤面です。ここで 2次元ループと <code>Screen.fillRect</code> の使い方に慣れます。
+          Step 1 で描いた盤面の上に、<strong>赤いブロックを1つ</strong>置きます。
+          ブロックの位置（列・行）をフィールド変数で覚えておくのがポイント。
+          「オブジェクトの状態」を持つという感覚に慣れます。
         </p>
       </div>
     </section>
@@ -75,16 +76,21 @@
 <textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 1 — Draw the board.
+ * Step 2 — Place one block.
  *
- * Goal: a 10 x 20 grid of empty dark cells.
- * You'll learn: 2D loops, using Screen.fillRect, and constants.
+ * Goal: keep the board AND draw one red cell near the top center.
+ * You'll learn: instance fields (blockCol / blockRow) and layering
+ * a second fillRect on top of the grid.
  */
 public class MyTetris extends Game {
 
     static final int COLS = 10;
     static final int ROWS = 20;
     static final int CELL = 24;
+
+    // Where the block sits on the grid.
+    int blockCol = 4;
+    int blockRow = 0;
 
     public static void main(String[] args) {
         new MyTetris().run();
@@ -94,6 +100,7 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
+        // --- Empty board (same as Step 1) ---
         for (int row = 0; row &lt; ROWS; row++) {
             for (int col = 0; col &lt; COLS; col++) {
                 int x = col * CELL;
@@ -101,6 +108,11 @@ public class MyTetris extends Game {
                 screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);
             }
         }
+
+        // --- One block on top ---
+        int bx = blockCol * CELL;
+        int by = blockRow * CELL;
+        screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);
     }
 }
 </textarea>
@@ -137,47 +149,35 @@ public class MyTetris extends Game {
           <div>
 
             <div class="step-body__section">
-              <h2 id="explain-heading">何が起きている？</h2>
+              <h2 id="explain-heading">何が新しくなった？</h2>
               <p>
-                <code>render(Screen screen)</code> は、画面を描き直すたびに呼ばれるメソッドです。
-                この Step 1 では、まず <code>screen.clear(Color.BLACK)</code> で画面全体を黒で塗り、
-                その上に 2 重ループで 10 × 20 個のセルを暗いグレーで並べています。
+                <strong>フィールド変数</strong>が登場しました。
+                <code>int blockCol = 4;</code> と <code>int blockRow = 0;</code> はクラスの
+                「状態」を持つ変数で、<code>render</code> が呼ばれるたびに同じ値が使えます。
+                「このブロックは今どこにある？」という情報を、オブジェクトが覚えておくという感覚です。
               </p>
               <p>
-                <code>CELL = 24</code> は 1 セルの大きさ。<code>col * CELL</code> と <code>row * CELL</code>
-                で左上の座標を計算し、<code>+1</code> / <code>-2</code> の余白で隣のセルとの隙間を作っています。
+                <code>render</code> の中では、Step 1 と同じ盤面を描いた<strong>後に</strong>、
+                赤いブロックを1つ追加で <code>fillRect</code> しています。
+                描画は「重ねる」順番が大切 &mdash; 先に描いたものは後に描いたものに隠されます。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>使っているもの</h2>
+              <h2>今回追加したもの</h2>
               <ul>
-                <li><code>Game</code> — この Step で継承している親クラス。<code>render</code> を実装する。</li>
-                <li><code>Screen</code> — 描画用。<code>clear</code> と <code>fillRect</code> を使う。</li>
-                <li><code>Color</code> — 色の定数。<code>BLACK</code>, <code>DARK_GRAY</code> など。</li>
-                <li><code>static final int</code> — 変わらない値の定数。COLS, ROWS, CELL。</li>
+                <li>フィールド変数 <code>blockCol</code>, <code>blockRow</code> &mdash; ブロックの位置を覚える</li>
+                <li><code>Color.RED</code> &mdash; 赤色の定数</li>
+                <li>2つ目の <code>fillRect</code> 呼び出し &mdash; 盤面の上に重ねて描く</li>
               </ul>
             </div>
 
             <div class="step-body__section">
               <h2>動かしてみる</h2>
               <p>
-                右上の <strong>Run Java</strong> を押すと、ブラウザ内で Java が動き出します。
-                初回はランタイム（CheerpJ）のダウンロードに 10〜30 秒かかります。
-                2回目以降はブラウザキャッシュから即起動します。
-              </p>
-              <p>
-                グリッドが表示されれば成功です。次のステップでは、このグリッドの中に
-                <strong>ブロックを1つ置きます</strong>。
-              </p>
-            </div>
-
-            <div class="step-body__section">
-              <h2>エディタはまだ読み取り専用です</h2>
-              <p>
-                現在のページは「実行が動くか」の動作確認版です。
-                次のアップデートで、コードを書き換えて即座に実行できるエディタに差し替えます。
-                それまでは、このページで Java が本当にブラウザで動くことを確かめてください。
+                <strong>Run Java</strong> を押すと、盤面の中央上に赤いブロックが1つ表示されます。
+                <code>blockCol</code> や <code>blockRow</code> の値を変えれば、
+                他の場所にも置けます（次のステップで実際に動かします）。
               </p>
             </div>
 
@@ -188,14 +188,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/">
+        <a href="/learn/tetris/step-01/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Course overview</span>
+          <span>Step 01 · 盤面を描く</span>
         </a>
-        <a href="/learn/tetris/step-02/">
-          <span>Step 02 · ブロックを1つ置く</span>
+        <span class="step-nav__disabled">
+          <span>Step 03 · 自由落下</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -208,6 +208,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-01/runtime.js" defer></script>
+  <script src="/learn/tetris/step-02/runtime.js" defer></script>
 </body>
 </html>
