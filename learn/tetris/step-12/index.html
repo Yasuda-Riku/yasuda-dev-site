@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Step 12 · ゲームオーバー &amp; リスタート — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java 完結編。spawn 時の衝突でゲームオーバー、R キーでリスタート。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-12/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-12/">
+  <meta property="og:title" content="Step 12 · ゲームオーバー — Tetris in Java 完結">
+  <meta property="og:description" content="Tetris in Java 完結編。spawn 時の衝突でゲームオーバー、R キーでリスタート。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/tetris/course.css">
+  <link rel="stylesheet" href="/learn/tetris/step.css">
+  <style>
+    .playground__canvas-wrap--wide {
+      aspect-ratio: 340 / 480;
+      max-width: 420px;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="step-hero" aria-labelledby="step-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/tetris/">Tetris in Java</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Step 12</span>
+        </nav>
+        <p class="step-hero__no">Step 12 of 12 &middot; Final</p>
+        <h1 id="step-heading" class="step-hero__title">ゲームオーバー &amp; リスタート</h1>
+        <p class="step-hero__goal">
+          新しいミノが出てくる場所にもう空きが無ければ、<strong>そこでゲーム終了</strong>。
+          <kbd>R</kbd> で盤面とスコアをリセットして最初からやり直せます。
+          これで全 12 ステップ、あなたのテトリスが完成です。
+        </p>
+      </div>
+    </section>
+
+    <section class="playground" aria-label="Playground">
+      <div class="playground__inner">
+
+        <div class="playground__code">
+          <div class="playground__code-label">
+            <span class="playground__code-filename">MyTetris.java</span>
+            <span class="playground__code-readonly">Read-only &middot; editor is coming</span>
+          </div>
+<textarea readonly spellcheck="false" aria-label="MyTetris.java source code">// Step 12 — Game over + restart. Highlights only (full file in repo).
+
+boolean gameOver = false;
+
+void spawnNext() {
+    currentShape = bag[rng.nextInt(bag.length)];
+    currentCells = currentShape.cells;
+    pieceCol = 3;
+    pieceRow = 0;
+    // If the fresh piece can't even be placed: it's over.
+    if (!canMove(currentCells, pieceCol, pieceRow)) {
+        gameOver = true;
+    }
+}
+
+void restart() {
+    for (int r = 0; r &lt; ROWS; r++) {
+        for (int c = 0; c &lt; COLS; c++) {
+            board[r][c] = 0;
+        }
+    }
+    score = 0;
+    linesCleared = 0;
+    level = 1;
+    accumulator = 0.0;
+    gameOver = false;
+    spawnNext();
+}
+
+@Override
+public void update(double dt) {
+    if (gameOver) return;
+    // ...rest unchanged...
+}
+
+@Override
+public void onKey(Key key) {
+    if (key == Key.R) { restart(); return; }
+    if (gameOver) return;
+    // ...arrow keys unchanged...
+}
+
+@Override
+public void render(Screen screen) {
+    // ...draw board + piece + side panel...
+
+    if (gameOver) {
+        screen.text(52, 210, "GAME OVER",          Color.RED);
+        screen.text(38, 240, "Press R to restart", Color.WHITE);
+    }
+}
+</textarea>
+        </div>
+
+        <div class="playground__stage">
+          <div class="playground__canvas-wrap playground__canvas-wrap--wide">
+            <canvas id="stage-canvas" class="playground__canvas" width="340" height="480" tabindex="0" aria-label="Tetris stage"></canvas>
+            <div id="loading-overlay" class="playground__loading" data-visible="false" role="status" aria-live="polite">
+              <div class="playground__loading-spinner" aria-hidden="true"></div>
+              <div>Java runtime を初回読み込み中…</div>
+              <small>CheerpJ の JRE (数十 MB) をダウンロードしています。2回目以降はキャッシュから瞬時に立ち上がります。</small>
+            </div>
+          </div>
+
+          <div class="playground__controls">
+            <button id="run-btn" type="button" class="playground__run">
+              <span class="playground__run-icon" aria-hidden="true">▶</span>
+              <span>Run Java</span>
+            </button>
+            <span id="run-status" class="playground__status" data-mode="idle">preparing</span>
+          </div>
+
+          <div id="console-output" class="playground__console" role="log" aria-live="polite" aria-atomic="false"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="step-body" aria-labelledby="explain-heading">
+      <div class="step-body__inner">
+        <div class="step-body__grid">
+          <p class="step-body__eyebrow">About this step</p>
+          <div>
+
+            <div class="step-body__section">
+              <h2 id="explain-heading">ゲーム終了の判定</h2>
+              <p>
+                新しいミノを出した瞬間、<strong>spawn 位置でもう動けない</strong>（他のブロックと重なる）なら、
+                もう置く場所が無いということ。<code>canMove(currentCells, pieceCol, pieceRow)</code> が
+                <code>false</code> なら <code>gameOver = true</code>、それだけ。
+              </p>
+              <p>
+                衝突判定のために Step 5 で書いた <code>canMove</code> が、
+                ゲームオーバー判定にもそのまま使えるのがポイント。
+                <strong>基本関数は使い回される</strong>、というのがプログラミングの面白いところ。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>update と onKey をガード</h2>
+              <p>
+                <code>if (gameOver) return;</code> を
+                <code>update</code> と <code>onKey</code> の先頭に入れて、
+                終了後は何も動かないように。ただし <code>R キー</code>（リスタート）だけは
+                ゲームオーバー中でも反応させる必要があるので、ガードの<strong>前に</strong>チェック。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>restart() は 1 メソッドにまとめる</h2>
+              <p>
+                盤面・スコア・レベル・アキュムレータ・gameOver フラグをリセット。
+                <strong>状態をリセットする場所は 1つ</strong>に集める、というのが重要。
+                初期化コードが散らばるとバグの温床になります。
+              </p>
+              <p>
+                最後に <code>spawnNext()</code> で最初のミノを出せば、リスタート完了。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>おめでとう、完成です 🎉</h2>
+              <p>
+                これで 12 ステップすべて。あなたの書いた Java で、
+                <strong>一から作ったテトリスがブラウザで動いています</strong>。
+              </p>
+              <p>
+                研修で習った文法 &mdash; クラス、継承、フィールド、メソッド、配列、列挙型、
+                条件分岐、ループ、例外 &mdash; が、全部この小さなゲームに埋め込まれています。
+                コードの拡張はこれから自由に：T-spin 判定、ゴースト表示、ホールド、BGM、
+                ネット対戦… 挑戦はいくらでもあります。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>次にやりたいこと</h2>
+              <ul>
+                <li>コードエディタを組み込んで、その場で書き換えられるように</li>
+                <li>ステップ 1 から自分の手で書き起こしてみる</li>
+                <li>友達のテトリスと並べて見せ合う</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__inner">
+        <a href="/learn/tetris/step-11/">
+          <span class="step-nav__arrow" aria-hidden="true">←</span>
+          <span>Step 11 · スコアとレベル</span>
+        </a>
+        <a href="/learn/tetris/">
+          <span>Course overview</span>
+          <span class="step-nav__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script src="/learn/tetris/step-12/runtime.js" defer></script>
+</body>
+</html>
