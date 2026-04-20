@@ -1,5 +1,8 @@
 package dev.yasuda.tetris;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Base class for every step. Students extend this and implement
  * render(); update() and onKey() are optional.
@@ -11,14 +14,14 @@ package dev.yasuda.tetris;
  *   }
  * </pre>
  *
- * run() drives the game loop itself (inside the JVM). We deliberately
- * do NOT hand control back to JavaScript for per-frame calls: CheerpJ
- * 4.2's JS->Java instance-method bridge triggers WASM "memory access
- * out of bounds" errors in that direction. Java's Thread.sleep yields
- * to the browser event loop transparently under CheerpJ, so a simple
- * while-loop here doesn't freeze the page.
+ * run() calls setup(), renders the first frame, signals JS that the
+ * game is live, then schedules a 60 fps Timer that drives update +
+ * render. main() can then return: the Timer is a non-daemon thread,
+ * so the JVM stays alive and the browser main thread stays free.
  */
 public abstract class Game {
+
+    private static final int FRAME_MS = 16;
 
     public void setup() {}
 
@@ -32,11 +35,24 @@ public abstract class Game {
         setup();
         render(Screen.INSTANCE);
         jsStarted();
-        // For Step 1 we only need a single render pass — the board is
-        // a static image, and CheerpJ 4.2 blocks the browser main thread
-        // for the entire lifetime of cheerpjRunMain. Later steps that
-        // need animation will drive the loop via java.util.Timer (runs
-        // on a JVM thread that CheerpJ schedules cooperatively).
+
+        final Game self = this;
+        final Screen screen = Screen.INSTANCE;
+
+        Timer timer = new Timer("tetris-game-loop", false);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            long lastNs = System.nanoTime();
+
+            @Override
+            public void run() {
+                long now = System.nanoTime();
+                double dt = (now - lastNs) / 1_000_000_000.0;
+                if (dt > 0.1) dt = 0.1;
+                lastNs = now;
+                self.update(dt);
+                self.render(screen);
+            }
+        }, FRAME_MS, FRAME_MS);
     }
 
     private static native void jsStarted();

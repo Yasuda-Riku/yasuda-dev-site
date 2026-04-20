@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 02 · ブロックを1つ置く — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java 全12ステップの Step 2。盤面の中央上にブロックを1つ描く。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-02/">
+  <title>Step 03 · 自由落下 — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 3。update(dt) で時間経過を処理し、ブロックが1秒で1マス落ちるアニメーション。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-03/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-02/">
-  <meta property="og:title" content="Step 02 · ブロックを1つ置く — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java 全12ステップの Step 2。盤面の中央上にブロックを1つ描く。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-03/">
+  <meta property="og:title" content="Step 03 · 自由落下 — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 3。update(dt) で時間経過を処理し、ブロックが1秒で1マス落ちるアニメーション。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,14 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 02</span>
+          <span aria-current="page">Step 03</span>
         </nav>
-        <p class="step-hero__no">Step 02 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">ブロックを1つ置く</h1>
+        <p class="step-hero__no">Step 03 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">自由落下</h1>
         <p class="step-hero__goal">
-          Step 1 で描いた盤面の上に、<strong>赤いブロックを1つ</strong>置きます。
-          ブロックの位置（列・行）をフィールド変数で覚えておくのがポイント。
-          「オブジェクトの状態」を持つという感覚に慣れます。
+          ブロックを <strong>1秒で 1マス</strong> 自動的に落下させます。
+          ここで初めて「時間」の概念が登場 &mdash; <code>update(double dt)</code> が毎フレーム呼ばれるので、
+          経過時間を累積していって、1秒溜まったら行を1つ下げる、という仕組み。
         </p>
       </div>
     </section>
@@ -76,11 +76,11 @@
 <textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 2 — Place one block.
+ * Step 3 — Free fall.
  *
- * Goal: keep the board AND draw one red cell near the top center.
- * You'll learn: instance fields (blockCol / blockRow) and layering
- * a second fillRect on top of the grid.
+ * Goal: the block drops one cell every second on its own.
+ * You'll learn: update(dt), time accumulators, separating
+ * logic (update) from drawing (render).
  */
 public class MyTetris extends Game {
 
@@ -88,19 +88,30 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
 
-    // Where the block sits on the grid.
+    static final double DROP_SECONDS = 1.0;
+
     int blockCol = 4;
     int blockRow = 0;
+    double accumulator = 0.0;
 
     public static void main(String[] args) {
         new MyTetris().run();
     }
 
     @Override
+    public void update(double dt) {
+        accumulator += dt;
+        while (accumulator &gt;= DROP_SECONDS) {
+            accumulator -= DROP_SECONDS;
+            blockRow++;
+            if (blockRow &gt;= ROWS) blockRow = 0;
+        }
+    }
+
+    @Override
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // --- Empty board (same as Step 1) ---
         for (int row = 0; row &lt; ROWS; row++) {
             for (int col = 0; col &lt; COLS; col++) {
                 int x = col * CELL;
@@ -109,7 +120,6 @@ public class MyTetris extends Game {
             }
         }
 
-        // --- One block on top ---
         int bx = blockCol * CELL;
         int by = blockRow * CELL;
         screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);
@@ -151,33 +161,36 @@ public class MyTetris extends Game {
             <div class="step-body__section">
               <h2 id="explain-heading">何が新しくなった？</h2>
               <p>
-                <strong>フィールド変数</strong>が登場しました。
-                <code>int blockCol = 4;</code> と <code>int blockRow = 0;</code> はクラスの
-                「状態」を持つ変数で、<code>render</code> が呼ばれるたびに同じ値が使えます。
-                「このブロックは今どこにある？」という情報を、オブジェクトが覚えておくという感覚です。
+                <code>update(double dt)</code> メソッドが登場します。
+                <code>dt</code> は「前フレームから今フレームまでの経過秒数」。
+                16ms に一度くらい呼ばれるので、<code>dt</code> は大抵 0.016 前後です。
               </p>
               <p>
-                <code>render</code> の中では、Step 1 と同じ盤面を描いた<strong>後に</strong>、
-                赤いブロックを1つ追加で <code>fillRect</code> しています。
-                描画は「重ねる」順番が大切 &mdash; 先に描いたものは後に描いたものに隠されます。
+                <code>accumulator</code> という変数に <code>dt</code> をどんどん足していき、
+                合計が 1 秒を超えたタイミングで <code>blockRow++</code>。
+                このパターンは「時間で何かを起こしたい」時の定石です。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>今回追加したもの</h2>
+              <h2>update と render の分業</h2>
               <ul>
-                <li>フィールド変数 <code>blockCol</code>, <code>blockRow</code> &mdash; ブロックの位置を覚える</li>
-                <li><code>Color.RED</code> &mdash; 赤色の定数</li>
-                <li>2つ目の <code>fillRect</code> 呼び出し &mdash; 盤面の上に重ねて描く</li>
+                <li><code>update(dt)</code> &mdash; 状態（位置、時間、スコアなど）を更新</li>
+                <li><code>render(screen)</code> &mdash; 現在の状態を<strong>そのまま</strong>絵にする</li>
+                <li>render は状態を変えてはいけない &mdash; 見た目の責務だけを持つ</li>
               </ul>
             </div>
 
             <div class="step-body__section">
               <h2>動かしてみる</h2>
               <p>
-                <strong>Run Java</strong> を押すと、盤面の中央上に赤いブロックが1つ表示されます。
-                <code>blockCol</code> や <code>blockRow</code> の値を変えれば、
-                他の場所にも置けます（次のステップで実際に動かします）。
+                <strong>Run Java</strong> を押すと、ブロックが1秒ごとに1マスずつ下に動いていきます。
+                下に着いたら上に戻る（ループ）のは今だけの挙動 &mdash;
+                Step 5 で「床に着いたら止まる」判定を入れます。
+              </p>
+              <p>
+                試しにコードの <code>DROP_SECONDS = 1.0</code> を <code>0.25</code> に変えれば、4倍速の落下になります
+                （エディタ実装後に試せるようになります）。
               </p>
             </div>
 
@@ -188,14 +201,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/step-01/">
+        <a href="/learn/tetris/step-02/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 01 · 盤面を描く</span>
+          <span>Step 02 · ブロックを1つ置く</span>
         </a>
-        <a href="/learn/tetris/step-03/">
-          <span>Step 03 · 自由落下</span>
+        <span class="step-nav__disabled">
+          <span>Step 04 · 左右キー操作</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -208,6 +221,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-02/runtime.js" defer></script>
+  <script src="/learn/tetris/step-03/runtime.js" defer></script>
 </body>
 </html>
