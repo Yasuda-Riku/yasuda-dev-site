@@ -1,0 +1,11 @@
+# Cloudflare Pages custom response headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# CheerpJ needs byte-range requests to fetch jars incrementally.
+# Cloudflare compresses application/java-archive with Brotli, which
+# breaks Range. Force an opaque binary content type + no-transform so
+# Cloudflare serves the jar byte-for-byte, and advertise Accept-Ranges.
+/*.jar
+  Content-Type: application/octet-stream
+  Cache-Control: public, max-age=3600, no-transform
+  Accept-Ranges: bytes
