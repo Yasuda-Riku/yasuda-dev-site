@@ -1,0 +1,3 @@
+canMove は「4つのダメ条件を順に並べて、どれかに当たったら false を返す」関数。どれにも当たらなかったら true。
+update の落下部分は「if (canMove(blockCol, blockRow + 1)) blockRow++;」1行に置き換えると、床にぶつかったら止まります。if (blockRow >= ROWS) ... の行は要らなくなります。
+onKey の各行は「if (key == Key.LEFT && canMove(blockCol - 1, blockRow)) blockCol--;」のように、&& で canMove を足すだけ。

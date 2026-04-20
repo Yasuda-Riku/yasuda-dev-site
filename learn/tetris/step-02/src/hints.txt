@@ -1,0 +1,3 @@
+フィールド変数はクラスの直下、メソッドの外で宣言します。例: int blockCol = 4;
+2つ目の TODO では、盤面の各マスを塗るループの外側に fillRect を1回だけ書きます。
+ブロックの左上座標は Step 1 と同じ計算: blockCol * CELL, blockRow * CELL。色は Color.RED、サイズは (CELL - 2)。

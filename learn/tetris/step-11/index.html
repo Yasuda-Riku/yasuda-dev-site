@@ -78,7 +78,11 @@
         <div class="playground__code">
           <div class="playground__code-label">
             <span class="playground__code-filename">MyTetris.java</span>
-            <button id="reset-btn" type="button" class="playground__code-reset" title="参照コードに戻す">Reset</button>
+            <div class="playground__code-actions">
+              <button id="hint-btn" type="button" class="playground__code-btn playground__code-btn--hint" title="段階的にヒントを見る">ヒント</button>
+              <button id="answer-btn" type="button" class="playground__code-btn playground__code-btn--answer" title="解答例に置き換える">解答例</button>
+              <button id="reset-btn" type="button" class="playground__code-btn" title="スタートコードに戻す">Reset</button>
+            </div>
           </div>
 <div class="playground__code-body">
             <pre id="code-gutter" class="playground__code-gutter" aria-hidden="true"></pre>
@@ -304,6 +308,7 @@ public class MyTetris extends Game {
 </textarea>
           </div>
           <div id="code-errors" class="playground__errors" hidden></div>
+          <div id="hints-area" class="playground__hints" hidden></div>
         </div>
 
         <div class="playground__stage">

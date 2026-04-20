@@ -98,7 +98,12 @@
   letter-spacing: 0.04em;
 }
 
-.playground__code-reset {
+.playground__code-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.playground__code-btn {
   font-family: var(--font-mono);
   font-size: 11px;
   padding: 4px 10px;
@@ -109,9 +114,65 @@
   cursor: pointer;
   transition: color 180ms var(--ease), border-color 180ms var(--ease);
 }
-.playground__code-reset:hover {
+.playground__code-btn:hover:not(:disabled) {
   color: var(--accent);
   border-color: var(--accent);
+}
+.playground__code-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.playground__code-btn--hint {
+  color: #8A6A12;
+  border-color: #E8DDB8;
+  background: #FBF6E7;
+}
+.playground__code-btn--hint:hover:not(:disabled) {
+  color: #6B520A;
+  border-color: #D4C088;
+}
+.playground__code-btn--answer {
+  color: #5E5A54;
+}
+/* Old class name kept for backward compatibility with any un-rebuilt pages. */
+.playground__code-reset {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--muted);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+/* Hints appear below the editor, stacked from the top down. */
+.playground__hints {
+  border-top: 1px solid #E8DDB8;
+  padding: 10px 14px;
+  background: #FBF6E7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.playground__hints[hidden] { display: none; }
+.playground__hints-item {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #5E4A16;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.playground__hints-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #E8DDB8;
+  color: #6B520A;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
 }
 .playground__code-body {
   display: flex;

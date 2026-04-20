@@ -72,7 +72,11 @@
         <div class="playground__code">
           <div class="playground__code-label">
             <span class="playground__code-filename">MyTetris.java</span>
-            <button id="reset-btn" type="button" class="playground__code-reset" title="参照コードに戻す">Reset</button>
+            <div class="playground__code-actions">
+              <button id="hint-btn" type="button" class="playground__code-btn playground__code-btn--hint" title="段階的にヒントを見る">ヒント</button>
+              <button id="answer-btn" type="button" class="playground__code-btn playground__code-btn--answer" title="解答例に置き換える">解答例</button>
+              <button id="reset-btn" type="button" class="playground__code-btn" title="スタートコードに戻す">Reset</button>
+            </div>
           </div>
 <div class="playground__code-body">
             <pre id="code-gutter" class="playground__code-gutter" aria-hidden="true"></pre>
@@ -81,13 +85,15 @@
 /**
  * Step 5 — 壁と床の衝突判定。
  *
- * 目標: ブロックが盤面の外に飛び出さないようにする。
- *       自動落下は床で止まり、矢印キーも壁を越えない。
+ * 目標: ブロックが盤面の外に出ないようにする。
  *
- * 学ぶこと:
- *  - boolean を返す小さなヘルパーメソッド（canMove）を書く
- *  - 同じ判定を update と onKey の両方から再利用する
- *  - 境界条件の定番パターン（col &lt; 0, col &gt;= COLS, ...）
+ * TODO:
+ *   1) canMove(int col, int row) を実装してください。
+ *      col &lt; 0、col &gt;= COLS、row &lt; 0、row &gt;= ROWS のどれかなら false を返す。
+ *      それ以外なら true。
+ *
+ *   2) update と onKey の中で、動かす前に canMove をチェックしてから動かすように書き換える。
+ *      例: if (canMove(blockCol - 1, blockRow)) blockCol--;
  */
 public class MyTetris extends Game {
 
@@ -110,27 +116,23 @@ public class MyTetris extends Game {
         accumulator += dt;
         while (accumulator &gt;= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
-            if (canMove(blockCol, blockRow + 1)) {
-                blockRow++;
-            }
+            // TODO: canMove(blockCol, blockRow + 1) が true のときだけ blockRow++
+            blockRow++;
+            if (blockRow &gt;= ROWS) blockRow = 0;
         }
     }
 
     @Override
     public void onKey(Key key) {
-        if (key == Key.LEFT  &amp;&amp; canMove(blockCol - 1, blockRow)) blockCol--;
-        if (key == Key.RIGHT &amp;&amp; canMove(blockCol + 1, blockRow)) blockCol++;
-        if (key == Key.DOWN  &amp;&amp; canMove(blockCol, blockRow + 1)) blockRow++;
+        // TODO: 各キーで動かす前に canMove で行ける先をチェックする
+        if (key == Key.LEFT)  blockCol--;
+        if (key == Key.RIGHT) blockCol++;
+        if (key == Key.DOWN)  blockRow++;
     }
 
-    /** (col, row) が盤面の中なら true。 */
-    boolean canMove(int col, int row) {
-        if (col &lt; 0)     return false;
-        if (col &gt;= COLS) return false;
-        if (row &lt; 0)     return false;
-        if (row &gt;= ROWS) return false;
-        return true;
-    }
+    // TODO: boolean canMove(int col, int row) を実装する
+    //       盤面の外なら false、中なら true
+
 
     @Override
     public void render(Screen screen) {
@@ -152,6 +154,7 @@ public class MyTetris extends Game {
 </textarea>
           </div>
           <div id="code-errors" class="playground__errors" hidden></div>
+          <div id="hints-area" class="playground__hints" hidden></div>
         </div>
 
         <div class="playground__stage">

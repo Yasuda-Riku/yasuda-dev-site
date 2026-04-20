@@ -1,0 +1,3 @@
+3つの if 文を並べるのが一番読みやすい書き方です。if (key == Key.LEFT) { ... } のように。
+enum どうしは == で比較できます（String と違って .equals は不要）。
+1マス動かすだけなので、LEFT は blockCol--; RIGHT は blockCol++; DOWN は blockRow++; でOK。

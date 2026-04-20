@@ -1,0 +1,3 @@
+固定は board[blockRow][blockCol] = 1; の1行。これが「盤面にブロックを書き込む」操作です。
+新規生成は、状態変数を初期値に戻すだけ: blockRow = 0; blockCol = COLS / 2 - 1; の2行。
+canMove のチェック追加は「if (board[row][col] != 0) return false;」の1行。境界チェックの後に書きます。
