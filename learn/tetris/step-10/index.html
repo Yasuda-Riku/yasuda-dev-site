@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Step 10 · ライン消去 — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 10。揃った行を消して上の行を下に落とす。ループ中削除の罠を避ける書き方。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-10/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-10/">
+  <meta property="og:title" content="Step 10 · ライン消去 — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 10。揃った行を消して上の行を下に落とす。ループ中削除の罠を避ける書き方。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/tetris/course.css">
+  <link rel="stylesheet" href="/learn/tetris/step.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="step-hero" aria-labelledby="step-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/tetris/">Tetris in Java</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Step 10</span>
+        </nav>
+        <p class="step-hero__no">Step 10 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">ライン消去</h1>
+        <p class="step-hero__goal">
+          横一列がすべて埋まったら、その行を消して上の行を下に落とします。
+          ここで初めて<strong>テトリスとしての達成感</strong>が出ます。
+          ループしながら配列の要素を消す書き方の「罠」も体験します。
+        </p>
+      </div>
+    </section>
+
+    <section class="playground" aria-label="Playground">
+      <div class="playground__inner">
+
+        <div class="playground__code">
+          <div class="playground__code-label">
+            <span class="playground__code-filename">MyTetris.java</span>
+            <span class="playground__code-readonly">Read-only &middot; editor is coming</span>
+          </div>
+<textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
+import java.util.Random;
+
+/**
+ * Step 10 — Line clears.
+ *
+ * Goal: full rows vanish, above rows shift down. Multi-line clears
+ * work automatically.
+ * You'll learn: bottom-up scan, re-checking the same index after
+ * a removal, in-place row shifting.
+ */
+public class MyTetris extends Game {
+
+    // ... (the 7 shapes, board, fields — unchanged from Step 9)
+
+    @Override
+    public void update(double dt) {
+        accumulator += dt;
+        while (accumulator &gt;= DROP_SECONDS) {
+            accumulator -= DROP_SECONDS;
+            if (canMove(currentCells, pieceCol, pieceRow + 1)) {
+                pieceRow++;
+            } else {
+                lockPiece();
+                clearLines();    // &lt;-- NEW
+                spawnNext();
+            }
+        }
+    }
+
+    /** Remove every fully-filled row, shifting above rows down. */
+    void clearLines() {
+        int row = ROWS - 1;
+        while (row &gt;= 0) {
+            if (isRowFull(row)) {
+                removeRow(row);
+                // Don&apos;t decrement: re-check the same index, which now
+                // holds what used to be row - 1.
+            } else {
+                row--;
+            }
+        }
+    }
+
+    boolean isRowFull(int row) {
+        for (int col = 0; col &lt; COLS; col++) {
+            if (board[row][col] == 0) return false;
+        }
+        return true;
+    }
+
+    void removeRow(int row) {
+        // Shift every row above `row` down by one.
+        for (int r = row; r &gt; 0; r--) {
+            for (int col = 0; col &lt; COLS; col++) {
+                board[r][col] = board[r - 1][col];
+            }
+        }
+        // Top row becomes empty.
+        for (int col = 0; col &lt; COLS; col++) {
+            board[0][col] = 0;
+        }
+    }
+
+    // ... (onKey, canMove, lockPiece, spawnNext, render — unchanged)
+}
+</textarea>
+        </div>
+
+        <div class="playground__stage">
+          <div class="playground__canvas-wrap">
+            <canvas id="stage-canvas" class="playground__canvas" width="240" height="480" tabindex="0" aria-label="Tetris stage"></canvas>
+            <div id="loading-overlay" class="playground__loading" data-visible="false" role="status" aria-live="polite">
+              <div class="playground__loading-spinner" aria-hidden="true"></div>
+              <div>Java runtime を初回読み込み中…</div>
+              <small>CheerpJ の JRE (数十 MB) をダウンロードしています。2回目以降はキャッシュから瞬時に立ち上がります。</small>
+            </div>
+          </div>
+
+          <div class="playground__controls">
+            <button id="run-btn" type="button" class="playground__run">
+              <span class="playground__run-icon" aria-hidden="true">▶</span>
+              <span>Run Java</span>
+            </button>
+            <span id="run-status" class="playground__status" data-mode="idle">preparing</span>
+          </div>
+
+          <div id="console-output" class="playground__console" role="log" aria-live="polite" aria-atomic="false"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="step-body" aria-labelledby="explain-heading">
+      <div class="step-body__inner">
+        <div class="step-body__grid">
+          <p class="step-body__eyebrow">About this step</p>
+          <div>
+
+            <div class="step-body__section">
+              <h2 id="explain-heading">3つのメソッドに分ける</h2>
+              <p>
+                ライン消去のロジックを <strong>3つの小さなメソッド</strong>に分けました：
+              </p>
+              <ul>
+                <li><code>isRowFull(row)</code> &mdash; その行が埋まっているか？</li>
+                <li><code>removeRow(row)</code> &mdash; その行を消して上の行を下にシフト</li>
+                <li><code>clearLines()</code> &mdash; 全体を見て、埋まっている行を全部処理</li>
+              </ul>
+              <p>
+                それぞれ責務が明確だと、考えるのもデバッグするのも楽です。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>ループ中削除の罠</h2>
+              <p>
+                <code>clearLines</code> の中で <code>while (row &gt;= 0)</code> を使うのがミソ。
+                素直に <code>for (int row = ROWS - 1; row &gt;= 0; row--)</code> と書くと、
+                <strong>行を消した直後に row が 1 減ってしまい</strong>、
+                シフトで下りてきた行のチェックが飛ばされます。
+              </p>
+              <p>
+                例：row = 18 を消す &rarr; 今 row = 18 には元 row = 17 の内容がある &rarr;
+                for ループは次に row = 17 に進んでしまう &rarr; 元 row = 17 は<strong>見られない</strong>。
+              </p>
+              <p>
+                while ループなら「消した時は decrement しない」と書けて、罠を回避できます。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>シフトの書き方</h2>
+              <p>
+                <code>removeRow</code> では、消したい行から上に向かってコピーしていきます：
+              </p>
+              <pre><code>board[r] ← board[r - 1]  （r は row から 1 まで）</code></pre>
+              <p>
+                最後に一番上の行（row = 0）を 0 で埋めて完成。
+                複数行が一度に揃った時も、<code>clearLines</code> が繰り返し呼ぶので自動で処理されます。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>試し方</h2>
+              <p>
+                左右 + 回転でミノをうまく詰めていって、横一列揃えてみてください。
+                消えた瞬間、ブロックが一気に下に落ちるはず。
+                4行同時消し（テトリス！）もちゃんと動きます。
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__inner">
+        <a href="/learn/tetris/step-09/">
+          <span class="step-nav__arrow" aria-hidden="true">←</span>
+          <span>Step 09 · 回転</span>
+        </a>
+        <span class="step-nav__disabled">
+          <span>Step 11 · スコアとレベル</span>
+          <span class="step-nav__arrow" aria-hidden="true">→</span>
+        </span>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script src="/learn/tetris/step-10/runtime.js" defer></script>
+</body>
+</html>
