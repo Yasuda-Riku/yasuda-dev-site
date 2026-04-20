@@ -1,4 +1,3 @@
-# 1行1ヒント。# から始まる行はコメント（無視されます）。
-外側の for は row を 0 から ROWS 未満まで、内側の for は col を 0 から COLS 未満まで回します。
-各マスの左上の座標は col * CELL と row * CELL で計算できます。
-隣のマスと1px ずつ隙間を空けるため、描画は (x + 1, y + 1, CELL - 2, CELL - 2) を Color.DARK_GRAY で塗るのが定番です。
+x は col を CELL 倍、y は row を CELL 倍。x = col * CELL; / y = row * CELL; のように書きます。
+fillRect の最初の 2 つは左上の座標。ここを (x + 1, y + 1) にすると、マス同士が 1px ずつ離れて見えます。
+fillRect の 3 番目・4 番目は幅と高さ。どちらも (CELL - 2) にすれば、左右上下 1px ずつ引いた大きさで描けます。

@@ -5,15 +5,13 @@ import dev.yasuda.tetris.*;
  *
  * 目標: 10 × 20 の空のグリッドを画面に表示する。
  *
- * TODO:
- *   render() の中に 2 重ループを書いて、盤面の全マスを
- *   暗いグレー (Color.DARK_GRAY) で塗ってください。
+ * 下のコードはほぼ完成形ですが、TODO の5か所がダミー値 (0 / CELL) のままです。
+ * 正しい式に書き換えて、盤面が表示されるようにしてください。
  *
  * 使うもの:
- *   - 2 重の for ループ (row 0..ROWS, col 0..COLS)
- *   - 左上座標: col * CELL, row * CELL
- *   - 隣のマスと 1px ずつ隙間を空けるなら +1, -2
- *   - screen.fillRect(x, y, width, height, color)
+ *   - 座標計算: col * CELL, row * CELL
+ *   - fillRect(x, y, width, height, color)
+ *   - 隣のマスと 1px 隙間を空けるなら +1 / -2
  */
 public class MyTetris extends Game {
 
@@ -29,7 +27,15 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // TODO: ここに 2 重ループを書いて、各マスを塗る
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                // TODO: マスの左上の座標を計算する
+                int x = 0;   // ← col と CELL から
+                int y = 0;   // ← row と CELL から
 
+                // TODO: 塗る位置・サイズを埋める（(x+1, y+1) の位置に (CELL-2) 四方）
+                screen.fillRect(0, 0, CELL, CELL, Color.DARK_GRAY);
+            }
+        }
     }
 }

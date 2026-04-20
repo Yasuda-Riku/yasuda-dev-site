@@ -3,17 +3,13 @@ import dev.yasuda.tetris.*;
 /**
  * Step 3 — 自由落下。
  *
- * 目標: ブロックが 1 秒ごとに 1 マス自動で下に落ちる。
+ * 目標: ブロックが DROP_SECONDS (= 1.0 秒) ごとに 1 マス下がる。
  *       下まで行ったら上に戻ってループする。
  *
  * TODO:
- *   update(double dt) を実装してください。
- *   1) accumulator に dt を足していく
- *   2) accumulator が DROP_SECONDS を超えたら:
- *        - accumulator から DROP_SECONDS を引く
- *        - blockRow++
- *        - blockRow が ROWS 以上になったら 0 に戻す
- *   3) 上の処理は while ループで回して、溜まった分を一気に処理できるように
+ *   1) accumulator に経過時間 dt を足し込む
+ *   2) while の中で blockRow を 1 増やす
+ *   3) blockRow が ROWS 以上になったら 0 に戻す
  */
 public class MyTetris extends Game {
 
@@ -33,8 +29,18 @@ public class MyTetris extends Game {
 
     @Override
     public void update(double dt) {
-        // TODO: accumulator に dt を足し、DROP_SECONDS を超えたら blockRow を1進める
+        // TODO 1: accumulator に dt を足す
+        accumulator += 0;
 
+        // DROP_SECONDS 溜まるたびに中を実行する
+        while (accumulator >= DROP_SECONDS) {
+            accumulator -= DROP_SECONDS;
+
+            // TODO 2: blockRow を 1 増やす
+
+            // TODO 3: blockRow が ROWS 以上になったら 0 に戻す
+
+        }
     }
 
     @Override

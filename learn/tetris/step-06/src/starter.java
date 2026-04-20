@@ -6,13 +6,10 @@ import dev.yasuda.tetris.*;
  * 目標: 落ち切ったブロックを盤面に書き込み、新しいブロックを上から出す。
  *
  * TODO:
- *   1) update() の「canMove で下に行けない時」に、
- *        - board[blockRow][blockCol] に 1 を書き込む（= 固定）
- *        - blockRow = 0, blockCol = COLS / 2 - 1 に戻す（= 新規生成）
- *      を追加する。
- *
- *   2) canMove に「board[row][col] が 0 でなければ置けない」チェックを追加する。
- *      これで、既に積まれているブロックの上にも乗るようになる。
+ *   1) update() の「下に動けない時」（else 節）に:
+ *      - 今の位置を board に書き込む（board[blockRow][blockCol] = 1;）
+ *      - blockRow と blockCol を初期位置に戻す（上端・中央）
+ *   2) canMove() に「board[row][col] が 0 以外なら動けない」条件を追加
  */
 public class MyTetris extends Game {
 
@@ -22,7 +19,7 @@ public class MyTetris extends Game {
 
     static final double DROP_SECONDS = 1.0;
 
-    // 0 = 空、0 以外 = 固定済みブロックあり
+    // 0 = 空、0 以外 = 固定済みブロック
     int[][] board = new int[ROWS][COLS];
 
     int blockCol = 4;
@@ -41,7 +38,10 @@ public class MyTetris extends Game {
             if (canMove(blockCol, blockRow + 1)) {
                 blockRow++;
             } else {
-                // TODO: 固定 → 新規生成
+                // TODO 1a: 今の位置を board に書き込む
+
+                // TODO 1b: 新しいブロックを上端・中央から出す
+                //          blockRow = 0; blockCol = COLS / 2 - 1;
 
             }
         }
@@ -54,10 +54,11 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  && canMove(blockCol, blockRow + 1)) blockRow++;
     }
 
+    /** (col, row) が盤面の中かつ空いていれば true。 */
     boolean canMove(int col, int row) {
         if (col < 0 || col >= COLS) return false;
         if (row < 0 || row >= ROWS) return false;
-        // TODO: 既に board[row][col] が埋まっていたら false を返す
+        // TODO 2: 既に board[row][col] が埋まっていたら false を返す
 
         return true;
     }

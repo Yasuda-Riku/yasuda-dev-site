@@ -87,11 +87,9 @@
  * 目標: Step 1 の盤面に加えて、赤いブロックを1つ描く。
  *
  * TODO:
- *   1) フィールド変数 blockCol / blockRow を宣言（例: 4 と 0）
- *   2) render() の盤面描画のあとに、ブロック1つの fillRect を追加
- *
- *   ブロックの左上座標: blockCol * CELL, blockRow * CELL
- *   色: Color.RED
+ *   1) ブロックの位置フィールド blockCol / blockRow を初期化する
+ *      （例: 列 4 ・ 行 0 からスタート）
+ *   2) render() の末尾で、ブロック1つを赤で描く（位置とサイズを埋める）
  */
 public class MyTetris extends Game {
 
@@ -99,8 +97,9 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
 
-    // TODO 1: フィールド変数 blockCol と blockRow を宣言する
-
+    // TODO 1: フィールド変数をダミー値 0 から正しい初期値に変える
+    int blockCol = 0;
+    int blockRow = 0;
 
     public static void main(String[] args) {
         new MyTetris().run();
@@ -119,8 +118,12 @@ public class MyTetris extends Game {
             }
         }
 
-        // TODO 2: 盤面の上に赤ブロックを1つ重ねる
-
+        // 盤面の上に赤ブロックを1つ重ねる
+        // TODO 2: bx, by を blockCol / blockRow / CELL から計算する
+        int bx = 0;
+        int by = 0;
+        // TODO 2: fillRect の位置・サイズを埋める（(x+1, y+1) と (CELL-2) 四方）
+        screen.fillRect(0, 0, CELL, CELL, Color.RED);
     }
 }
 </textarea>

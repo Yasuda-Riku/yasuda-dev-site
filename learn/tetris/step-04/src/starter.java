@@ -3,13 +3,13 @@ import dev.yasuda.tetris.*;
 /**
  * Step 4 — 左右キーと下キーの操作。
  *
- * 目標: 矢印キーでブロックを左右に動かす、下矢印で1マス加速して落とす。
+ * 目標: 矢印キーでブロックを左右に動かす、下矢印で 1 マス加速して落とす。
  *
  * TODO:
- *   onKey(Key key) を実装してください。
- *   - Key.LEFT なら blockCol を 1 減らす
- *   - Key.RIGHT なら blockCol を 1 増やす
- *   - Key.DOWN なら blockRow を 1 増やす
+ *   onKey() の 3 つの if の「動かす処理」を埋めてください。
+ *   - LEFT  → blockCol を 1 減らす
+ *   - RIGHT → blockCol を 1 増やす
+ *   - DOWN  → blockRow を 1 増やす
  *
  * 注意: 今は壁判定を入れていないので、画面外に出ていきます（Step 5 で直します）。
  */
@@ -41,8 +41,18 @@ public class MyTetris extends Game {
 
     @Override
     public void onKey(Key key) {
-        // TODO: LEFT / RIGHT / DOWN で blockCol または blockRow を変える
+        if (key == Key.LEFT) {
+            // TODO: blockCol を 1 減らす
 
+        }
+        if (key == Key.RIGHT) {
+            // TODO: blockCol を 1 増やす
+
+        }
+        if (key == Key.DOWN) {
+            // TODO: blockRow を 1 増やす
+
+        }
     }
 
     @Override

@@ -6,12 +6,12 @@ import dev.yasuda.tetris.*;
  * 目標: ブロックが盤面の外に出ないようにする。
  *
  * TODO:
- *   1) canMove(int col, int row) を実装してください。
- *      col < 0、col >= COLS、row < 0、row >= ROWS のどれかなら false を返す。
- *      それ以外なら true。
- *
- *   2) update と onKey の中で、動かす前に canMove をチェックしてから動かすように書き換える。
- *      例: if (canMove(blockCol - 1, blockRow)) blockCol--;
+ *   1) canMove() の中で 4 つの境界条件をチェックする
+ *      - col が 0 未満なら false
+ *      - col が COLS 以上なら false
+ *      - row が 0 未満なら false
+ *      - row が ROWS 以上なら false
+ *   2) update / onKey の動きを「canMove が true のときだけ動く」に書き換える
  */
 public class MyTetris extends Game {
 
@@ -34,7 +34,7 @@ public class MyTetris extends Game {
         accumulator += dt;
         while (accumulator >= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
-            // TODO: canMove(blockCol, blockRow + 1) が true のときだけ blockRow++
+            // TODO 2a: 「canMove(blockCol, blockRow + 1) が true なら blockRow++」に書き換える
             blockRow++;
             if (blockRow >= ROWS) blockRow = 0;
         }
@@ -42,15 +42,19 @@ public class MyTetris extends Game {
 
     @Override
     public void onKey(Key key) {
-        // TODO: 各キーで動かす前に canMove で行ける先をチェックする
+        // TODO 2b: 各行の && で canMove をチェックしてから動かす
+        //   例: if (key == Key.LEFT && canMove(blockCol - 1, blockRow)) blockCol--;
         if (key == Key.LEFT)  blockCol--;
         if (key == Key.RIGHT) blockCol++;
         if (key == Key.DOWN)  blockRow++;
     }
 
-    // TODO: boolean canMove(int col, int row) を実装する
-    //       盤面の外なら false、中なら true
+    /** (col, row) が盤面の中なら true。 */
+    boolean canMove(int col, int row) {
+        // TODO 1: 4 つの境界をチェックする（どれかに当てはまったら false を返す）
 
+        return true;
+    }
 
     @Override
     public void render(Screen screen) {

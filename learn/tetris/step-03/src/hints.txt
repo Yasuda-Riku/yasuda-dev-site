@@ -1,4 +1,3 @@
-最初の一行は「accumulator += dt;」。dt（経過秒数）をとにかく貯金していくイメージ。
-1秒貯まったら使う。そのために while (accumulator >= DROP_SECONDS) { ... } で、溜まっている限り繰り返す。
-ループの中では accumulator -= DROP_SECONDS; と blockRow++; を並べる。while にする理由はタブを切り替えて数秒分まとめて dt が来るケースに備えるため。
-下に行き切った時に blockRow = 0 に戻すのを忘れずに。if (blockRow >= ROWS) blockRow = 0; の1行でOK。
+TODO 1: accumulator += 0; の 0 を dt に変えるだけ。これで「経過時間を貯金する」になります。
+TODO 2: while の中で blockRow++; を書きます。accumulator -= DROP_SECONDS; の次の行。
+TODO 3: if (blockRow >= ROWS) blockRow = 0; の 1 行を while ループの中に書く。下端まで行ったら上に戻ります。
