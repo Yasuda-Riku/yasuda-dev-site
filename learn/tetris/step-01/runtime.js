@@ -59,28 +59,28 @@
   }
 
   /* ---------- Java -> JS natives ---------- */
-  function nClear(lib, r, g, b) {
+  async function nClear(lib, r, g, b) {
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-  function nFillRect(lib, x, y, w, h, r, g, b) {
+  async function nFillRect(lib, x, y, w, h, r, g, b) {
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.fillRect(x, y, w, h);
   }
-  function nStrokeRect(lib, x, y, w, h, r, g, b) {
+  async function nStrokeRect(lib, x, y, w, h, r, g, b) {
     ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
   }
-  function nText(lib, x, y, s, r, g, b) {
+  async function nText(lib, x, y, s, r, g, b) {
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.font = "13px 'JetBrains Mono', ui-monospace, monospace";
     ctx.textBaseline = "top";
     ctx.fillText(String(s), x, y);
   }
-  function nWidth()  { return canvas.width;  }
-  function nHeight() { return canvas.height; }
-  function nRegisterLoop(lib, inst) {
+  async function nWidth(lib)  { return canvas.width;  }
+  async function nHeight(lib) { return canvas.height; }
+  async function nRegisterLoop(lib, inst) {
     gameLoopInstance = inst;
     logLine("[init] GameLoop instance registered");
   }
