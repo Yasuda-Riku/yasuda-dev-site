@@ -33,3 +33,9 @@ docs/Gemini.txt
 assets/works/**/*.png
 assets/works/**/*.jpg
 assets/works/**/*.jpeg
+
+# Tetris course: compiled .class dirs are build artifacts — ship only .jar + .java
+learn/tetris/**/classes/
+
+# Local Lighthouse reports
+lighthouse-report*.json

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Step 01 · 盤面を描く — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java 全12ステップの Step 1。2次元ループで 10×20 のグリッドを描く。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-01/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-01/">
+  <meta property="og:title" content="Step 01 · 盤面を描く — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java 全12ステップの Step 1。2次元ループで 10×20 のグリッドを描く。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/tetris/course.css">
+  <link rel="stylesheet" href="/learn/tetris/step.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="step-hero" aria-labelledby="step-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/tetris/">Tetris in Java</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Step 01</span>
+        </nav>
+        <p class="step-hero__no">Step 01 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">盤面を描く</h1>
+        <p class="step-hero__goal">
+          画面に <strong>10列 × 20行のグリッド</strong>を並べます。
+          テトリスの土台になる盤面です。ここで 2次元ループと <code>Screen.fillRect</code> の使い方に慣れます。
+        </p>
+      </div>
+    </section>
+
+    <section class="playground" aria-label="Playground">
+      <div class="playground__inner">
+
+        <div class="playground__code">
+          <div class="playground__code-label">
+            <span class="playground__code-filename">MyTetris.java</span>
+            <span class="playground__code-readonly">Read-only &middot; editor is coming</span>
+          </div>
+<textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
+
+/**
+ * Step 1 — Draw the board.
+ *
+ * Goal: a 10 x 20 grid of empty dark cells.
+ * You'll learn: 2D loops, using Screen.fillRect, and constants.
+ */
+public class MyTetris extends Game {
+
+    static final int COLS = 10;
+    static final int ROWS = 20;
+    static final int CELL = 24;
+
+    public static void main(String[] args) {
+        new MyTetris().run();
+    }
+
+    @Override
+    public void render(Screen screen) {
+        screen.clear(Color.BLACK);
+
+        for (int row = 0; row &lt; ROWS; row++) {
+            for (int col = 0; col &lt; COLS; col++) {
+                int x = col * CELL;
+                int y = row * CELL;
+                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);
+            }
+        }
+    }
+}
+</textarea>
+        </div>
+
+        <div class="playground__stage">
+          <div class="playground__canvas-wrap">
+            <canvas id="stage-canvas" class="playground__canvas" width="240" height="480" tabindex="0" aria-label="Tetris stage"></canvas>
+            <div id="loading-overlay" class="playground__loading" data-visible="false" role="status" aria-live="polite">
+              <div class="playground__loading-spinner" aria-hidden="true"></div>
+              <div>Java runtime を初回読み込み中…</div>
+              <small>CheerpJ の JRE (数十 MB) をダウンロードしています。2回目以降はキャッシュから瞬時に立ち上がります。</small>
+            </div>
+          </div>
+
+          <div class="playground__controls">
+            <button id="run-btn" type="button" class="playground__run">
+              <span class="playground__run-icon" aria-hidden="true">▶</span>
+              <span>Run Java</span>
+            </button>
+            <span id="run-status" class="playground__status" data-mode="idle">preparing</span>
+          </div>
+
+          <div id="console-output" class="playground__console" role="log" aria-live="polite" aria-atomic="false"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="step-body" aria-labelledby="explain-heading">
+      <div class="step-body__inner">
+        <div class="step-body__grid">
+          <p class="step-body__eyebrow">About this step</p>
+          <div>
+
+            <div class="step-body__section">
+              <h2 id="explain-heading">何が起きている？</h2>
+              <p>
+                <code>render(Screen screen)</code> は、画面を描き直すたびに呼ばれるメソッドです。
+                この Step 1 では、まず <code>screen.clear(Color.BLACK)</code> で画面全体を黒で塗り、
+                その上に 2 重ループで 10 × 20 個のセルを暗いグレーで並べています。
+              </p>
+              <p>
+                <code>CELL = 24</code> は 1 セルの大きさ。<code>col * CELL</code> と <code>row * CELL</code>
+                で左上の座標を計算し、<code>+1</code> / <code>-2</code> の余白で隣のセルとの隙間を作っています。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>使っているもの</h2>
+              <ul>
+                <li><code>Game</code> — この Step で継承している親クラス。<code>render</code> を実装する。</li>
+                <li><code>Screen</code> — 描画用。<code>clear</code> と <code>fillRect</code> を使う。</li>
+                <li><code>Color</code> — 色の定数。<code>BLACK</code>, <code>DARK_GRAY</code> など。</li>
+                <li><code>static final int</code> — 変わらない値の定数。COLS, ROWS, CELL。</li>
+              </ul>
+            </div>
+
+            <div class="step-body__section">
+              <h2>動かしてみる</h2>
+              <p>
+                右上の <strong>Run Java</strong> を押すと、ブラウザ内で Java が動き出します。
+                初回はランタイム（CheerpJ）のダウンロードに 10〜30 秒かかります。
+                2回目以降はブラウザキャッシュから即起動します。
+              </p>
+              <p>
+                グリッドが表示されれば成功です。次のステップでは、このグリッドの中に
+                <strong>ブロックを1つ置きます</strong>。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>エディタはまだ読み取り専用です</h2>
+              <p>
+                現在のページは「実行が動くか」の動作確認版です。
+                次のアップデートで、コードを書き換えて即座に実行できるエディタに差し替えます。
+                それまでは、このページで Java が本当にブラウザで動くことを確かめてください。
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__inner">
+        <a href="/learn/tetris/">
+          <span class="step-nav__arrow" aria-hidden="true">←</span>
+          <span>Course overview</span>
+        </a>
+        <span class="step-nav__disabled">
+          <span>Step 02 · ブロックを1つ置く</span>
+          <span class="step-nav__arrow" aria-hidden="true">→</span>
+        </span>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script src="/learn/tetris/step-01/runtime.js" defer></script>
+</body>
+</html>
