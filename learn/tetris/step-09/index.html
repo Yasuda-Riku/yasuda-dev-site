@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 08 · ランダムに出す — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java Step 8。java.util.Random と nextInt でミノを毎回ランダム抽選する。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-08/">
+  <title>Step 09 · 回転 — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 9。上矢印でミノを 90° 時計回りに回転。2次元配列の転置を使った回転アルゴリズム。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-09/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-08/">
-  <meta property="og:title" content="Step 08 · ランダムに出す — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java Step 8。java.util.Random と nextInt でミノを毎回ランダム抽選する。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-09/">
+  <meta property="og:title" content="Step 09 · 回転 — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 9。上矢印でミノを 90° 時計回りに回転。2次元配列の転置を使った回転アルゴリズム。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,14 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 08</span>
+          <span aria-current="page">Step 09</span>
         </nav>
-        <p class="step-hero__no">Step 08 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">ランダムに出す</h1>
+        <p class="step-hero__no">Step 09 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">回転</h1>
         <p class="step-hero__goal">
-          ミノを I→O→T→… の固定順から、<strong>毎回ランダム</strong>に変えます。
-          差分は数行だけですが、<code>java.util.Random</code> の使い方と
-          「なぜフィールドとして持つのか」を押さえるのが目的。
+          <kbd>↑</kbd> キーで <strong>90° 時計回り</strong>に回転させます。
+          2次元配列の転置 + 行反転が回転の正体。
+          壁や積みブロックに当たる時は回転をキャンセルするのがポイント。
         </p>
       </div>
     </section>
@@ -77,11 +77,10 @@
 import java.util.Random;
 
 /**
- * Step 8 — Random piece selection.
+ * Step 9 — Rotation.
  *
- * Goal: pick from the 7 tetrominoes at random.
- * You'll learn: java.util.Random, nextInt(n),
- * why Random is a field (not a local).
+ * Goal: Up arrow rotates the piece 90° clockwise.
+ * You'll learn: 2D array rotation, "try + validate + commit or cancel".
  */
 public class MyTetris extends Game {
 
@@ -110,7 +109,10 @@ public class MyTetris extends Game {
     Shape[] bag = Shape.values();
     Random rng = new Random();
 
-    Shape current = bag[rng.nextInt(bag.length)];
+    // The Shape is the "type" (for color); currentCells holds the
+    // live grid, which rotates as the player hits Up.
+    Shape currentShape = bag[rng.nextInt(bag.length)];
+    int[][] currentCells = currentShape.cells;
     int pieceCol = 3;
     int pieceRow = 0;
     double accumulator = 0.0;
@@ -124,7 +126,7 @@ public class MyTetris extends Game {
         accumulator += dt;
         while (accumulator &gt;= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
-            if (canMove(current, pieceCol, pieceRow + 1)) {
+            if (canMove(currentCells, pieceCol, pieceRow + 1)) {
                 pieceRow++;
             } else {
                 lockPiece();
@@ -135,13 +137,30 @@ public class MyTetris extends Game {
 
     @Override
     public void onKey(Key key) {
-        if (key == Key.LEFT  &amp;&amp; canMove(current, pieceCol - 1, pieceRow)) pieceCol--;
-        if (key == Key.RIGHT &amp;&amp; canMove(current, pieceCol + 1, pieceRow)) pieceCol++;
-        if (key == Key.DOWN  &amp;&amp; canMove(current, pieceCol, pieceRow + 1)) pieceRow++;
+        if (key == Key.LEFT  &amp;&amp; canMove(currentCells, pieceCol - 1, pieceRow)) pieceCol--;
+        if (key == Key.RIGHT &amp;&amp; canMove(currentCells, pieceCol + 1, pieceRow)) pieceCol++;
+        if (key == Key.DOWN  &amp;&amp; canMove(currentCells, pieceCol, pieceRow + 1)) pieceRow++;
+        if (key == Key.UP) {
+            int[][] rotated = rotateCW(currentCells);
+            if (canMove(rotated, pieceCol, pieceRow)) {
+                currentCells = rotated;
+            }
+        }
     }
 
-    boolean canMove(Shape shape, int col, int row) {
-        int[][] cells = shape.cells;
+    /** Rotate a square cell grid 90 degrees clockwise. */
+    static int[][] rotateCW(int[][] cells) {
+        int n = cells.length;
+        int[][] out = new int[n][n];
+        for (int r = 0; r &lt; n; r++) {
+            for (int c = 0; c &lt; n; c++) {
+                out[c][n - 1 - r] = cells[r][c];
+            }
+        }
+        return out;
+    }
+
+    boolean canMove(int[][] cells, int col, int row) {
         for (int r = 0; r &lt; cells.length; r++) {
             for (int c = 0; c &lt; cells[r].length; c++) {
                 if (cells[r][c] == 0) continue;
@@ -156,17 +175,17 @@ public class MyTetris extends Game {
     }
 
     void lockPiece() {
-        int[][] cells = current.cells;
-        for (int r = 0; r &lt; cells.length; r++) {
-            for (int c = 0; c &lt; cells[r].length; c++) {
-                if (cells[r][c] == 0) continue;
+        for (int r = 0; r &lt; currentCells.length; r++) {
+            for (int c = 0; c &lt; currentCells[r].length; c++) {
+                if (currentCells[r][c] == 0) continue;
                 board[pieceRow + r][pieceCol + c] = 1;
             }
         }
     }
 
     void spawnNext() {
-        current = bag[rng.nextInt(bag.length)];
+        currentShape = bag[rng.nextInt(bag.length)];
+        currentCells = currentShape.cells;
         pieceCol = 3;
         pieceRow = 0;
     }
@@ -184,13 +203,12 @@ public class MyTetris extends Game {
             }
         }
 
-        int[][] cells = current.cells;
-        for (int r = 0; r &lt; cells.length; r++) {
-            for (int c = 0; c &lt; cells[r].length; c++) {
-                if (cells[r][c] == 0) continue;
+        for (int r = 0; r &lt; currentCells.length; r++) {
+            for (int c = 0; c &lt; currentCells[r].length; c++) {
+                if (currentCells[r][c] == 0) continue;
                 int x = (pieceCol + c) * CELL;
                 int y = (pieceRow + r) * CELL;
-                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, current.color);
+                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, currentShape.color);
             }
         }
     }
@@ -229,33 +247,57 @@ public class MyTetris extends Game {
           <div>
 
             <div class="step-body__section">
-              <h2 id="explain-heading">Random の使いかた</h2>
+              <h2 id="explain-heading">回転の数学</h2>
               <p>
-                <code>Random rng = new Random();</code> で乱数ジェネレータを作り、
-                <code>rng.nextInt(7)</code> で 0〜6 のランダムな整数を得ます。
-                <code>nextInt(n)</code> は <strong>0 以上 n 未満</strong>を返します。
-                配列の長さをそのまま渡せるのが便利。
+                2次元配列を時計回りに 90° 回すのは、実はシンプルな変換です：
+                <br><code>out[c][n - 1 - r] = in[r][c]</code>
+              </p>
+              <p>
+                T ミノの例：
+              </p>
+              <pre><code>元:            回転後:
+0 1 0          0 1 0
+1 1 1    →    0 1 1
+0 0 0          0 1 0</code></pre>
+              <p>
+                「1列目が一番下の行に、行を逆にしたものになる」というのが転置+反転の意味。
+                頭の中で試して動きを掴むのが一番。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>なぜ Random はフィールド？</h2>
+              <h2>Try &mdash; Validate &mdash; Commit パターン</h2>
               <p>
-                <code>Random</code> は<strong>フィールドとして一度だけ作る</strong>のが普通。
-                <code>spawnNext</code> の中で毎回 <code>new Random()</code> してしまうと、
-                内部状態がそのたびにリセットされて乱数の質が落ちます
-                （特にシードをつけない場合、短時間に作ると似た値が並ぶことがある）。
+                回転のコードはこの3行：
+              </p>
+              <pre><code>int[][] rotated = rotateCW(currentCells);
+if (canMove(rotated, pieceCol, pieceRow)) {
+    currentCells = rotated;
+}</code></pre>
+              <p>
+                <strong>Try</strong>（回してみた結果を作る） &rarr;
+                <strong>Validate</strong>（置けるか判定） &rarr;
+                <strong>Commit</strong>（OK ならコミット、NG なら捨てる）。
+                移動や衝突判定で何度もやっている「事前チェック」と同じ形。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>おまけ：本家テトリスは純ランダムではない</h2>
+              <h2>Shape と currentCells の分離</h2>
               <p>
-                実はプロのテトリスは <strong>7-bag</strong> という方式を使います。
-                「7種類を1つずつ袋に入れ、順にシャッフルして出す」というもの。
-                純ランダムだと「Z が5連続」みたいな理不尽ケースが起きるのを防ぐためです。
-                この教材では簡単のため純ランダム（<code>nextInt</code>）でいきます。
+                <code>currentShape</code> は「どの種類か」（色のため）、
+                <code>currentCells</code> は「今どの向きか」（回った後の配列）を持ちます。
+                enum の <code>cells</code> は<strong>いじらない</strong> &mdash; 元データは共有の定数として残す、という設計意図。
               </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>操作</h2>
+              <ul>
+                <li><kbd>←</kbd> <kbd>→</kbd> &mdash; 左右移動</li>
+                <li><kbd>↓</kbd> &mdash; 1マス下げる</li>
+                <li><kbd>↑</kbd> &mdash; 90° 時計回りに回転</li>
+              </ul>
             </div>
 
           </div>
@@ -265,14 +307,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/step-07/">
+        <a href="/learn/tetris/step-08/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 07 · 7種類のミノ</span>
+          <span>Step 08 · ランダムに出す</span>
         </a>
-        <a href="/learn/tetris/step-09/">
-          <span>Step 09 · 回転</span>
+        <span class="step-nav__disabled">
+          <span>Step 10 · ライン消去</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -285,6 +327,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-08/runtime.js" defer></script>
+  <script src="/learn/tetris/step-09/runtime.js" defer></script>
 </body>
 </html>
