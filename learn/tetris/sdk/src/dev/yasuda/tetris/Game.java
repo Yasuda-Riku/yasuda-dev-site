@@ -30,35 +30,14 @@ public abstract class Game {
 
     public final void run() {
         setup();
+        render(Screen.INSTANCE);
         jsStarted();
-
-        final Screen screen = Screen.INSTANCE;
-        long lastNs = System.nanoTime();
-
-        while (true) {
-            long now = System.nanoTime();
-            double dt = (now - lastNs) / 1_000_000_000.0;
-            if (dt > 0.1) dt = 0.1;
-            lastNs = now;
-
-            update(dt);
-            render(screen);
-
-            // Drain any pending key events from the JS side.
-            int k;
-            while ((k = jsPollKey()) >= 0) {
-                onKey(Key.fromCode(k));
-            }
-
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
-        }
+        // For Step 1 we only need a single render pass — the board is
+        // a static image, and CheerpJ 4.2 blocks the browser main thread
+        // for the entire lifetime of cheerpjRunMain. Later steps that
+        // need animation will drive the loop via java.util.Timer (runs
+        // on a JVM thread that CheerpJ schedules cooperatively).
     }
 
     private static native void jsStarted();
-    private static native int  jsPollKey();
 }
