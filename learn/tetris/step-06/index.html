@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 05 · 壁と床の衝突判定 — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java Step 5。canMove() という boolean helper を書いて、ブロックが盤面を飛び出さないようにする。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-05/">
+  <title>Step 06 · ブロックの固定 — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 6。2次元配列で盤面を表現し、着地したブロックを固定して新しいブロックを出す。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-06/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-05/">
-  <meta property="og:title" content="Step 05 · 壁と床の衝突判定 — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java Step 5。canMove() という boolean helper を書いて、ブロックが盤面を飛び出さないようにする。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-06/">
+  <meta property="og:title" content="Step 06 · ブロックの固定 — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 6。2次元配列で盤面を表現し、着地したブロックを固定して新しいブロックを出す。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,15 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 05</span>
+          <span aria-current="page">Step 06</span>
         </nav>
-        <p class="step-hero__no">Step 05 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">壁と床の衝突判定</h1>
+        <p class="step-hero__no">Step 06 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">ブロックの固定</h1>
         <p class="step-hero__goal">
-          ブロックが盤面を飛び出さないようにします。
-          <code>canMove(col, row)</code> という <strong>boolean を返すヘルパーメソッド</strong>を書き、
-          落下・キー入力の両方から共通で呼ぶのがポイント。
-          「状態変更の前にチェック」は、バグを減らす定石です。
+          着地したブロックを<strong>盤面に書き込み</strong>、
+          新しいブロックを上から出します。2次元配列 <code>int[ROWS][COLS]</code> が
+          「今どのマスが埋まっているか」の記憶になります。ブロックが積み上がり始めます。
         </p>
       </div>
     </section>
@@ -77,11 +76,11 @@
 <textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 5 — Wall and floor collision.
+ * Step 6 — Lock the block, spawn a new one.
  *
- * Goal: block stays inside the board.
- * You'll learn: writing a boolean helper, boundary conditions,
- * reusing the same check in update() and onKey().
+ * Goal: blocks now stack. When the current block can't fall any
+ * further, write it to the board and spawn a fresh one at the top.
+ * You'll learn: 2D arrays, array writes, extending canMove.
  */
 public class MyTetris extends Game {
 
@@ -90,6 +89,8 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
+
+    int[][] board = new int[ROWS][COLS]; // 0 = empty
 
     int blockCol = 4;
     int blockRow = 0;
@@ -106,6 +107,12 @@ public class MyTetris extends Game {
             accumulator -= DROP_SECONDS;
             if (canMove(blockCol, blockRow + 1)) {
                 blockRow++;
+            } else {
+                // Lock the block into the board.
+                board[blockRow][blockCol] = 1;
+                // Spawn a new block at the top.
+                blockRow = 0;
+                blockCol = COLS / 2 - 1;
             }
         }
     }
@@ -117,12 +124,11 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  &amp;&amp; canMove(blockCol, blockRow + 1)) blockRow++;
     }
 
-    /** True if (col, row) is inside the board. */
+    /** Inside the board AND not already occupied. */
     boolean canMove(int col, int row) {
-        if (col &lt; 0)     return false;
-        if (col &gt;= COLS) return false;
-        if (row &lt; 0)     return false;
-        if (row &gt;= ROWS) return false;
+        if (col &lt; 0 || col &gt;= COLS) return false;
+        if (row &lt; 0 || row &gt;= ROWS) return false;
+        if (board[row][col] != 0)   return false;
         return true;
     }
 
@@ -134,7 +140,8 @@ public class MyTetris extends Game {
             for (int col = 0; col &lt; COLS; col++) {
                 int x = col * CELL;
                 int y = row * CELL;
-                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);
+                Color c = (board[row][col] == 0) ? Color.DARK_GRAY : Color.RED;
+                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, c);
             }
         }
 
@@ -177,38 +184,47 @@ public class MyTetris extends Game {
           <div>
 
             <div class="step-body__section">
-              <h2 id="explain-heading">canMove という小さな関門</h2>
+              <h2 id="explain-heading">盤面は 2 次元配列</h2>
               <p>
-                <code>canMove(int col, int row)</code> は
-                「その座標はセーフか？」を <code>true</code> / <code>false</code> で返すだけのメソッド。
-                <strong>ロジックを小さく切り出す</strong>ことで、読みやすくなり、
-                同じ判定を何度も書かずに済みます。
+                <code>int[ROWS][COLS] board</code> は、各マスを <code>int</code> で表現した盤面。
+                <code>0</code> が空、<code>1</code> が埋まっている状態。
+                新しい配列はゼロで初期化されるので、<strong>何も書かなくても空盤面</strong>から始まります。
               </p>
               <p>
-                今回のチェックは4つ。<code>col &lt; 0</code>（左の壁）、
-                <code>col &gt;= COLS</code>（右の壁）、<code>row &lt; 0</code>（天井、今は起きないけど将来に備える）、
-                <code>row &gt;= ROWS</code>（床）。どれか1つでも当てはまれば <code>false</code>。
+                Java の 2次元配列のアクセスは <code>board[row][col]</code>。
+                縦（row）・横（col）の順です（数学の行列と同じ）。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>「変更の前にチェック」パターン</h2>
+              <h2>着地したら固定、新ブロック生成</h2>
               <p>
-                <code>update</code> でも <code>onKey</code> でも、
-                <code>blockRow++</code> / <code>blockCol--</code> する<strong>直前</strong>に <code>canMove</code> を呼んで確かめてから動かしています。
-                これで「一度はみ出してから戻す」ような面倒な処理が不要になります。
+                <code>update()</code> の中で、「1マス下に動けるか」を試します。動ければ <code>blockRow++</code>。
+                動けなければ <strong>今のマスを盤面に記録して、新しいブロックを上から出す</strong>。
               </p>
+              <pre><code>board[blockRow][blockCol] = 1;
+blockRow = 0;
+blockCol = COLS / 2 - 1;</code></pre>
               <p>
-                短絡評価（<code>&amp;&amp;</code>）を使って「キーが LEFT で、かつ動ける場合だけ」を1行に書けるのも Java らしい表現。
+                これで「落下しては止まる、落下しては止まる」を繰り返し、ブロックが積み上がります。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>動かしてみる</h2>
+              <h2>canMove が 1つ賢くなる</h2>
               <p>
-                左右に動かしても<strong>壁で止まる</strong>、下まで落ちても<strong>床で止まる</strong>のを確認してください。
-                次のステップ (Step 6) では、床に着いたブロックを<strong>その場に固定して新しいブロックを出す</strong>処理を追加します。
-                それで初めて「積み上がる」ようになります。
+                衝突判定に「<code>board[row][col] != 0</code> なら動けない」を追加。
+                これで、ブロックは<strong>既に固定されたブロックの上にも止まる</strong>ようになりました。
+                壁・床・他ブロック、全部同じ仕組みで処理されているのがポイント。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>次のステップへ</h2>
+              <p>
+                今はすべて 1×1 の赤いブロックですが、テトリスには 7 種類のミノ
+                （I, O, T, S, Z, L, J）があります。Step 7 で <code>enum</code> を使って
+                7 種類のミノを定義します。
               </p>
             </div>
 
@@ -219,14 +235,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/step-04/">
+        <a href="/learn/tetris/step-05/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 04 · 左右キー操作</span>
+          <span>Step 05 · 壁と床の衝突判定</span>
         </a>
-        <a href="/learn/tetris/step-06/">
-          <span>Step 06 · ブロックの固定</span>
+        <span class="step-nav__disabled">
+          <span>Step 07 · 7種類のミノ</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -239,6 +255,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-05/runtime.js" defer></script>
+  <script src="/learn/tetris/step-06/runtime.js" defer></script>
 </body>
 </html>
