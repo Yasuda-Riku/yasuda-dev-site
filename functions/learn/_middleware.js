@@ -24,10 +24,17 @@ export async function onRequest(context) {
   const body = await upstream.arrayBuffer();
   const total = body.byteLength;
 
+  // private + no-transform:
+  //  - "private" keeps Cloudflare edge from caching our Range-sensitive
+  //    responses (a cached 200 would be served back even for Range
+  //    requests, making the middleware pointless).
+  //  - browsers may still cache (their cache is per-user, not shared).
+  //  - no-transform guarantees no proxy re-compresses the bytes.
   const baseHeaders = {
     'Content-Type': 'application/octet-stream',
     'Accept-Ranges': 'bytes',
-    'Cache-Control': 'public, max-age=3600, no-transform',
+    'Cache-Control': 'private, max-age=3600, no-transform',
+    'Vary': 'Range',
   };
 
   const range = request.headers.get('Range');
