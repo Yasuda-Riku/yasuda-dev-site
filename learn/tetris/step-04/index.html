@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 03 · 自由落下 — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java Step 3。update(dt) で時間経過を処理し、ブロックが1秒で1マス落ちるアニメーション。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-03/">
+  <title>Step 04 · 左右キー操作 — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 4。矢印キーでブロックを左右に動かし、下で速く落とす。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-04/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-03/">
-  <meta property="og:title" content="Step 03 · 自由落下 — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java Step 3。update(dt) で時間経過を処理し、ブロックが1秒で1マス落ちるアニメーション。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-04/">
+  <meta property="og:title" content="Step 04 · 左右キー操作 — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 4。矢印キーでブロックを左右に動かし、下で速く落とす。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,14 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 03</span>
+          <span aria-current="page">Step 04</span>
         </nav>
-        <p class="step-hero__no">Step 03 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">自由落下</h1>
+        <p class="step-hero__no">Step 04 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">左右キー操作</h1>
         <p class="step-hero__goal">
-          ブロックを <strong>1秒で 1マス</strong> 自動的に落下させます。
-          ここで初めて「時間」の概念が登場 &mdash; <code>update(double dt)</code> が毎フレーム呼ばれるので、
-          経過時間を累積していって、1秒溜まったら行を1つ下げる、という仕組み。
+          矢印キーでブロックを左右に動かせるようにします。
+          <code>onKey(Key key)</code> は<strong>キーが押されるたび</strong>に呼ばれるメソッド。
+          「時間で起こること」と「キーで起こること」を分けて書くのがポイント。
         </p>
       </div>
     </section>
@@ -76,11 +76,12 @@
 <textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 3 — Free fall.
+ * Step 4 — Left/right (and down) key input.
  *
- * Goal: the block drops one cell every second on its own.
- * You'll learn: update(dt), time accumulators, separating
- * logic (update) from drawing (render).
+ * Goal: arrow keys move the block. Down nudges it one cell faster.
+ * You'll learn: onKey(Key), enum == comparison.
+ *
+ * The block can still run off the sides — Step 5 adds wall collision.
  */
 public class MyTetris extends Game {
 
@@ -106,6 +107,13 @@ public class MyTetris extends Game {
             blockRow++;
             if (blockRow &gt;= ROWS) blockRow = 0;
         }
+    }
+
+    @Override
+    public void onKey(Key key) {
+        if (key == Key.LEFT)  blockCol--;
+        if (key == Key.RIGHT) blockCol++;
+        if (key == Key.DOWN)  blockRow++;
     }
 
     @Override
@@ -161,36 +169,37 @@ public class MyTetris extends Game {
             <div class="step-body__section">
               <h2 id="explain-heading">何が新しくなった？</h2>
               <p>
-                <code>update(double dt)</code> メソッドが登場します。
-                <code>dt</code> は「前フレームから今フレームまでの経過秒数」。
-                16ms に一度くらい呼ばれるので、<code>dt</code> は大抵 0.016 前後です。
+                <code>onKey(Key key)</code> が登場。キーが押された瞬間に <strong>1回だけ</strong>呼ばれます。
+                <code>update(dt)</code> が「毎フレーム呼ばれる」のに対して、
+                <code>onKey</code> は「イベント駆動」&mdash; 押された時だけ動くのが違い。
               </p>
               <p>
-                <code>accumulator</code> という変数に <code>dt</code> をどんどん足していき、
-                合計が 1 秒を超えたタイミングで <code>blockRow++</code>。
-                このパターンは「時間で何かを起こしたい」時の定石です。
+                <code>Key</code> は enum（列挙型）。<code>Key.LEFT</code>、<code>Key.RIGHT</code> のように、
+                取りうる値がはっきり決まっている型です。<code>if (key == Key.LEFT)</code> の
+                <code>==</code> 比較が enum では普通（<code>String</code> と違って <code>.equals</code> は要らない）。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>update と render の分業</h2>
+              <h2>操作方法</h2>
               <ul>
-                <li><code>update(dt)</code> &mdash; 状態（位置、時間、スコアなど）を更新</li>
-                <li><code>render(screen)</code> &mdash; 現在の状態を<strong>そのまま</strong>絵にする</li>
-                <li>render は状態を変えてはいけない &mdash; 見た目の責務だけを持つ</li>
+                <li><kbd>←</kbd> &mdash; 1マス左に移動</li>
+                <li><kbd>→</kbd> &mdash; 1マス右に移動</li>
+                <li><kbd>↓</kbd> &mdash; 1マス下に移動（自動落下とは別）</li>
               </ul>
+              <p>
+                Canvas にフォーカスが当たっていないとキーが拾われません。
+                <strong>Run Java</strong> を押せば自動で Canvas にフォーカスします。
+                効かない時はもう一度 Canvas をクリック。
+              </p>
             </div>
 
             <div class="step-body__section">
-              <h2>動かしてみる</h2>
+              <h2>バグ：画面外に出ていく</h2>
               <p>
-                <strong>Run Java</strong> を押すと、ブロックが1秒ごとに1マスずつ下に動いていきます。
-                下に着いたら上に戻る（ループ）のは今だけの挙動 &mdash;
-                Step 5 で「床に着いたら止まる」判定を入れます。
-              </p>
-              <p>
-                試しにコードの <code>DROP_SECONDS = 1.0</code> を <code>0.25</code> に変えれば、4倍速の落下になります
-                （エディタ実装後に試せるようになります）。
+                左右に動かし続けると、ブロックが盤面の外へ出ていって<strong>消えます</strong>。
+                これは故意の仕様で、「境界のチェックを入れないとこうなる」を体感するため。
+                Step 5 で壁判定を入れて、この挙動を直します。
               </p>
             </div>
 
@@ -201,14 +210,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/step-02/">
+        <a href="/learn/tetris/step-03/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 02 · ブロックを1つ置く</span>
+          <span>Step 03 · 自由落下</span>
         </a>
-        <a href="/learn/tetris/step-04/">
-          <span>Step 04 · 左右キー操作</span>
+        <span class="step-nav__disabled">
+          <span>Step 05 · 壁と床の衝突判定</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -221,6 +230,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-03/runtime.js" defer></script>
+  <script src="/learn/tetris/step-04/runtime.js" defer></script>
 </body>
 </html>
