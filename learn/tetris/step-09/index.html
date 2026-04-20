@@ -86,12 +86,9 @@ import java.util.Random;
  * Step 9 — 回転。
  *
  * 目標: 上矢印キーで現在のミノを 90 度時計回りに回す。
- *       回した結果が壁・床・既存ブロックにぶつかるときは回転をキャンセル。
+ *       回した結果が壁・床・既存ブロックにぶつかるならキャンセル。
  *
- * 学ぶこと:
- *  - 2次元配列を時計回りに回転する式: out[c][n - 1 - r] = in[r][c]
- *  - Shape（形の「種類」）と currentCells（今の向き）を分けて持つ
- *  - 「試して → 検査して → OK なら反映、ダメなら捨てる」パターン
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -99,6 +96,8 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
     static final double DROP_SECONDS = 1.0;
+
+    static final int TODO = 0;
 
     enum Shape {
         I(Color.CYAN,   new int[][]{
@@ -136,8 +135,6 @@ public class MyTetris extends Game {
     Shape[] bag = Shape.values();
     Random rng = new Random();
 
-    // Shape は「種類」（色を決めるだけ）、currentCells は
-    // 今の向きを表すセル配列（プレイヤーが回すたびに差し替わる）。
     Shape currentShape = bag[rng.nextInt(bag.length)];
     int[][] currentCells = currentShape.cells;
     int pieceCol = 3;
@@ -169,19 +166,22 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  &amp;&amp; canMove(currentCells, pieceCol, pieceRow + 1)) pieceRow++;
         if (key == Key.UP) {
             int[][] rotated = rotateCW(currentCells);
+            // 回した結果が置けるなら差し替え、ダメならそのまま捨てる
             if (canMove(rotated, pieceCol, pieceRow)) {
                 currentCells = rotated;
             }
         }
     }
 
-    /** 正方形のセル配列を 90 度時計回りに回して、新しい配列を返す。 */
+    /** 正方形のセル配列を 90 度時計回りに回した新しい配列を返す。 */
     static int[][] rotateCW(int[][] cells) {
         int n = cells.length;
         int[][] out = new int[n][n];
         for (int r = 0; r &lt; n; r++) {
             for (int c = 0; c &lt; n; c++) {
-                out[c][n - 1 - r] = cells[r][c];
+                // TODO: 時計回り 90° の公式: out[c][n - 1 - r] = cells[r][c]
+                //       書き込む先のインデックスを埋めてください。
+                out[TODO][TODO] = cells[r][c];
             }
         }
         return out;

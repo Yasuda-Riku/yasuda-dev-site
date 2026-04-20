@@ -1,0 +1,4 @@
+board のクリアは board[r][c] = 0; でOK（TODO が既に 0 なのでそのまま動きますが、意図を明確にするため 0 を書いてほしい）。
+score / linesCleared のリセットは 0。
+level は 1 から始まります。TODO (= 0) のままだと「レベル 0」で速度計算が狂います。
+（おまけ）spawnNext の gameOver 判定は書き終わっています。canMove が false のとき true にするだけの 1 行。

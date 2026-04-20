@@ -91,20 +91,18 @@ import java.util.Random;
 /**
  * Step 12 — ゲームオーバーとリスタート。
  *
- * 目標: 新しいミノが出てくる位置に既にブロックがあると「ゲームオーバー」。
+ * 目標: 新しいミノが出る場所にもう空きが無ければゲームオーバー。
  *       R キーで盤面・スコアをリセットして最初からやり直せる。
  *
- * 学ぶこと:
- *  - 「負け状態」の判定に、これまでの canMove() をそのまま使う
- *  - gameOver フラグで update / onKey をガード（R キーだけ例外）
- *  - リセットロジックは restart() という 1 つのメソッドにまとめる
- *  - Screen.text で盤面の上にオーバーレイを描く
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
     static final int COLS = 10;
     static final int ROWS = 20;
     static final int CELL = 24;
+
+    static final int TODO = 0;
 
     enum Shape {
         I(Color.CYAN,   new int[][]{
@@ -197,16 +195,18 @@ public class MyTetris extends Game {
         }
     }
 
-    /** すべての状態を初期値に戻し、最初のミノを出す。 */
+    /** 盤面とスコアをすべてリセットして、最初のミノを出す。 */
     void restart() {
+        // TODO: board の全マスを 0 に戻す
         for (int r = 0; r &lt; ROWS; r++) {
             for (int c = 0; c &lt; COLS; c++) {
-                board[r][c] = 0;
+                board[r][c] = TODO;
             }
         }
-        score = 0;
-        linesCleared = 0;
-        level = 1;
+        // TODO: スコアとライン数をリセット、レベルは 1 から
+        score = TODO;
+        linesCleared = TODO;
+        level = TODO;         // ← 1 から始まる
         accumulator = 0.0;
         gameOver = false;
         spawnNext();
@@ -288,7 +288,7 @@ public class MyTetris extends Game {
         currentCells = currentShape.cells;
         pieceCol = 3;
         pieceRow = 0;
-        // 出した瞬間に置けないなら、もう詰み → ゲームオーバー
+        // 新しく出したミノが置けないなら、もう詰み → ゲームオーバー
         if (!canMove(currentCells, pieceCol, pieceRow)) {
             gameOver = true;
         }
@@ -328,7 +328,6 @@ public class MyTetris extends Game {
         screen.text(px, 160, String.valueOf(linesCleared), Color.WHITE);
 
         if (gameOver) {
-            // プレイエリアを軽く暗くする（走査線風）
             for (int y = 0; y &lt; ROWS * CELL; y += 2) {
                 screen.fillRect(0, y, COLS * CELL, 1, Color.BLACK);
             }

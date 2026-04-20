@@ -1,0 +1,3 @@
+lockPiece の値: 「そのセルの色 ID」を入れたい。current.ordinal() が 0..6、+1 して 1..7 を board に記録。なので current.ordinal() + 1。
+spawnNext の bagIndex: (bagIndex + 1) % bag.length。これで 0→1→…→6→0 とループ。
+% (剰余) は「余り」。bag.length (= 7) で割った余りなので、7 を超えると 0 に戻ります。

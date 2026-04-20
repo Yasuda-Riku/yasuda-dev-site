@@ -84,13 +84,10 @@
 /**
  * Step 7 — 7 種類のミノ。
  *
- * 目標: 1 セルのブロックを、I, O, T, S, Z, L, J のテトロミノに置き換える。
- *       とりあえず順番にループ出現する（ランダムは Step 8）。
+ * 目標: 1 セルのブロックを I, O, T, S, Z, L, J の 7 種類に置き換える。
+ *       順番にループ出現する（ランダム化は Step 8）。
  *
- * 学ぶこと:
- *  - フィールドを持つ enum（Shape に色と セル配列を持たせる）
- *  - 複数セルの衝突判定: canMove が shape の全セルをループ
- *  - 「現在のピース（形 + 位置）」と「固定盤面」の分離
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -99,6 +96,9 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
+
+    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
+    static final int TODO = 0;
 
     /** 各ミノは「色」と「1/0 のセル配列」を持つ。 */
     enum Shape {
@@ -149,13 +149,11 @@ public class MyTetris extends Game {
 
     int[][] board = new int[ROWS][COLS];
 
-    // 現在の落下ピース
     Shape[] bag = Shape.values();
     int bagIndex = 0;
     Shape current = bag[0];
     int pieceCol = 3;
     int pieceRow = 0;
-
     double accumulator = 0.0;
 
     public static void main(String[] args) {
@@ -183,7 +181,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  &amp;&amp; canMove(current, pieceCol, pieceRow + 1)) pieceRow++;
     }
 
-    /** shape を (col, row) に置いたとき、全セルが盤面の中かつ空なら true。 */
+    /** shape を (col, row) に置けるか。盤面の中 &amp; 埋まっていないセルのみ true。 */
     boolean canMove(Shape shape, int col, int row) {
         int[][] cells = shape.cells;
         for (int r = 0; r &lt; cells.length; r++) {
@@ -199,20 +197,24 @@ public class MyTetris extends Game {
         return true;
     }
 
-    /** 現在のピースを盤面に固定する（= 書き込む）。 */
+    /** 現在のピースを盤面に書き込む（固定する）。 */
     void lockPiece() {
         int[][] cells = current.cells;
         for (int r = 0; r &lt; cells.length; r++) {
             for (int c = 0; c &lt; cells[r].length; c++) {
                 if (cells[r][c] == 0) continue;
-                board[pieceRow + r][pieceCol + c] = current.ordinal() + 1;
+                // TODO: 盤面の (pieceRow + r, pieceCol + c) に「ミノ色 ID」を書き込む
+                //       値は current.ordinal() + 1 （I→1, O→2, …, J→7 の色番号）
+                board[pieceRow + r][pieceCol + c] = TODO;
             }
         }
     }
 
     /** 次のミノへ（bag を順に回す）。 */
     void spawnNext() {
-        bagIndex = (bagIndex + 1) % bag.length;
+        // TODO: bagIndex を 1 進める。最後まで行ったら 0 に戻す。
+        //       (bagIndex + 1) % bag.length を使うと簡潔。
+        bagIndex = TODO;
         current = bag[bagIndex];
         pieceCol = 3;
         pieceRow = 0;
@@ -222,7 +224,6 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // 盤面: 空セルは暗いグレー、固定済みはそのミノの色
         for (int row = 0; row &lt; ROWS; row++) {
             for (int col = 0; col &lt; COLS; col++) {
                 int x = col * CELL;
@@ -233,7 +234,6 @@ public class MyTetris extends Game {
             }
         }
 
-        // 現在のピース: 埋まっているセルだけを current.color で描く
         int[][] cells = current.cells;
         for (int r = 0; r &lt; cells.length; r++) {
             for (int c = 0; c &lt; cells[r].length; c++) {

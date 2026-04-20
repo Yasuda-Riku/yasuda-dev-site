@@ -85,14 +85,9 @@ import java.util.Random;
 /**
  * Step 10 — ライン消去。
  *
- * 目標: 横一列がすべて埋まったら消去し、上の行を下にシフト。
- *       複数行一度消し（最大 4 行 = テトリス！）も自動で処理される。
+ * 目標: 横一列が埋まったら消去し、上の行を下にシフト。
  *
- * 学ぶこと:
- *  - 盤面を下から上へ走査する
- *  - 「ループ中に要素を消す」ときの罠: 消した直後は同じ index を
- *    もう一度チェック（row-- しない）
- *  - その場で行をシフトするときの添え字の持ち方
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -100,6 +95,8 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
     static final double DROP_SECONDS = 1.0;
+
+    static final int TODO = 0;
 
     enum Shape {
         I(Color.CYAN,   new int[][]{
@@ -209,7 +206,7 @@ public class MyTetris extends Game {
         }
     }
 
-    /** 埋まっている行を全部消し、上の行を下にシフトする。 */
+    /** 埋まっている行を消し、上の行を下にシフトする。 */
     void clearLines() {
         int row = ROWS - 1;
         while (row &gt;= 0) {
@@ -230,13 +227,14 @@ public class MyTetris extends Game {
     }
 
     void removeRow(int row) {
-        // row から上の行を 1 つずつ下にずらす
+        // row より上の行を 1 つずつ下に落とす
         for (int r = row; r &gt; 0; r--) {
             for (int col = 0; col &lt; COLS; col++) {
-                board[r][col] = board[r - 1][col];
+                // TODO: 1 つ上の行の内容で上書きする。 r - 1 行目を参照。
+                board[r][col] = board[TODO][col];
             }
         }
-        // 一番上の行は空に
+        // 一番上は空に
         for (int col = 0; col &lt; COLS; col++) {
             board[0][col] = 0;
         }

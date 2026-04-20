@@ -83,15 +83,12 @@
 import java.util.Random;
 
 /**
- * Step 8 — ランダムにミノを出す。
+ * Step 8 — ミノをランダムに出す。
  *
- * 目標: I→O→T→S→Z→L→J の固定順から、毎回ランダム抽選に変える。
- *       回転（Step 9）とライン消去（Step 10）を入れる前の最後の下準備。
+ * 目標: Step 7 の「順番」抽選を「ランダム」抽選に変える。
+ *       差分は spawnNext の 1 行だけ。
  *
- * 学ぶこと:
- *  - java.util.Random と rng.nextInt(n)
- *  - Random は「フィールド」として 1 つだけ持つのがセオリー
- *  - 本家テトリスの「7-bag」方式（このコースでは純ランダムで簡略化）
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -99,6 +96,8 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
     static final double DROP_SECONDS = 1.0;
+
+    static final int TODO = 0;
 
     enum Shape {
         I(Color.CYAN,   new int[][]{ {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0} }),
@@ -120,7 +119,7 @@ public class MyTetris extends Game {
     Shape[] bag = Shape.values();
     Random rng = new Random();
 
-    Shape current = bag[rng.nextInt(bag.length)];
+    Shape current = bag[0];
     int pieceCol = 3;
     int pieceRow = 0;
     double accumulator = 0.0;
@@ -175,9 +174,11 @@ public class MyTetris extends Game {
         }
     }
 
-    /** 次のミノをランダムに選ぶ。 */
+    /** 次のミノをランダムに決める。 */
     void spawnNext() {
-        current = bag[rng.nextInt(bag.length)];
+        // TODO: 0..bag.length-1 のランダムな整数を rng.nextInt(bag.length) で得て、
+        //       それを bag のインデックスにして current にセットする。
+        current = bag[TODO];
         pieceCol = 3;
         pieceRow = 0;
     }

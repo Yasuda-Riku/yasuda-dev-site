@@ -1,0 +1,3 @@
+dropSeconds の TODO は 1。「level - 1」とすれば level 1 のとき 0 になって 1.0 秒が変わらない。
+score の倍率は level 自身。「points[clearedThisTurn] * level」で、1 行 100 点がレベル 5 なら 500 点に。
+level の更新は「1 + linesCleared / 10」。10 行で +1、20 行で +2 …。10 が TODO。
