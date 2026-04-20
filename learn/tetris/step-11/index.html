@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Step 11 · スコアとレベル — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 11。消した行数に応じてスコアが加算され、レベルが上がると落下が速くなる。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-11/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-11/">
+  <meta property="og:title" content="Step 11 · スコアとレベル — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 11。消した行数に応じてスコアが加算され、レベルが上がると落下が速くなる。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/tetris/course.css">
+  <link rel="stylesheet" href="/learn/tetris/step.css">
+  <style>
+    /* Step 11+ uses a wider canvas for the side panel. */
+    .playground__canvas-wrap--wide {
+      aspect-ratio: 340 / 480;
+      max-width: 420px;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="step-hero" aria-labelledby="step-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/tetris/">Tetris in Java</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Step 11</span>
+        </nav>
+        <p class="step-hero__no">Step 11 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">スコアとレベル</h1>
+        <p class="step-hero__goal">
+          消したライン数から<strong>スコア</strong>を計算し、10行ごとにレベルアップ。
+          レベルが上がると落下が<strong>速く</strong>なります。
+          盤面の右側にスコア・レベル・ライン数を表示するため、キャンバスを少し広げます。
+        </p>
+      </div>
+    </section>
+
+    <section class="playground" aria-label="Playground">
+      <div class="playground__inner">
+
+        <div class="playground__code">
+          <div class="playground__code-label">
+            <span class="playground__code-filename">MyTetris.java</span>
+            <span class="playground__code-readonly">Read-only &middot; editor is coming</span>
+          </div>
+<textarea readonly spellcheck="false" aria-label="MyTetris.java source code">// Step 11 — Score, lines, level. Highlights only (full file in repo).
+
+int score = 0;
+int linesCleared = 0;
+int level = 1;
+
+/** Drop interval shrinks with level, floor at 0.1s. */
+double dropSeconds() {
+    double s = 1.0 - (level - 1) * 0.1;
+    return (s &lt; 0.1) ? 0.1 : s;
+}
+
+@Override
+public void update(double dt) {
+    accumulator += dt;
+    while (accumulator &gt;= dropSeconds()) {
+        accumulator -= dropSeconds();
+        if (canMove(currentCells, pieceCol, pieceRow + 1)) {
+            pieceRow++;
+        } else {
+            lockPiece();
+            clearLines();
+            spawnNext();
+        }
+    }
+}
+
+void clearLines() {
+    int clearedThisTurn = 0;
+    int row = ROWS - 1;
+    while (row &gt;= 0) {
+        if (isRowFull(row)) {
+            removeRow(row);
+            clearedThisTurn++;
+        } else {
+            row--;
+        }
+    }
+    if (clearedThisTurn &gt; 0) {
+        linesCleared += clearedThisTurn;
+        int[] points = {0, 100, 300, 500, 800};
+        score += points[clearedThisTurn] * level;
+        level = 1 + linesCleared / 10;
+    }
+}
+
+@Override
+public void render(Screen screen) {
+    screen.clear(Color.BLACK);
+
+    // ... playfield and current piece unchanged ...
+
+    // Side panel.
+    int px = COLS * CELL + 14;
+    screen.text(px,  16, "SCORE",                     Color.GRAY);
+    screen.text(px,  36, String.valueOf(score),       Color.WHITE);
+    screen.text(px,  78, "LEVEL",                     Color.GRAY);
+    screen.text(px,  98, String.valueOf(level),       Color.WHITE);
+    screen.text(px, 140, "LINES",                     Color.GRAY);
+    screen.text(px, 160, String.valueOf(linesCleared),Color.WHITE);
+}
+</textarea>
+        </div>
+
+        <div class="playground__stage">
+          <div class="playground__canvas-wrap playground__canvas-wrap--wide">
+            <canvas id="stage-canvas" class="playground__canvas" width="340" height="480" tabindex="0" aria-label="Tetris stage"></canvas>
+            <div id="loading-overlay" class="playground__loading" data-visible="false" role="status" aria-live="polite">
+              <div class="playground__loading-spinner" aria-hidden="true"></div>
+              <div>Java runtime を初回読み込み中…</div>
+              <small>CheerpJ の JRE (数十 MB) をダウンロードしています。2回目以降はキャッシュから瞬時に立ち上がります。</small>
+            </div>
+          </div>
+
+          <div class="playground__controls">
+            <button id="run-btn" type="button" class="playground__run">
+              <span class="playground__run-icon" aria-hidden="true">▶</span>
+              <span>Run Java</span>
+            </button>
+            <span id="run-status" class="playground__status" data-mode="idle">preparing</span>
+          </div>
+
+          <div id="console-output" class="playground__console" role="log" aria-live="polite" aria-atomic="false"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="step-body" aria-labelledby="explain-heading">
+      <div class="step-body__inner">
+        <div class="step-body__grid">
+          <p class="step-body__eyebrow">About this step</p>
+          <div>
+
+            <div class="step-body__section">
+              <h2 id="explain-heading">ゲーム状態が増えてきた</h2>
+              <p>
+                ここまでは「ブロックと盤面」だけを追いかけていましたが、
+                Step 11 で <code>score</code>・<code>linesCleared</code>・<code>level</code> という
+                <strong>ゲーム全体の状態</strong>が加わります。
+              </p>
+              <p>
+                これらは「ブロックの位置」とは別の軸で動く値です。
+                状態が増えると<strong>変更のタイミング</strong>を見失いやすくなるので、
+                「誰が、どのイベントで、この値を変えるか」を整理する癖をつけましょう。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>スコアの計算式</h2>
+              <p>
+                標準的な Tetris のスコア：
+              </p>
+              <table style="font-family:var(--font-mono);font-size:13px;line-height:1.8;">
+                <tr><td>1 行消し</td><td>100 × level</td></tr>
+                <tr><td>2 行消し</td><td>300 × level</td></tr>
+                <tr><td>3 行消し</td><td>500 × level</td></tr>
+                <tr><td>4 行消し (テトリス!)</td><td>800 × level</td></tr>
+              </table>
+              <p>
+                配列リテラル <code>int[] points = {0, 100, 300, 500, 800}</code> を使って
+                <code>points[n]</code> で一発参照するのが気持ちいい書き方。
+                <code>points[0]</code> は未使用（保険）。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>レベルで速くなる</h2>
+              <p>
+                <code>dropSeconds()</code> がメソッドになりました。固定値 1.0 ではなく、
+                レベルに応じて計算する形。レベル 1 → 1.0秒、レベル 5 → 0.6秒、レベル 10 → 0.1秒。
+              </p>
+              <p>
+                これで Step 11 以降、<code>DROP_SECONDS</code> 定数は <code>dropSeconds()</code> メソッド呼び出しに置き換わります。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>キャンバス拡張</h2>
+              <p>
+                表示エリアを 240px → 340px に広げ、右側に <code>screen.text</code> でスコア等を描きます。
+                これまで当たり前のように盤面 = キャンバス全域だった前提が崩れる、地味だけど大事な瞬間。
+                座標は「盤面の右端 + 14px 」から始めています。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>次のステップ</h2>
+              <p>
+                Step 12 でゲームオーバー判定とリスタートを入れて、全体を締めます。
+                スポーン位置にブロックが重なったら「もう置けない」 = ゲームオーバー、
+                <kbd>R</kbd> で最初からやり直し。
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__inner">
+        <a href="/learn/tetris/step-10/">
+          <span class="step-nav__arrow" aria-hidden="true">←</span>
+          <span>Step 10 · ライン消去</span>
+        </a>
+        <span class="step-nav__disabled">
+          <span>Step 12 · ゲームオーバー &amp; リスタート</span>
+          <span class="step-nav__arrow" aria-hidden="true">→</span>
+        </span>
+      </div>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script src="/learn/tetris/step-11/runtime.js" defer></script>
+</body>
+</html>
