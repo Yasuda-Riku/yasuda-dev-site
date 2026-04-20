@@ -34,8 +34,12 @@ assets/works/**/*.png
 assets/works/**/*.jpg
 assets/works/**/*.jpeg
 
-# Tetris course: compiled .class dirs are build artifacts — ship only .jar + .java
+# Tetris course: compiled .class / .jar are build artifacts (not served as
+# static assets — the Pages Function embeds jar bytes as base64). Only
+# .java sources and the middleware are committed.
 learn/tetris/**/classes/
+learn/tetris/**/*.jar
+learn/tetris/**/*.jar.b64
 
 # Local Lighthouse reports
 lighthouse-report*.json

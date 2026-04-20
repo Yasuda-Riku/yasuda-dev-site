@@ -1,42 +1,49 @@
 /**
  * Cloudflare Pages middleware for /learn/*.
  *
- * CheerpJ fetches .jar files via HTTP Range requests to stream class
- * bytecode lazily. Cloudflare's CDN does not honor Range on static
- * assets under ~2 MB — it serves the full body with HTTP 200.
- * This middleware intercepts .jar requests, fetches the full body from
- * the static bucket via next(), and serves the requested byte range
- * with HTTP 206. Non-.jar paths pass through unchanged.
+ * Serves Tetris course .jar files from base64-embedded bytes, with full
+ * HTTP Range (206 Partial Content) support. This is how CheerpJ streams
+ * class bytecode incrementally.
  *
- * DEBUG (temporary): a diagnostic header X-Middleware is set on every
- * .jar response so we can confirm the middleware actually ran.
+ * Why not serve the .jar as a plain static asset? Cloudflare Pages does
+ * two things that break CheerpJ:
+ *  1) CDN does not honor Range on static assets under ~2 MB.
+ *  2) Static assets at the same URL take priority over Functions -- so
+ *     a middleware that wraps the static fetch just gets skipped.
+ *
+ * Embedding the bytes here sidesteps both: no static file exists at the
+ * jar URL, so the Function is forced to run, and it produces the Range
+ * response itself.
  */
+
+const SDK_JAR_B64 = "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";
+const STEP01_JAR_B64 = "UEsDBAoAAAgAAHF1lFwAAAAAAAAAAAAAAAAJAAQATUVUQS1JTkYv/soAAFBLAwQUAAgICABxdZRcAAAAAAAAAAAAAAAAFAAAAE1FVEEtSU5GL01BTklGRVNULk1G803My0xLLS7RDUstKs7Mz7NSMNQz4OVyLkpNLElN0XWqtFIwAoroWShoeKWWOBUlZuYVKxTrFenl62nycvFyAQBQSwcIX6bnKEEAAABAAAAAUEsDBBQACAgIAHF1lFwAAAAAAAAAAAAAAAAOAAAATXlUZXRyaXMuY2xhc3N9Ut1OE1EQ/k5326XL1i7aP6BV/IP+KNXE9EYkKVUJYZGkS2qIF3Joj7i63ZrtloR7XsBX4MZruCiJJj4AT+CzEKLOWWskAdxNZuabnflmvnP25OfX7wCe4LGOCBQNqoEoYgyZjtit7vH+oMOrgQh8p19d5l3BEFtwPCdYZFCKpZaGMYaxtb2NsEKHBkWacQOGJFH8gRfHNSQ1mAYmcJ0he5G30XN7PkN0yao3VhkmrStKnupIIa0hYyCLHEPuYp3d9oXwiKvtCk6c+eKVZKWW3GzKwLRcK/683lx9u9ysb8ohBQM3cYuUvXNctynaAcNMcYWe/7AxqI11y2ZgKwyJRs/rB9wLWtwdCIVOWKfvzfXXtoxTsvaFZck4J+Nehw42aTmeeDXobgt/g2+7lFG73CExmeIb6wPf5VWXeztVm6Z6O+HAmC+8jiCZhctk/jmLsDBhB7z9cY1/GhHrdm/gt8VLR4LE3+ubl0Nwm+4vQospyGGGEMMdQhHcJXzvHL5PePYcnqMOJv8dskXKFMgz8tHyMdghBQwlsrEwGae3jMqodI7aZXb8G7TNY8SH0P816OE2JvkJyjzAw1HTZ6KKkW9UjpAY4obyLG+mDlBTFgumfoBiwcy9r6l5aaOVtKpupaPqlpkxM0eYHCK/r7Avv37sR8ieHIYC5LBZ2gtI0xFkkSSBWUySkCkSP40a4QXKLNG/MR+upJ4hzs6gsVOUT0k6QzVkevQbUEsHCNXkMD8pAgAAVgMAAFBLAQIKAAoAAAgAAHF1lFwAAAAAAAAAAAAAAAAJAAQAAAAAAAAAAAAAAAAAAABNRVRBLUlORi/+ygAAUEsBAhQAFAAICAgAcXWUXF+m5yhBAAAAQAAAABQAAAAAAAAAAAAAAAAAKwAAAE1FVEEtSU5GL01BTklGRVNULk1GUEsBAhQAFAAICAgAcXWUXNXkMD8pAgAAVgMAAA4AAAAAAAAAAAAAAAAArgAAAE15VGV0cmlzLmNsYXNzUEsFBgAAAAADAAMAuQAAABMDAAAAAA==";
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+const JARS = {
+  '/learn/tetris/sdk/sdk.v5.jar':         b64ToBytes(SDK_JAR_B64),
+  '/learn/tetris/step-01/step01.v5.jar':  b64ToBytes(STEP01_JAR_B64),
+};
+
 export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
-  if (!url.pathname.endsWith('.jar')) {
-    return next();
-  }
+  const body = JARS[url.pathname];
+  if (!body) return next();
 
-  const upstream = await next();
-  if (!upstream.ok) return upstream;
-
-  const body = await upstream.arrayBuffer();
   const total = body.byteLength;
-
-  // no-store:
-  //   Cloudflare Pages appears to cache Function output despite
-  //   Cache-Control: private. Using no-store is a hard "don't cache"
-  //   that also prevents the Range-vs-no-Range cache-key collision
-  //   (same URL → different bodies depending on request header).
-  //   CheerpJ still gets browser-side HTTP/2 connection reuse, so the
-  //   cost is just a CF edge miss per Range chunk.
   const baseHeaders = {
     'Content-Type': 'application/octet-stream',
     'Accept-Ranges': 'bytes',
     'Cache-Control': 'no-store',
-    'X-Middleware': 'tetris-jar-range',
+    'X-Middleware': 'tetris-jar-embedded',
   };
 
   const range = request.headers.get('Range');
@@ -48,18 +55,15 @@ export async function onRequest(context) {
   }
 
   const m = /^bytes=(\d+)-(\d*)$/.exec(range);
-  if (!m) {
-    return new Response('Invalid Range', { status: 400 });
-  }
+  if (!m) return new Response('Invalid Range', { status: 400 });
 
   const start = parseInt(m[1], 10);
   let end = m[2] === '' ? total - 1 : parseInt(m[2], 10);
   if (end >= total) end = total - 1;
-
   if (start < 0 || start > end) {
     return new Response(null, {
       status: 416,
-      headers: { ...baseHeaders, 'Content-Range': `bytes */${total}` },
+      headers: { ...baseHeaders, 'Content-Range': 'bytes */' + total },
     });
   }
 
@@ -69,7 +73,7 @@ export async function onRequest(context) {
     headers: {
       ...baseHeaders,
       'Content-Length': String(slice.byteLength),
-      'Content-Range': `bytes ${start}-${end}/${total}`,
+      'Content-Range': 'bytes ' + start + '-' + end + '/' + total,
     },
   });
 }
