@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 07 · 7種類のミノ — Tetris in Java</title>
-  <meta name="description" content="Tetris in Java Step 7。enum にデータを持たせて I/O/T/S/Z/L/J の7種類のテトロミノを定義する。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-07/">
+  <title>Step 08 · ランダムに出す — Tetris in Java</title>
+  <meta name="description" content="Tetris in Java Step 8。java.util.Random と nextInt でミノを毎回ランダム抽選する。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/step-08/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-07/">
-  <meta property="og:title" content="Step 07 · 7種類のミノ — Tetris in Java">
-  <meta property="og:description" content="Tetris in Java Step 7。enum にデータを持たせて I/O/T/S/Z/L/J の7種類のテトロミノを定義する。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/step-08/">
+  <meta property="og:title" content="Step 08 · ランダムに出す — Tetris in Java">
+  <meta property="og:description" content="Tetris in Java Step 8。java.util.Random と nextInt でミノを毎回ランダム抽選する。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -53,14 +53,14 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/tetris/">Tetris in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 07</span>
+          <span aria-current="page">Step 08</span>
         </nav>
-        <p class="step-hero__no">Step 07 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">7種類のミノ</h1>
+        <p class="step-hero__no">Step 08 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">ランダムに出す</h1>
         <p class="step-hero__goal">
-          I, O, T, S, Z, L, J &mdash; テトリスの7種類のミノを定義します。
-          <code>enum</code> に色とセル配列を持たせる Java らしいパターンで、
-          衝突判定と描画は「各ミノの各マス」をループして処理します。
+          ミノを I→O→T→… の固定順から、<strong>毎回ランダム</strong>に変えます。
+          差分は数行だけですが、<code>java.util.Random</code> の使い方と
+          「なぜフィールドとして持つのか」を押さえるのが目的。
         </p>
       </div>
     </section>
@@ -74,13 +74,14 @@
             <span class="playground__code-readonly">Read-only &middot; editor is coming</span>
           </div>
 <textarea readonly spellcheck="false" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
+import java.util.Random;
 
 /**
- * Step 7 — The seven tetrominoes.
+ * Step 8 — Random piece selection.
  *
- * Goal: I, O, T, S, Z, L, J cycle through.
- * You'll learn: enum with fields, multi-cell collision,
- * the piece vs. the board.
+ * Goal: pick from the 7 tetrominoes at random.
+ * You'll learn: java.util.Random, nextInt(n),
+ * why Random is a field (not a local).
  */
 public class MyTetris extends Game {
 
@@ -90,41 +91,26 @@ public class MyTetris extends Game {
     static final double DROP_SECONDS = 1.0;
 
     enum Shape {
-        I(Color.CYAN,   new int[][]{
-            {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}
-        }),
-        O(Color.YELLOW, new int[][]{
-            {1,1}, {1,1}
-        }),
-        T(Color.PURPLE, new int[][]{
-            {0,1,0}, {1,1,1}, {0,0,0}
-        }),
-        S(Color.GREEN,  new int[][]{
-            {0,1,1}, {1,1,0}, {0,0,0}
-        }),
-        Z(Color.RED,    new int[][]{
-            {1,1,0}, {0,1,1}, {0,0,0}
-        }),
-        L(Color.ORANGE, new int[][]{
-            {0,0,1}, {1,1,1}, {0,0,0}
-        }),
-        J(Color.BLUE,   new int[][]{
-            {1,0,0}, {1,1,1}, {0,0,0}
-        });
+        I(Color.CYAN,   new int[][]{ {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0} }),
+        O(Color.YELLOW, new int[][]{ {1,1}, {1,1} }),
+        T(Color.PURPLE, new int[][]{ {0,1,0}, {1,1,1}, {0,0,0} }),
+        S(Color.GREEN,  new int[][]{ {0,1,1}, {1,1,0}, {0,0,0} }),
+        Z(Color.RED,    new int[][]{ {1,1,0}, {0,1,1}, {0,0,0} }),
+        L(Color.ORANGE, new int[][]{ {0,0,1}, {1,1,1}, {0,0,0} }),
+        J(Color.BLUE,   new int[][]{ {1,0,0}, {1,1,1}, {0,0,0} });
 
         final Color color;
         final int[][] cells;
         Shape(Color color, int[][] cells) {
-            this.color = color;
-            this.cells = cells;
+            this.color = color; this.cells = cells;
         }
     }
 
     int[][] board = new int[ROWS][COLS];
-
     Shape[] bag = Shape.values();
-    int bagIndex = 0;
-    Shape current = bag[0];
+    Random rng = new Random();
+
+    Shape current = bag[rng.nextInt(bag.length)];
     int pieceCol = 3;
     int pieceRow = 0;
     double accumulator = 0.0;
@@ -180,8 +166,7 @@ public class MyTetris extends Game {
     }
 
     void spawnNext() {
-        bagIndex = (bagIndex + 1) % bag.length;
-        current = bag[bagIndex];
+        current = bag[rng.nextInt(bag.length)];
         pieceCol = 3;
         pieceRow = 0;
     }
@@ -244,52 +229,32 @@ public class MyTetris extends Game {
           <div>
 
             <div class="step-body__section">
-              <h2 id="explain-heading">データを持つ enum</h2>
+              <h2 id="explain-heading">Random の使いかた</h2>
               <p>
-                <code>Shape</code> は 7つの値 (I, O, T, S, Z, L, J) を持つ <code>enum</code>。
-                Java の enum は<strong>フィールドとコンストラクタ</strong>を持てます。今回は
-                各ミノに「色」と「セル配列」を持たせました。
-              </p>
-              <p>
-                <code>I(Color.CYAN, new int[][]{...})</code> の書き方は一見不思議ですが、
-                これが enum の値を定義するときの Java の構文。コンストラクタを裏で呼んでいます。
+                <code>Random rng = new Random();</code> で乱数ジェネレータを作り、
+                <code>rng.nextInt(7)</code> で 0〜6 のランダムな整数を得ます。
+                <code>nextInt(n)</code> は <strong>0 以上 n 未満</strong>を返します。
+                配列の長さをそのまま渡せるのが便利。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>ミノは 2次元配列</h2>
+              <h2>なぜ Random はフィールド？</h2>
               <p>
-                例えば T ミノは 3×3 の <code>int[][]</code>：
-              </p>
-              <pre><code>{0, 1, 0}
-{1, 1, 1}
-{0, 0, 0}</code></pre>
-              <p>
-                <code>1</code> が「埋まっているセル」、<code>0</code> が空白。
-                ミノの左上を <code>(pieceCol, pieceRow)</code> として、
-                各 <code>(r, c)</code> が埋まっているかをループで見れば、
-                盤面のどこに描くか・どこに当たるかが計算できます。
+                <code>Random</code> は<strong>フィールドとして一度だけ作る</strong>のが普通。
+                <code>spawnNext</code> の中で毎回 <code>new Random()</code> してしまうと、
+                内部状態がそのたびにリセットされて乱数の質が落ちます
+                （特にシードをつけない場合、短時間に作ると似た値が並ぶことがある）。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>canMove と lockPiece の進化</h2>
+              <h2>おまけ：本家テトリスは純ランダムではない</h2>
               <p>
-                衝突判定と固定処理は、ミノの <strong>各セルに対してループ</strong>するように拡張しました。
-                空のセル (<code>== 0</code>) はスキップ、埋まっているセルだけチェック。
-              </p>
-              <p>
-                ミノのサイズが 2×2 (O) から 4×4 (I) までバラバラでも、
-                <code>cells.length</code> と <code>cells[r].length</code> を使えば全部同じコードで処理できる
-                &mdash; 配列の長さを聞ける Java らしい書き方です。
-              </p>
-            </div>
-
-            <div class="step-body__section">
-              <h2>次は？</h2>
-              <p>
-                今は I → O → T → S → Z → L → J の順にミノが出てきます。
-                Step 8 で <code>java.util.Random</code> を使って、<strong>ランダム抽選</strong>に変えます。
+                実はプロのテトリスは <strong>7-bag</strong> という方式を使います。
+                「7種類を1つずつ袋に入れ、順にシャッフルして出す」というもの。
+                純ランダムだと「Z が5連続」みたいな理不尽ケースが起きるのを防ぐためです。
+                この教材では簡単のため純ランダム（<code>nextInt</code>）でいきます。
               </p>
             </div>
 
@@ -300,14 +265,14 @@ public class MyTetris extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/tetris/step-06/">
+        <a href="/learn/tetris/step-07/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 06 · ブロックの固定</span>
+          <span>Step 07 · 7種類のミノ</span>
         </a>
-        <a href="/learn/tetris/step-08/">
-          <span>Step 08 · ランダムに出す</span>
+        <span class="step-nav__disabled">
+          <span>Step 09 · 回転</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
-        </a>
+        </span>
       </div>
     </nav>
 
@@ -320,6 +285,6 @@ public class MyTetris extends Game {
     </div>
   </footer>
 
-  <script src="/learn/tetris/step-07/runtime.js" defer></script>
+  <script src="/learn/tetris/step-08/runtime.js" defer></script>
 </body>
 </html>
