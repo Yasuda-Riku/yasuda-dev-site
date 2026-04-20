@@ -79,11 +79,15 @@
 import java.util.Random;
 
 /**
- * Step 8 — Random piece selection.
+ * Step 8 — ランダムにミノを出す。
  *
- * Goal: pick from the 7 tetrominoes at random.
- * You'll learn: java.util.Random, nextInt(n),
- * why Random is a field (not a local).
+ * 目標: I→O→T→S→Z→L→J の固定順から、毎回ランダム抽選に変える。
+ *       回転（Step 9）とライン消去（Step 10）を入れる前の最後の下準備。
+ *
+ * 学ぶこと:
+ *  - java.util.Random と rng.nextInt(n)
+ *  - Random は「フィールド」として 1 つだけ持つのがセオリー
+ *  - 本家テトリスの「7-bag」方式（このコースでは純ランダムで簡略化）
  */
 public class MyTetris extends Game {
 
@@ -167,6 +171,7 @@ public class MyTetris extends Game {
         }
     }
 
+    /** 次のミノをランダムに選ぶ。 */
     void spawnNext() {
         current = bag[rng.nextInt(bag.length)];
         pieceCol = 3;

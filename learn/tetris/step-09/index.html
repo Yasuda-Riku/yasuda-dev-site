@@ -79,10 +79,15 @@
 import java.util.Random;
 
 /**
- * Step 9 — Rotation.
+ * Step 9 — 回転。
  *
- * Goal: Up arrow rotates the piece 90° clockwise.
- * You'll learn: 2D array rotation, "try + validate + commit or cancel".
+ * 目標: 上矢印キーで現在のミノを 90 度時計回りに回す。
+ *       回した結果が壁・床・既存ブロックにぶつかるときは回転をキャンセル。
+ *
+ * 学ぶこと:
+ *  - 2次元配列を時計回りに回転する式: out[c][n - 1 - r] = in[r][c]
+ *  - Shape（形の「種類」）と currentCells（今の向き）を分けて持つ
+ *  - 「試して → 検査して → OK なら反映、ダメなら捨てる」パターン
  */
 public class MyTetris extends Game {
 
@@ -92,18 +97,34 @@ public class MyTetris extends Game {
     static final double DROP_SECONDS = 1.0;
 
     enum Shape {
-        I(Color.CYAN,   new int[][]{ {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0} }),
-        O(Color.YELLOW, new int[][]{ {1,1}, {1,1} }),
-        T(Color.PURPLE, new int[][]{ {0,1,0}, {1,1,1}, {0,0,0} }),
-        S(Color.GREEN,  new int[][]{ {0,1,1}, {1,1,0}, {0,0,0} }),
-        Z(Color.RED,    new int[][]{ {1,1,0}, {0,1,1}, {0,0,0} }),
-        L(Color.ORANGE, new int[][]{ {0,0,1}, {1,1,1}, {0,0,0} }),
-        J(Color.BLUE,   new int[][]{ {1,0,0}, {1,1,1}, {0,0,0} });
+        I(Color.CYAN,   new int[][]{
+            {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}
+        }),
+        O(Color.YELLOW, new int[][]{
+            {1,1}, {1,1}
+        }),
+        T(Color.PURPLE, new int[][]{
+            {0,1,0}, {1,1,1}, {0,0,0}
+        }),
+        S(Color.GREEN,  new int[][]{
+            {0,1,1}, {1,1,0}, {0,0,0}
+        }),
+        Z(Color.RED,    new int[][]{
+            {1,1,0}, {0,1,1}, {0,0,0}
+        }),
+        L(Color.ORANGE, new int[][]{
+            {0,0,1}, {1,1,1}, {0,0,0}
+        }),
+        J(Color.BLUE,   new int[][]{
+            {1,0,0}, {1,1,1}, {0,0,0}
+        });
 
         final Color color;
         final int[][] cells;
+
         Shape(Color color, int[][] cells) {
-            this.color = color; this.cells = cells;
+            this.color = color;
+            this.cells = cells;
         }
     }
 
@@ -111,8 +132,8 @@ public class MyTetris extends Game {
     Shape[] bag = Shape.values();
     Random rng = new Random();
 
-    // The Shape is the "type" (for color); currentCells holds the
-    // live grid, which rotates as the player hits Up.
+    // Shape は「種類」（色を決めるだけ）、currentCells は
+    // 今の向きを表すセル配列（プレイヤーが回すたびに差し替わる）。
     Shape currentShape = bag[rng.nextInt(bag.length)];
     int[][] currentCells = currentShape.cells;
     int pieceCol = 3;
@@ -150,7 +171,7 @@ public class MyTetris extends Game {
         }
     }
 
-    /** Rotate a square cell grid 90 degrees clockwise. */
+    /** 正方形のセル配列を 90 度時計回りに回して、新しい配列を返す。 */
     static int[][] rotateCW(int[][] cells) {
         int n = cells.length;
         int[][] out = new int[n][n];

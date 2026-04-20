@@ -81,55 +81,256 @@
           </div>
 <div class="playground__code-body">
             <pre id="code-gutter" class="playground__code-gutter" aria-hidden="true"></pre>
-<textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">// Step 12 — Game over + restart. Highlights only (full file in repo).
+<textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
+import java.util.Random;
 
-boolean gameOver = false;
+/**
+ * Step 12 — ゲームオーバーとリスタート。
+ *
+ * 目標: 新しいミノが出てくる位置に既にブロックがあると「ゲームオーバー」。
+ *       R キーで盤面・スコアをリセットして最初からやり直せる。
+ *
+ * 学ぶこと:
+ *  - 「負け状態」の判定に、これまでの canMove() をそのまま使う
+ *  - gameOver フラグで update / onKey をガード（R キーだけ例外）
+ *  - リセットロジックは restart() という 1 つのメソッドにまとめる
+ *  - Screen.text で盤面の上にオーバーレイを描く
+ */
+public class MyTetris extends Game {
 
-void spawnNext() {
-    currentShape = bag[rng.nextInt(bag.length)];
-    currentCells = currentShape.cells;
-    pieceCol = 3;
-    pieceRow = 0;
-    // If the fresh piece can't even be placed: it's over.
-    if (!canMove(currentCells, pieceCol, pieceRow)) {
-        gameOver = true;
-    }
-}
+    static final int COLS = 10;
+    static final int ROWS = 20;
+    static final int CELL = 24;
 
-void restart() {
-    for (int r = 0; r &lt; ROWS; r++) {
-        for (int c = 0; c &lt; COLS; c++) {
-            board[r][c] = 0;
+    enum Shape {
+        I(Color.CYAN,   new int[][]{
+            {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}
+        }),
+        O(Color.YELLOW, new int[][]{
+            {1,1}, {1,1}
+        }),
+        T(Color.PURPLE, new int[][]{
+            {0,1,0}, {1,1,1}, {0,0,0}
+        }),
+        S(Color.GREEN,  new int[][]{
+            {0,1,1}, {1,1,0}, {0,0,0}
+        }),
+        Z(Color.RED,    new int[][]{
+            {1,1,0}, {0,1,1}, {0,0,0}
+        }),
+        L(Color.ORANGE, new int[][]{
+            {0,0,1}, {1,1,1}, {0,0,0}
+        }),
+        J(Color.BLUE,   new int[][]{
+            {1,0,0}, {1,1,1}, {0,0,0}
+        });
+
+        final Color color;
+        final int[][] cells;
+
+        Shape(Color color, int[][] cells) {
+            this.color = color;
+            this.cells = cells;
         }
     }
-    score = 0;
-    linesCleared = 0;
-    level = 1;
-    accumulator = 0.0;
-    gameOver = false;
-    spawnNext();
-}
 
-@Override
-public void update(double dt) {
-    if (gameOver) return;
-    // ...rest unchanged...
-}
+    int[][] board = new int[ROWS][COLS];
+    Shape[] bag = Shape.values();
+    Random rng = new Random();
 
-@Override
-public void onKey(Key key) {
-    if (key == Key.R) { restart(); return; }
-    if (gameOver) return;
-    // ...arrow keys unchanged...
-}
+    Shape currentShape = bag[rng.nextInt(bag.length)];
+    int[][] currentCells = currentShape.cells;
+    int pieceCol = 3;
+    int pieceRow = 0;
+    double accumulator = 0.0;
 
-@Override
-public void render(Screen screen) {
-    // ...draw board + piece + side panel...
+    int score = 0;
+    int linesCleared = 0;
+    int level = 1;
+    boolean gameOver = false;
 
-    if (gameOver) {
-        screen.text(52, 210, "GAME OVER",          Color.RED);
-        screen.text(38, 240, "Press R to restart", Color.WHITE);
+    public static void main(String[] args) {
+        new MyTetris().run();
+    }
+
+    double dropSeconds() {
+        double s = 1.0 - (level - 1) * 0.1;
+        return (s &lt; 0.1) ? 0.1 : s;
+    }
+
+    @Override
+    public void update(double dt) {
+        if (gameOver) return;
+        accumulator += dt;
+        while (accumulator &gt;= dropSeconds()) {
+            accumulator -= dropSeconds();
+            if (canMove(currentCells, pieceCol, pieceRow + 1)) {
+                pieceRow++;
+            } else {
+                lockPiece();
+                clearLines();
+                spawnNext();
+                if (gameOver) return;
+            }
+        }
+    }
+
+    @Override
+    public void onKey(Key key) {
+        if (key == Key.R) {
+            restart();
+            return;
+        }
+        if (gameOver) return;
+        if (key == Key.LEFT  &amp;&amp; canMove(currentCells, pieceCol - 1, pieceRow)) pieceCol--;
+        if (key == Key.RIGHT &amp;&amp; canMove(currentCells, pieceCol + 1, pieceRow)) pieceCol++;
+        if (key == Key.DOWN  &amp;&amp; canMove(currentCells, pieceCol, pieceRow + 1)) pieceRow++;
+        if (key == Key.UP) {
+            int[][] rotated = rotateCW(currentCells);
+            if (canMove(rotated, pieceCol, pieceRow)) {
+                currentCells = rotated;
+            }
+        }
+    }
+
+    /** すべての状態を初期値に戻し、最初のミノを出す。 */
+    void restart() {
+        for (int r = 0; r &lt; ROWS; r++) {
+            for (int c = 0; c &lt; COLS; c++) {
+                board[r][c] = 0;
+            }
+        }
+        score = 0;
+        linesCleared = 0;
+        level = 1;
+        accumulator = 0.0;
+        gameOver = false;
+        spawnNext();
+    }
+
+    static int[][] rotateCW(int[][] cells) {
+        int n = cells.length;
+        int[][] out = new int[n][n];
+        for (int r = 0; r &lt; n; r++) {
+            for (int c = 0; c &lt; n; c++) {
+                out[c][n - 1 - r] = cells[r][c];
+            }
+        }
+        return out;
+    }
+
+    boolean canMove(int[][] cells, int col, int row) {
+        for (int r = 0; r &lt; cells.length; r++) {
+            for (int c = 0; c &lt; cells[r].length; c++) {
+                if (cells[r][c] == 0) continue;
+                int bc = col + c;
+                int br = row + r;
+                if (bc &lt; 0 || bc &gt;= COLS) return false;
+                if (br &lt; 0 || br &gt;= ROWS) return false;
+                if (board[br][bc] != 0)   return false;
+            }
+        }
+        return true;
+    }
+
+    void lockPiece() {
+        for (int r = 0; r &lt; currentCells.length; r++) {
+            for (int c = 0; c &lt; currentCells[r].length; c++) {
+                if (currentCells[r][c] == 0) continue;
+                board[pieceRow + r][pieceCol + c] = currentShape.ordinal() + 1;
+            }
+        }
+    }
+
+    void clearLines() {
+        int clearedThisTurn = 0;
+        int row = ROWS - 1;
+        while (row &gt;= 0) {
+            if (isRowFull(row)) {
+                removeRow(row);
+                clearedThisTurn++;
+            } else {
+                row--;
+            }
+        }
+        if (clearedThisTurn &gt; 0) {
+            linesCleared += clearedThisTurn;
+            int[] points = {0, 100, 300, 500, 800};
+            score += points[clearedThisTurn] * level;
+            level = 1 + linesCleared / 10;
+        }
+    }
+
+    boolean isRowFull(int row) {
+        for (int col = 0; col &lt; COLS; col++) {
+            if (board[row][col] == 0) return false;
+        }
+        return true;
+    }
+
+    void removeRow(int row) {
+        for (int r = row; r &gt; 0; r--) {
+            for (int col = 0; col &lt; COLS; col++) {
+                board[r][col] = board[r - 1][col];
+            }
+        }
+        for (int col = 0; col &lt; COLS; col++) {
+            board[0][col] = 0;
+        }
+    }
+
+    void spawnNext() {
+        currentShape = bag[rng.nextInt(bag.length)];
+        currentCells = currentShape.cells;
+        pieceCol = 3;
+        pieceRow = 0;
+        // 出した瞬間に置けないなら、もう詰み → ゲームオーバー
+        if (!canMove(currentCells, pieceCol, pieceRow)) {
+            gameOver = true;
+        }
+    }
+
+    @Override
+    public void render(Screen screen) {
+        screen.clear(Color.BLACK);
+
+        for (int row = 0; row &lt; ROWS; row++) {
+            for (int col = 0; col &lt; COLS; col++) {
+                int x = col * CELL;
+                int y = row * CELL;
+                int cell = board[row][col];
+                Color c = (cell == 0) ? Color.DARK_GRAY : bag[cell - 1].color;
+                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, c);
+            }
+        }
+
+        if (!gameOver) {
+            for (int r = 0; r &lt; currentCells.length; r++) {
+                for (int c = 0; c &lt; currentCells[r].length; c++) {
+                    if (currentCells[r][c] == 0) continue;
+                    int x = (pieceCol + c) * CELL;
+                    int y = (pieceRow + r) * CELL;
+                    screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, currentShape.color);
+                }
+            }
+        }
+
+        int px = COLS * CELL + 14;
+        screen.text(px, 16,  "SCORE", Color.GRAY);
+        screen.text(px, 36,  String.valueOf(score), Color.WHITE);
+        screen.text(px, 78,  "LEVEL", Color.GRAY);
+        screen.text(px, 98,  String.valueOf(level), Color.WHITE);
+        screen.text(px, 140, "LINES", Color.GRAY);
+        screen.text(px, 160, String.valueOf(linesCleared), Color.WHITE);
+
+        if (gameOver) {
+            // プレイエリアを軽く暗くする（走査線風）
+            for (int y = 0; y &lt; ROWS * CELL; y += 2) {
+                screen.fillRect(0, y, COLS * CELL, 1, Color.BLACK);
+            }
+            screen.text(52, 210, "GAME OVER",          Color.RED);
+            screen.text(38, 240, "Press R to restart", Color.WHITE);
+        }
     }
 }
 </textarea>

@@ -1,18 +1,17 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 4 -- Left/right (and down) key input.
+ * Step 4 — 左右キーと下キーの操作。
  *
- * Goal: arrow keys move the block sideways, and the down arrow
- * nudges it down an extra cell.
+ * 目標: 矢印キーでブロックを左右に動かす。
+ *       下キーで 1 マス加速して落とす。
  *
- * You'll learn:
- *  - onKey(Key key) fires whenever a tracked key is pressed
- *  - enum comparison with ==
- *  - how logic (onKey) is separate from timing (update)
+ * 学ぶこと:
+ *  - onKey(Key key) はキーが押されるたびに呼ばれる
+ *  - enum の == 比較（String のような .equals は不要）
+ *  - イベント駆動（onKey）と時間駆動（update）の対比
  *
- * Notice: the block can still fall off the sides of the board. That's
- * on purpose -- Step 5 adds wall collision.
+ * 注意: 画面の外に出てもブロックは戻らない（Step 5 で壁判定を入れる）。
  */
 public class MyTetris extends Game {
 

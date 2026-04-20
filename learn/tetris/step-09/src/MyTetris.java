@@ -2,17 +2,15 @@ import dev.yasuda.tetris.*;
 import java.util.Random;
 
 /**
- * Step 9 -- Rotation.
+ * Step 9 — 回転。
  *
- * Goal: Up arrow rotates the current piece 90 degrees clockwise.
- * If the rotated shape would collide with a wall, the floor, or a
- * landed block, the rotation is cancelled.
+ * 目標: 上矢印キーで現在のミノを 90 度時計回りに回す。
+ *       回した結果が壁・床・既存ブロックにぶつかるときは回転をキャンセル。
  *
- * You'll learn:
- *  - rotating a 2D array clockwise (out[c][n-1-r] = in[r][c])
- *  - keeping the shape's "base" (enum) separate from the "current"
- *    cell grid, which now mutates as the player rotates
- *  - the classic "try, validate, commit or cancel" pattern
+ * 学ぶこと:
+ *  - 2次元配列を時計回りに回転する式: out[c][n - 1 - r] = in[r][c]
+ *  - Shape（形の「種類」）と currentCells（今の向き）を分けて持つ
+ *  - 「試して → 検査して → OK なら反映、ダメなら捨てる」パターン
  */
 public class MyTetris extends Game {
 
@@ -57,8 +55,8 @@ public class MyTetris extends Game {
     Shape[] bag = Shape.values();
     Random rng = new Random();
 
-    // Keep the base Shape (for color) and the live cell grid (which
-    // changes as the player rotates) separately.
+    // Shape は「種類」（色を決めるだけ）、currentCells は
+    // 今の向きを表すセル配列（プレイヤーが回すたびに差し替わる）。
     Shape currentShape = bag[rng.nextInt(bag.length)];
     int[][] currentCells = currentShape.cells;
     int pieceCol = 3;
@@ -96,7 +94,7 @@ public class MyTetris extends Game {
         }
     }
 
-    /** Rotate a square cell grid 90 degrees clockwise into a new array. */
+    /** 正方形のセル配列を 90 度時計回りに回して、新しい配列を返す。 */
     static int[][] rotateCW(int[][] cells) {
         int n = cells.length;
         int[][] out = new int[n][n];

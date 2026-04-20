@@ -2,17 +2,16 @@ import dev.yasuda.tetris.*;
 import java.util.Random;
 
 /**
- * Step 10 -- Line clears.
+ * Step 10 — ライン消去。
  *
- * Goal: when a row is completely filled, remove it and shift
- * everything above down by one. Chain clears (multiple rows at once)
- * work automatically.
+ * 目標: 横一列がすべて埋まったら消去し、上の行を下にシフト。
+ *       複数行一度消し（最大 4 行 = テトリス！）も自動で処理される。
  *
- * You'll learn:
- *  - walking the board from the bottom up to check each row
- *  - the "loop-with-deletion" trick: don't decrement when you just
- *    removed, so the same index is re-checked after the shift
- *  - in-place row shifting using a temporary copy of one row
+ * 学ぶこと:
+ *  - 盤面を下から上へ走査する
+ *  - 「ループ中に要素を消す」ときの罠: 消した直後は同じ index を
+ *    もう一度チェック（row-- しない）
+ *  - その場で行をシフトするときの添え字の持ち方
  */
 public class MyTetris extends Game {
 
@@ -129,14 +128,13 @@ public class MyTetris extends Game {
         }
     }
 
-    /** Remove every fully-filled row, shifting everything above down. */
+    /** 埋まっている行を全部消し、上の行を下にシフトする。 */
     void clearLines() {
         int row = ROWS - 1;
         while (row >= 0) {
             if (isRowFull(row)) {
                 removeRow(row);
-                // Don't decrement: re-check this same index, which now
-                // holds what used to be row - 1.
+                // row-- しない: シフトで下りてきた行を同じ index で再チェック
             } else {
                 row--;
             }
@@ -151,13 +149,13 @@ public class MyTetris extends Game {
     }
 
     void removeRow(int row) {
-        // Shift every row above `row` down by one.
+        // row から上の行を 1 つずつ下にずらす
         for (int r = row; r > 0; r--) {
             for (int col = 0; col < COLS; col++) {
                 board[r][col] = board[r - 1][col];
             }
         }
-        // Top row becomes empty.
+        // 一番上の行は空に
         for (int col = 0; col < COLS; col++) {
             board[0][col] = 0;
         }

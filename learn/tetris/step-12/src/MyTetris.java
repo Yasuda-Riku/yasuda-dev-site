@@ -2,17 +2,16 @@ import dev.yasuda.tetris.*;
 import java.util.Random;
 
 /**
- * Step 12 -- Game over and restart.
+ * Step 12 — ゲームオーバーとリスタート。
  *
- * Goal: when a new piece can't be placed at the spawn position, the
- * game ends. R resets everything and starts a new game.
+ * 目標: 新しいミノが出てくる位置に既にブロックがあると「ゲームオーバー」。
+ *       R キーで盤面・スコアをリセットして最初からやり直せる。
  *
- * You'll learn:
- *  - detecting "the loss state" with the same canMove() we've had all along
- *  - guarding update/onKey with a gameOver flag so input + falling stop
- *  - bundling reset logic into one method (restart) so "new game" is
- *    one call site, not four or five scattered assignments
- *  - drawing an overlay with Screen.text() on top of the final board
+ * 学ぶこと:
+ *  - 「負け状態」の判定に、これまでの canMove() をそのまま使う
+ *  - gameOver フラグで update / onKey をガード（R キーだけ例外）
+ *  - リセットロジックは restart() という 1 つのメソッドにまとめる
+ *  - Screen.text で盤面の上にオーバーレイを描く
  */
 public class MyTetris extends Game {
 
@@ -111,6 +110,7 @@ public class MyTetris extends Game {
         }
     }
 
+    /** すべての状態を初期値に戻し、最初のミノを出す。 */
     void restart() {
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
@@ -201,7 +201,7 @@ public class MyTetris extends Game {
         currentCells = currentShape.cells;
         pieceCol = 3;
         pieceRow = 0;
-        // If the fresh piece can't even be placed: it's over.
+        // 出した瞬間に置けないなら、もう詰み → ゲームオーバー
         if (!canMove(currentCells, pieceCol, pieceRow)) {
             gameOver = true;
         }
@@ -241,7 +241,7 @@ public class MyTetris extends Game {
         screen.text(px, 160, String.valueOf(linesCleared), Color.WHITE);
 
         if (gameOver) {
-            // Dim the playfield
+            // プレイエリアを軽く暗くする（走査線風）
             for (int y = 0; y < ROWS * CELL; y += 2) {
                 screen.fillRect(0, y, COLS * CELL, 1, Color.BLACK);
             }

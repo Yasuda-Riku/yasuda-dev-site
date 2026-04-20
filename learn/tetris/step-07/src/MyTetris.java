@@ -1,17 +1,15 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 7 -- The seven tetrominoes.
+ * Step 7 — 7 種類のミノ。
  *
- * Goal: replace the single 1x1 block with the seven classic shapes
- * (I, O, T, S, Z, L, J). They cycle through in order each spawn.
+ * 目標: 1 セルのブロックを、I, O, T, S, Z, L, J のテトロミノに置き換える。
+ *       とりあえず順番にループ出現する（ランダムは Step 8）。
  *
- * You'll learn:
- *  - enum with fields (a Shape carries a Color and a cell pattern)
- *  - multi-cell collision: canMove loops over every filled cell of
- *    the shape, not just one position
- *  - separating "current piece" (shape + position) from the landed
- *    "board" state
+ * 学ぶこと:
+ *  - フィールドを持つ enum（Shape に色と セル配列を持たせる）
+ *  - 複数セルの衝突判定: canMove が shape の全セルをループ
+ *  - 「現在のピース（形 + 位置）」と「固定盤面」の分離
  */
 public class MyTetris extends Game {
 
@@ -21,7 +19,7 @@ public class MyTetris extends Game {
 
     static final double DROP_SECONDS = 1.0;
 
-    /** Every tetromino is a color + a grid of 1s and 0s. */
+    /** 各ミノは「色」と「1/0 のセル配列」を持つ。 */
     enum Shape {
         I(Color.CYAN,   new int[][]{
             {0,0,0,0},
@@ -70,7 +68,7 @@ public class MyTetris extends Game {
 
     int[][] board = new int[ROWS][COLS];
 
-    // Current falling piece.
+    // 現在の落下ピース
     Shape[] bag = Shape.values();
     int bagIndex = 0;
     Shape current = bag[0];
@@ -104,7 +102,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  && canMove(current, pieceCol, pieceRow + 1)) pieceRow++;
     }
 
-    /** True if placing shape at (col, row) leaves every filled cell inside the board and unoccupied. */
+    /** shape を (col, row) に置いたとき、全セルが盤面の中かつ空なら true。 */
     boolean canMove(Shape shape, int col, int row) {
         int[][] cells = shape.cells;
         for (int r = 0; r < cells.length; r++) {
@@ -120,7 +118,7 @@ public class MyTetris extends Game {
         return true;
     }
 
-    /** Stamp the current piece into the board. */
+    /** 現在のピースを盤面に固定する（= 書き込む）。 */
     void lockPiece() {
         int[][] cells = current.cells;
         for (int r = 0; r < cells.length; r++) {
@@ -131,7 +129,7 @@ public class MyTetris extends Game {
         }
     }
 
-    /** Cycle to the next shape in the bag. */
+    /** 次のミノへ（bag を順に回す）。 */
     void spawnNext() {
         bagIndex = (bagIndex + 1) % bag.length;
         current = bag[bagIndex];
@@ -143,7 +141,7 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // Board: empty cells dark, landed cells gray.
+        // 盤面: 空セルは暗いグレー、固定済みはそのミノの色
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int x = col * CELL;
@@ -154,7 +152,7 @@ public class MyTetris extends Game {
             }
         }
 
-        // Current piece: each filled cell of its shape, in the shape's color.
+        // 現在のピース: 埋まっているセルだけを current.color で描く
         int[][] cells = current.cells;
         for (int r = 0; r < cells.length; r++) {
             for (int c = 0; c < cells[r].length; c++) {

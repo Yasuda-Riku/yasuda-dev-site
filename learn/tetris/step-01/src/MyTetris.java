@@ -1,10 +1,10 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 1 — Draw the board.
+ * Step 1 — 盤面を描く。
  *
- * Goal: a 10 x 20 grid of empty dark cells.
- * You'll learn: 2D loops, using Screen.fillRect, and constants.
+ * 目標: 10 × 20 の空のグリッドを画面に表示する。
+ * 学ぶこと: 2次元ループ、Screen.fillRect、定数の使い方。
  */
 public class MyTetris extends Game {
 

@@ -1,16 +1,16 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 6 -- Lock the block, spawn a new one.
+ * Step 6 — ブロックの固定と新ブロック生成。
  *
- * Goal: when the block can't fall any further, stamp it into the
- * board and spawn a fresh block at the top. Blocks now actually stack.
+ * 目標: 落ち切ったブロックを盤面に書き込み（「固定」）、
+ *       新しいブロックを上から出す。ブロックが積み上がり始める。
  *
- * You'll learn:
- *  - 2D arrays: int[ROWS][COLS] as the board state
- *  - writing to an array cell: board[row][col] = 1
- *  - extending canMove to also reject already-occupied cells
- *  - the falling block vs. the landed board are different things
+ * 学ぶこと:
+ *  - 2次元配列 int[ROWS][COLS] を「盤面の状態」として使う
+ *  - 配列への書き込み: board[row][col] = 1
+ *  - canMove に「そこが既に埋まっている」チェックを追加
+ *  - 落下中のブロックと、固定済みの盤面は別物
  */
 public class MyTetris extends Game {
 
@@ -20,7 +20,7 @@ public class MyTetris extends Game {
 
     static final double DROP_SECONDS = 1.0;
 
-    // 0 = empty, non-zero = a landed block.
+    // 0 = 空、0 以外 = 固定済みブロックあり
     int[][] board = new int[ROWS][COLS];
 
     int blockCol = 4;
@@ -39,9 +39,8 @@ public class MyTetris extends Game {
             if (canMove(blockCol, blockRow + 1)) {
                 blockRow++;
             } else {
-                // The block has landed: stamp it into the board.
+                // ここで「着地」。盤面に書き込んで、新しいブロックを上から出す。
                 board[blockRow][blockCol] = 1;
-                // Spawn a new block at the top.
                 blockRow = 0;
                 blockCol = COLS / 2 - 1;
             }
@@ -55,7 +54,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  && canMove(blockCol, blockRow + 1)) blockRow++;
     }
 
-    /** True if (col, row) is inside the board AND not already occupied. */
+    /** (col, row) が盤面の中かつ空いていれば true。 */
     boolean canMove(int col, int row) {
         if (col < 0 || col >= COLS) return false;
         if (row < 0 || row >= ROWS) return false;
@@ -67,7 +66,6 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // Board: empty cells in DARK_GRAY, landed blocks in RED.
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int x = col * CELL;
@@ -77,7 +75,6 @@ public class MyTetris extends Game {
             }
         }
 
-        // The currently falling block is drawn on top of the board.
         int bx = blockCol * CELL;
         int by = blockRow * CELL;
         screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);

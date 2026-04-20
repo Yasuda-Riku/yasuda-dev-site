@@ -2,16 +2,16 @@ import dev.yasuda.tetris.*;
 import java.util.Random;
 
 /**
- * Step 11 -- Score, lines, level.
+ * Step 11 — スコア、ライン数、レベル。
  *
- * Goal: track how many lines you've cleared, rack up score, and
- * speed up the game every 10 lines. Display it all in a side panel.
+ * 目標: 消したライン数からスコアを計算、10 行ごとにレベルアップ、
+ *       レベルが上がるほど落下速度が上がる。右側にサイドパネルを表示。
  *
- * You'll learn:
- *  - separating state (score, level) from logic
- *  - standard Tetris scoring (1/2/3/4 lines -> 100/300/500/800 * level)
- *  - level-based difficulty: dropSeconds() shrinks with level
- *  - drawing text on a canvas alongside the playfield
+ * 学ぶこと:
+ *  - 「状態」と「ロジック」の分離（score / level / linesCleared）
+ *  - テトリスの基本スコア: 1/2/3/4 行 → 100/300/500/800 × level
+ *  - レベル別の難易度調整: dropSeconds() が level で短くなる
+ *  - Canvas 上にテキストを描く（screen.text）
  */
 public class MyTetris extends Game {
 
@@ -61,7 +61,7 @@ public class MyTetris extends Game {
     int pieceRow = 0;
     double accumulator = 0.0;
 
-    // Step 11 state.
+    // Step 11 で追加した状態
     int score = 0;
     int linesCleared = 0;
     int level = 1;
@@ -70,7 +70,7 @@ public class MyTetris extends Game {
         new MyTetris().run();
     }
 
-    /** Drop interval in seconds. Shrinks with level, floor at 0.1s. */
+    /** 落下間隔（秒）: level が上がるほど短く、最低 0.1 秒。 */
     double dropSeconds() {
         double s = 1.0 - (level - 1) * 0.1;
         return (s < 0.1) ? 0.1 : s;
@@ -186,7 +186,7 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // Playfield.
+        // プレイエリア
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int x = col * CELL;
@@ -197,7 +197,7 @@ public class MyTetris extends Game {
             }
         }
 
-        // Current piece.
+        // 現在のピース
         for (int r = 0; r < currentCells.length; r++) {
             for (int c = 0; c < currentCells[r].length; c++) {
                 if (currentCells[r][c] == 0) continue;
@@ -207,7 +207,7 @@ public class MyTetris extends Game {
             }
         }
 
-        // Side panel (x = 250..).
+        // サイドパネル（x = 250 くらいから）
         int px = COLS * CELL + 14;
         screen.text(px, 16,  "SCORE", Color.GRAY);
         screen.text(px, 36,  String.valueOf(score), Color.WHITE);

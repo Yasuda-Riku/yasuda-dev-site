@@ -1,16 +1,15 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 3 -- Free fall.
+ * Step 3 — 自由落下。
  *
- * Goal: the block from Step 2 drops one cell every second on its own.
- * When it hits the bottom, wrap back to the top so the animation
- * doesn't stop (Step 5 will introduce a proper floor.)
+ * 目標: ブロックが 1 秒ごとに 1 マスずつ自動で落下する。
+ *       下まで行ったら上に戻ってループする（床判定は Step 5）。
  *
- * You'll learn:
- *  - update(double dt) is called every frame with the elapsed seconds
- *  - an "accumulator" variable lets you time events precisely
- *  - separating logic (update) from drawing (render)
+ * 学ぶこと:
+ *  - update(double dt) は毎フレーム呼ばれ、dt は経過秒数
+ *  - 「累積変数」で時間イベントを正確に刻むパターン
+ *  - ロジック（update）と描画（render）の分離
  */
 public class MyTetris extends Game {
 
@@ -34,7 +33,7 @@ public class MyTetris extends Game {
         while (accumulator >= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
             blockRow++;
-            if (blockRow >= ROWS) blockRow = 0; // loop around for now
+            if (blockRow >= ROWS) blockRow = 0; // 床まで行ったら上に戻す
         }
     }
 
@@ -42,7 +41,6 @@ public class MyTetris extends Game {
     public void render(Screen screen) {
         screen.clear(Color.BLACK);
 
-        // Empty board
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int x = col * CELL;
@@ -51,7 +49,6 @@ public class MyTetris extends Game {
             }
         }
 
-        // The block
         int bx = blockCol * CELL;
         int by = blockRow * CELL;
         screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);

@@ -1,15 +1,15 @@
 import dev.yasuda.tetris.*;
 
 /**
- * Step 5 -- Wall and floor collision.
+ * Step 5 — 壁と床の衝突判定。
  *
- * Goal: the block can no longer escape the board. Auto-fall stops at
- * the bottom row; arrow keys are clamped to the left/right edges.
+ * 目標: ブロックが盤面の外に飛び出さないようにする。
+ *       自動落下は床で止まり、矢印キーも壁を越えない。
  *
- * You'll learn:
- *  - writing a boolean helper method (canMove) that returns true/false
- *  - reusing the same check from BOTH update() and onKey()
- *  - the classic boundary pattern: col &lt; 0, col &gt;= COLS, etc.
+ * 学ぶこと:
+ *  - boolean を返す小さなヘルパーメソッド（canMove）を書く
+ *  - 同じ判定を update と onKey の両方から再利用する
+ *  - 境界条件の定番パターン（col < 0, col >= COLS, ...）
  */
 public class MyTetris extends Game {
 
@@ -45,7 +45,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  && canMove(blockCol, blockRow + 1)) blockRow++;
     }
 
-    /** True if (col, row) is inside the board. */
+    /** (col, row) が盤面の中なら true。 */
     boolean canMove(int col, int row) {
         if (col < 0)     return false;
         if (col >= COLS) return false;

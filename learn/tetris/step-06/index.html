@@ -78,11 +78,16 @@
 <textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 6 — Lock the block, spawn a new one.
+ * Step 6 — ブロックの固定と新ブロック生成。
  *
- * Goal: blocks now stack. When the current block can't fall any
- * further, write it to the board and spawn a fresh one at the top.
- * You'll learn: 2D arrays, array writes, extending canMove.
+ * 目標: 落ち切ったブロックを盤面に書き込み（「固定」）、
+ *       新しいブロックを上から出す。ブロックが積み上がり始める。
+ *
+ * 学ぶこと:
+ *  - 2次元配列 int[ROWS][COLS] を「盤面の状態」として使う
+ *  - 配列への書き込み: board[row][col] = 1
+ *  - canMove に「そこが既に埋まっている」チェックを追加
+ *  - 落下中のブロックと、固定済みの盤面は別物
  */
 public class MyTetris extends Game {
 
@@ -92,7 +97,8 @@ public class MyTetris extends Game {
 
     static final double DROP_SECONDS = 1.0;
 
-    int[][] board = new int[ROWS][COLS]; // 0 = empty
+    // 0 = 空、0 以外 = 固定済みブロックあり
+    int[][] board = new int[ROWS][COLS];
 
     int blockCol = 4;
     int blockRow = 0;
@@ -110,9 +116,8 @@ public class MyTetris extends Game {
             if (canMove(blockCol, blockRow + 1)) {
                 blockRow++;
             } else {
-                // Lock the block into the board.
+                // ここで「着地」。盤面に書き込んで、新しいブロックを上から出す。
                 board[blockRow][blockCol] = 1;
-                // Spawn a new block at the top.
                 blockRow = 0;
                 blockCol = COLS / 2 - 1;
             }
@@ -126,7 +131,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  &amp;&amp; canMove(blockCol, blockRow + 1)) blockRow++;
     }
 
-    /** Inside the board AND not already occupied. */
+    /** (col, row) が盤面の中かつ空いていれば true。 */
     boolean canMove(int col, int row) {
         if (col &lt; 0 || col &gt;= COLS) return false;
         if (row &lt; 0 || row &gt;= ROWS) return false;

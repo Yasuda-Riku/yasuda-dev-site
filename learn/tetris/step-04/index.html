@@ -78,12 +78,17 @@
 <textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 4 — Left/right (and down) key input.
+ * Step 4 — 左右キーと下キーの操作。
  *
- * Goal: arrow keys move the block. Down nudges it one cell faster.
- * You'll learn: onKey(Key), enum == comparison.
+ * 目標: 矢印キーでブロックを左右に動かす。
+ *       下キーで 1 マス加速して落とす。
  *
- * The block can still run off the sides — Step 5 adds wall collision.
+ * 学ぶこと:
+ *  - onKey(Key key) はキーが押されるたびに呼ばれる
+ *  - enum の == 比較（String のような .equals は不要）
+ *  - イベント駆動（onKey）と時間駆動（update）の対比
+ *
+ * 注意: 画面の外に出てもブロックは戻らない（Step 5 で壁判定を入れる）。
  */
 public class MyTetris extends Game {
 

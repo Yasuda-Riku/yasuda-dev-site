@@ -78,11 +78,15 @@
 <textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">import dev.yasuda.tetris.*;
 
 /**
- * Step 3 — Free fall.
+ * Step 3 — 自由落下。
  *
- * Goal: the block drops one cell every second on its own.
- * You'll learn: update(dt), time accumulators, separating
- * logic (update) from drawing (render).
+ * 目標: ブロックが 1 秒ごとに 1 マスずつ自動で落下する。
+ *       下まで行ったら上に戻ってループする（床判定は Step 5）。
+ *
+ * 学ぶこと:
+ *  - update(double dt) は毎フレーム呼ばれ、dt は経過秒数
+ *  - 「累積変数」で時間イベントを正確に刻むパターン
+ *  - ロジック（update）と描画（render）の分離
  */
 public class MyTetris extends Game {
 
@@ -106,7 +110,7 @@ public class MyTetris extends Game {
         while (accumulator &gt;= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
             blockRow++;
-            if (blockRow &gt;= ROWS) blockRow = 0;
+            if (blockRow &gt;= ROWS) blockRow = 0; // 床まで行ったら上に戻す
         }
     }
 

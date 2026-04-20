@@ -2,17 +2,15 @@ import dev.yasuda.tetris.*;
 import java.util.Random;
 
 /**
- * Step 8 -- Random piece selection.
+ * Step 8 — ランダムにミノを出す。
  *
- * Goal: replace the fixed I-O-T-S-Z-L-J cycle with a random draw from
- * the 7 tetrominoes. This is the last piece of the "feels like Tetris"
- * puzzle before we add rotation (Step 9) and line clears (Step 10).
+ * 目標: I→O→T→S→Z→L→J の固定順から、毎回ランダム抽選に変える。
+ *       回転（Step 9）とライン消去（Step 10）を入れる前の最後の下準備。
  *
- * You'll learn:
- *  - java.util.Random and rng.nextInt(n)
- *  - why Random is a field (not a local) -- keep the same generator
- *  - why production Tetris uses a "7-bag" instead of pure random
- *    (see the note below)
+ * 学ぶこと:
+ *  - java.util.Random と rng.nextInt(n)
+ *  - Random は「フィールド」として 1 つだけ持つのがセオリー
+ *  - 本家テトリスの「7-bag」方式（このコースでは純ランダムで簡略化）
  */
 public class MyTetris extends Game {
 
@@ -22,34 +20,18 @@ public class MyTetris extends Game {
     static final double DROP_SECONDS = 1.0;
 
     enum Shape {
-        I(Color.CYAN,   new int[][]{
-            {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}
-        }),
-        O(Color.YELLOW, new int[][]{
-            {1,1}, {1,1}
-        }),
-        T(Color.PURPLE, new int[][]{
-            {0,1,0}, {1,1,1}, {0,0,0}
-        }),
-        S(Color.GREEN,  new int[][]{
-            {0,1,1}, {1,1,0}, {0,0,0}
-        }),
-        Z(Color.RED,    new int[][]{
-            {1,1,0}, {0,1,1}, {0,0,0}
-        }),
-        L(Color.ORANGE, new int[][]{
-            {0,0,1}, {1,1,1}, {0,0,0}
-        }),
-        J(Color.BLUE,   new int[][]{
-            {1,0,0}, {1,1,1}, {0,0,0}
-        });
+        I(Color.CYAN,   new int[][]{ {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0} }),
+        O(Color.YELLOW, new int[][]{ {1,1}, {1,1} }),
+        T(Color.PURPLE, new int[][]{ {0,1,0}, {1,1,1}, {0,0,0} }),
+        S(Color.GREEN,  new int[][]{ {0,1,1}, {1,1,0}, {0,0,0} }),
+        Z(Color.RED,    new int[][]{ {1,1,0}, {0,1,1}, {0,0,0} }),
+        L(Color.ORANGE, new int[][]{ {0,0,1}, {1,1,1}, {0,0,0} }),
+        J(Color.BLUE,   new int[][]{ {1,0,0}, {1,1,1}, {0,0,0} });
 
         final Color color;
         final int[][] cells;
-
         Shape(Color color, int[][] cells) {
-            this.color = color;
-            this.cells = cells;
+            this.color = color; this.cells = cells;
         }
     }
 
@@ -112,7 +94,7 @@ public class MyTetris extends Game {
         }
     }
 
-    /** Pick a random shape for the next piece. */
+    /** 次のミノをランダムに選ぶ。 */
     void spawnNext() {
         current = bag[rng.nextInt(bag.length)];
         pieceCol = 3;
