@@ -228,20 +228,36 @@
 .playground__console {
   font-family: var(--font-mono);
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--muted);
   background: #F4F2EC;
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 12px 14px;
-  max-height: 120px;
+  max-height: 200px;
   overflow-y: auto;
   min-height: 44px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .playground__console:empty::before {
   content: "console output";
   color: #B8B4AC;
   font-style: italic;
+}
+.playground__console .log-error {
+  color: #B8322A;
+  font-weight: 500;
+}
+.playground__console .log-warn {
+  color: #8A6A12;
+}
+.playground__console .log-java {
+  color: var(--fg);
+}
+.playground__console .log-caret {
+  color: var(--accent);
+  font-weight: 500;
 }
 
 /* ---------- Explanation + navigation sections ---------- */
