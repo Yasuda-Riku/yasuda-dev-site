@@ -14,6 +14,8 @@ public final class GameLoop {
     private static Game game;
     private static final Screen SHARED_SCREEN = new Screen();
 
+    private long lastNanos = 0L;
+
     private GameLoop() {}
 
     static void start(Game g) {
@@ -23,9 +25,17 @@ public final class GameLoop {
         g.setup();
     }
 
-    /** Called by JavaScript each animation frame. */
-    public void tick(double dt) {
+    /**
+     * Called by JavaScript each animation frame. No args — we measure dt
+     * internally to keep the JS-side call shape as simple as possible.
+     * (CheerpJ primitive-typed overload resolution has been flaky.)
+     */
+    public void tick() {
         if (game == null) return;
+        long now = System.nanoTime();
+        double dt = (lastNanos == 0L) ? 0.0 : (now - lastNanos) / 1_000_000_000.0;
+        if (dt > 0.1) dt = 0.1; // cap spikes (tab switched, etc.)
+        lastNanos = now;
         game.update(dt);
         game.render(SHARED_SCREEN);
     }

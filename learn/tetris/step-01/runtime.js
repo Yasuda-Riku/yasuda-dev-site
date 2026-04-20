@@ -8,89 +8,101 @@
 (function () {
   'use strict';
 
-  const canvas   = document.getElementById('stage-canvas');
-  const ctx      = canvas.getContext('2d');
-  const runBtn   = document.getElementById('run-btn');
-  const statusEl = document.getElementById('run-status');
-  const loadEl   = document.getElementById('loading-overlay');
+  const canvas    = document.getElementById('stage-canvas');
+  const ctx       = canvas.getContext('2d');
+  const runBtn    = document.getElementById('run-btn');
+  const statusEl  = document.getElementById('run-status');
+  const loadEl    = document.getElementById('loading-overlay');
   const consoleEl = document.getElementById('console-output');
 
   let cheerpjReady = false;
   let gameLoopInstance = null;
   let frameId = 0;
-  let lastT = 0;
+  let tickInFlight = false;
+  let loopActive = false;
 
   function setStatus(text, mode) {
     statusEl.textContent = text;
     statusEl.dataset.mode = mode || 'idle';
   }
-
   function logLine(msg) {
     const line = document.createElement('div');
     line.textContent = msg;
     consoleEl.appendChild(line);
     consoleEl.scrollTop = consoleEl.scrollHeight;
   }
-
   function showLoading(visible) {
     loadEl.dataset.visible = visible ? 'true' : 'false';
   }
 
   /* ---------- Java → JS (native implementations) ---------- */
 
-  async function nClear(lib, r, g, b) {
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
+  function nClear(lib, r, g, b) {
+    ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-
-  async function nFillRect(lib, x, y, w, h, r, g, b) {
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
+  function nFillRect(lib, x, y, w, h, r, g, b) {
+    ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     ctx.fillRect(x, y, w, h);
   }
-
-  async function nStrokeRect(lib, x, y, w, h, r, g, b) {
-    ctx.strokeStyle = `rgb(${r},${g},${b})`;
+  function nStrokeRect(lib, x, y, w, h, r, g, b) {
+    ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
   }
-
-  async function nText(lib, x, y, s, r, g, b) {
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
+  function nText(lib, x, y, s, r, g, b) {
+    ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
     ctx.font = '13px "JetBrains Mono", ui-monospace, monospace';
     ctx.textBaseline = 'top';
     ctx.fillText(String(s), x, y);
   }
+  function nWidth()  { return canvas.width;  }
+  function nHeight() { return canvas.height; }
 
-  async function nWidth(lib)  { return canvas.width;  }
-  async function nHeight(lib) { return canvas.height; }
-
-  async function nRegisterLoop(lib, inst) {
+  function nRegisterLoop(lib, inst) {
     gameLoopInstance = inst;
-    startFrameLoop();
+    logLine('[init] GameLoop instance registered');
+    // NOTE: rAF is started by the Run button handler AFTER cheerpjRunMain
+    // resolves. Starting it here races with the still-running main().
   }
 
   /* ---------- Frame loop ---------- */
 
   function startFrameLoop() {
+    if (loopActive) return;
+    loopActive = true;
     cancelAnimationFrame(frameId);
-    lastT = performance.now();
-    function frame(t) {
-      const dt = Math.min((t - lastT) / 1000, 0.1);
-      lastT = t;
-      if (gameLoopInstance) {
+
+    async function frame() {
+      if (!loopActive) return;
+      if (gameLoopInstance && !tickInFlight) {
+        tickInFlight = true;
         try {
-          gameLoopInstance.tick(dt).catch(function (e) {
-            setStatus('error: ' + (e && e.message ? e.message : e), 'error');
-            logLine('[error] ' + e);
-          });
+          await gameLoopInstance.tick();
         } catch (e) {
-          setStatus('error: ' + e.message, 'error');
+          loopActive = false;
+          setStatus('error: ' + describeError(e), 'error');
+          logLine('[tick error] ' + describeError(e));
           return;
+        } finally {
+          tickInFlight = false;
         }
       }
       frameId = requestAnimationFrame(frame);
     }
     frameId = requestAnimationFrame(frame);
+  }
+
+  function stopFrameLoop() {
+    loopActive = false;
+    cancelAnimationFrame(frameId);
+  }
+
+  function describeError(e) {
+    if (!e) return 'unknown';
+    if (typeof e === 'string') return e;
+    if (e.message) return e.message;
+    try { return JSON.stringify(e); } catch (_) { return String(e); }
   }
 
   /* ---------- Keyboard routing ---------- */
@@ -101,7 +113,7 @@
         document.activeElement && document.activeElement.tagName === 'CANVAS') {
       e.preventDefault();
     }
-    try { gameLoopInstance.onKey(e.keyCode); } catch (_) {}
+    try { gameLoopInstance.onKey(e.keyCode | 0); } catch (_) {}
   });
 
   /* ---------- CheerpJ init ---------- */
@@ -126,15 +138,15 @@
     await loadCheerpJScript();
 
     await cheerpjInit({
-      version: 17,
+      version: 8,
       status: 'none',
       natives: {
-        Java_dev_yasuda_tetris_Screen_jsClear:      nClear,
-        Java_dev_yasuda_tetris_Screen_jsFillRect:   nFillRect,
-        Java_dev_yasuda_tetris_Screen_jsStrokeRect: nStrokeRect,
-        Java_dev_yasuda_tetris_Screen_jsText:       nText,
-        Java_dev_yasuda_tetris_Screen_jsWidth:      nWidth,
-        Java_dev_yasuda_tetris_Screen_jsHeight:     nHeight,
+        Java_dev_yasuda_tetris_Screen_jsClear:          nClear,
+        Java_dev_yasuda_tetris_Screen_jsFillRect:       nFillRect,
+        Java_dev_yasuda_tetris_Screen_jsStrokeRect:     nStrokeRect,
+        Java_dev_yasuda_tetris_Screen_jsText:           nText,
+        Java_dev_yasuda_tetris_Screen_jsWidth:          nWidth,
+        Java_dev_yasuda_tetris_Screen_jsHeight:         nHeight,
         Java_dev_yasuda_tetris_GameLoop_jsRegisterLoop: nRegisterLoop,
       },
     });
@@ -149,6 +161,8 @@
 
   runBtn.addEventListener('click', async function () {
     runBtn.disabled = true;
+    stopFrameLoop();
+    gameLoopInstance = null;
     try {
       await ensureCheerpJ();
       setStatus('Java を実行中…', 'running');
@@ -158,12 +172,21 @@
         '/app/learn/tetris/sdk/sdk.jar:/app/learn/tetris/step-01/step01.jar'
       );
       logLine('[run] main() returned (exit ' + exit + ')');
-      if (exit === 0) setStatus('running', 'running');
-      else setStatus('exit ' + exit, 'error');
+      if (exit !== 0) {
+        setStatus('exit ' + exit, 'error');
+        return;
+      }
+      if (!gameLoopInstance) {
+        setStatus('Game instance が登録されませんでした', 'error');
+        logLine('[error] nRegisterLoop was never invoked');
+        return;
+      }
+      setStatus('running', 'running');
+      startFrameLoop();
     } catch (e) {
       console.error(e);
-      setStatus('error: ' + (e && e.message ? e.message : e), 'error');
-      logLine('[error] ' + e);
+      setStatus('error: ' + describeError(e), 'error');
+      logLine('[error] ' + describeError(e));
     } finally {
       runBtn.disabled = false;
     }
