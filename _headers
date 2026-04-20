@@ -1,12 +1,6 @@
 # Cloudflare Pages custom response headers.
 # https://developers.cloudflare.com/pages/configuration/headers/
 
-# CheerpJ needs byte-range requests to fetch jars incrementally.
-# Cloudflare's CDN does not honor Range on static assets under ~2 MB,
-# so jar Range handling is actually done by the Pages Function at
-# functions/learn/_middleware.js. These headers are a fallback for
-# any .jar served outside that scope.
-/*.jar
-  Content-Type: application/octet-stream
-  Cache-Control: private, max-age=3600, no-transform
-  Accept-Ranges: bytes
+# The Tetris course embeds jar bytes directly in /learn/tetris/step-01/
+# runtime.js and loads them into CheerpJ's /str/ virtual filesystem, so
+# no .jar HTTP requests actually happen. No per-extension headers needed.
