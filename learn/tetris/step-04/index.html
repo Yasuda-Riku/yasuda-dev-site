@@ -86,13 +86,9 @@
  *
  * 目標: 矢印キーでブロックを左右に動かす、下矢印で 1 マス加速して落とす。
  *
- * TODO:
- *   onKey() の 3 つの if の「動かす処理」を埋めてください。
- *   - LEFT  → blockCol を 1 減らす
- *   - RIGHT → blockCol を 1 増やす
- *   - DOWN  → blockRow を 1 増やす
+ * 「TODO」は「ここを埋めてください」の仮値です。1 マス分の変化量は +1 か -1。
  *
- * 注意: 今は壁判定を入れていないので、画面外に出ていきます（Step 5 で直します）。
+ * 注意: 今は壁判定がないので、画面外に出ていきます（Step 5 で直します）。
  */
 public class MyTetris extends Game {
 
@@ -101,6 +97,9 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
+
+    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
+    static final int TODO = 0;
 
     int blockCol = 4;
     int blockRow = 0;
@@ -123,16 +122,13 @@ public class MyTetris extends Game {
     @Override
     public void onKey(Key key) {
         if (key == Key.LEFT) {
-            // TODO: blockCol を 1 減らす
-
+            blockCol += TODO;   // ← -1 で左へ
         }
         if (key == Key.RIGHT) {
-            // TODO: blockCol を 1 増やす
-
+            blockCol += TODO;   // ← +1 で右へ
         }
         if (key == Key.DOWN) {
-            // TODO: blockRow を 1 増やす
-
+            blockRow += TODO;   // ← +1 で下へ
         }
     }
 

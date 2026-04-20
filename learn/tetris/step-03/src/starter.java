@@ -6,10 +6,7 @@ import dev.yasuda.tetris.*;
  * 目標: ブロックが DROP_SECONDS (= 1.0 秒) ごとに 1 マス下がる。
  *       下まで行ったら上に戻ってループする。
  *
- * TODO:
- *   1) accumulator に経過時間 dt を足し込む
- *   2) while の中で blockRow を 1 増やす
- *   3) blockRow が ROWS 以上になったら 0 に戻す
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -18,6 +15,9 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
+
+    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
+    static final int TODO = 0;
 
     int blockCol = 4;
     int blockRow = 0;
@@ -29,17 +29,19 @@ public class MyTetris extends Game {
 
     @Override
     public void update(double dt) {
-        // TODO 1: accumulator に dt を足す
-        accumulator += 0;
+        // 経過時間を accumulator に貯める
+        accumulator += TODO;   // ← dt を足す
 
-        // DROP_SECONDS 溜まるたびに中を実行する
+        // DROP_SECONDS 溜まるたびに 1 マス落とす
         while (accumulator >= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
 
-            // TODO 2: blockRow を 1 増やす
+            blockRow += TODO;  // ← 1 を足す
 
-            // TODO 3: blockRow が ROWS 以上になったら 0 に戻す
-
+            // 下端まで行ったら上端に戻す
+            if (blockRow >= ROWS) {
+                blockRow = TODO;  // ← 0 に戻す
+            }
         }
     }
 

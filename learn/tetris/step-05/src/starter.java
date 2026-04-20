@@ -5,13 +5,7 @@ import dev.yasuda.tetris.*;
  *
  * 目標: ブロックが盤面の外に出ないようにする。
  *
- * TODO:
- *   1) canMove() の中で 4 つの境界条件をチェックする
- *      - col が 0 未満なら false
- *      - col が COLS 以上なら false
- *      - row が 0 未満なら false
- *      - row が ROWS 以上なら false
- *   2) update / onKey の動きを「canMove が true のときだけ動く」に書き換える
+ * 「TODO」は「ここを埋めてください」の仮値です。
  */
 public class MyTetris extends Game {
 
@@ -20,6 +14,9 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
+
+    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
+    static final int TODO = 0;
 
     int blockCol = 4;
     int blockRow = 0;
@@ -34,25 +31,27 @@ public class MyTetris extends Game {
         accumulator += dt;
         while (accumulator >= DROP_SECONDS) {
             accumulator -= DROP_SECONDS;
-            // TODO 2a: 「canMove(blockCol, blockRow + 1) が true なら blockRow++」に書き換える
-            blockRow++;
-            if (blockRow >= ROWS) blockRow = 0;
+            // 動けるときだけ下げる
+            if (canMove(blockCol, blockRow + TODO)) {   // ← +1 を入れる
+                blockRow++;
+            }
         }
     }
 
     @Override
     public void onKey(Key key) {
-        // TODO 2b: 各行の && で canMove をチェックしてから動かす
-        //   例: if (key == Key.LEFT && canMove(blockCol - 1, blockRow)) blockCol--;
-        if (key == Key.LEFT)  blockCol--;
-        if (key == Key.RIGHT) blockCol++;
-        if (key == Key.DOWN)  blockRow++;
+        if (key == Key.LEFT  && canMove(blockCol + TODO, blockRow)) blockCol--;   // ← -1
+        if (key == Key.RIGHT && canMove(blockCol + TODO, blockRow)) blockCol++;   // ← +1
+        if (key == Key.DOWN  && canMove(blockCol, blockRow + TODO)) blockRow++;   // ← +1
     }
 
-    /** (col, row) が盤面の中なら true。 */
+    /** (col, row) が盤面の中なら true、外なら false。 */
     boolean canMove(int col, int row) {
-        // TODO 1: 4 つの境界をチェックする（どれかに当てはまったら false を返す）
-
+        // 4 つの境界をチェック。どれかに当たったら「動けない」= false。
+        if (col < TODO)    return false;   // ← 0 と比べる
+        if (col >= TODO)   return false;   // ← COLS と比べる
+        if (row < TODO)    return false;   // ← 0 と比べる
+        if (row >= TODO)   return false;   // ← ROWS と比べる
         return true;
     }
 

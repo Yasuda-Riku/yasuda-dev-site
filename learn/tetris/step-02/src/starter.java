@@ -5,10 +5,7 @@ import dev.yasuda.tetris.*;
  *
  * 目標: Step 1 の盤面に加えて、赤いブロックを1つ描く。
  *
- * TODO:
- *   1) ブロックの位置フィールド blockCol / blockRow を初期化する
- *      （例: 列 4 ・ 行 0 からスタート）
- *   2) render() の末尾で、ブロック1つを赤で描く（位置とサイズを埋める）
+ * 「TODO」は「ここを埋めてください」の仮値です。正しい値・式に書き換えましょう。
  */
 public class MyTetris extends Game {
 
@@ -16,9 +13,12 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
 
-    // TODO 1: フィールド変数をダミー値 0 から正しい初期値に変える
-    int blockCol = 0;
-    int blockRow = 0;
+    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
+    static final int TODO = 0;
+
+    // ブロックの位置
+    int blockCol = TODO;   // ← 中央寄りの列（例: 4）
+    int blockRow = TODO;   // ← 上端の行（例: 0）
 
     public static void main(String[] args) {
         new MyTetris().run();
@@ -38,10 +38,8 @@ public class MyTetris extends Game {
         }
 
         // 盤面の上に赤ブロックを1つ重ねる
-        // TODO 2: bx, by を blockCol / blockRow / CELL から計算する
-        int bx = 0;
-        int by = 0;
-        // TODO 2: fillRect の位置・サイズを埋める（(x+1, y+1) と (CELL-2) 四方）
-        screen.fillRect(0, 0, CELL, CELL, Color.RED);
+        int bx = TODO;   // ← blockCol と CELL から
+        int by = TODO;   // ← blockRow と CELL から
+        screen.fillRect(TODO, TODO, TODO, TODO, Color.RED);
     }
 }
