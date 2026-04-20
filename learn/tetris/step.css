@@ -113,8 +113,31 @@
   color: var(--accent);
   border-color: var(--accent);
 }
+.playground__code-body {
+  display: flex;
+  align-items: stretch;
+  min-height: 420px;
+}
+.playground__code-gutter {
+  flex: 0 0 auto;
+  width: 44px;
+  padding: 20px 10px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: #B8B4AC;
+  background: #F1EFEA;
+  border-right: 1px solid var(--border);
+  text-align: right;
+  user-select: none;
+  white-space: pre;
+  overflow: hidden;
+  tab-size: 4;
+}
 .playground__code textarea {
   display: block;
+  flex: 1 1 auto;
   width: 100%;
   border: 0;
   resize: vertical;

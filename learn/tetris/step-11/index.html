@@ -80,6 +80,8 @@
             <span class="playground__code-filename">MyTetris.java</span>
             <button id="reset-btn" type="button" class="playground__code-reset" title="参照コードに戻す">Reset</button>
           </div>
+<div class="playground__code-body">
+            <pre id="code-gutter" class="playground__code-gutter" aria-hidden="true"></pre>
 <textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyTetris.java source code">// Step 11 — Score, lines, level. Highlights only (full file in repo).
 
 int score = 0;
@@ -142,6 +144,7 @@ public void render(Screen screen) {
     screen.text(px, 160, String.valueOf(linesCleared),Color.WHITE);
 }
 </textarea>
+          </div>
         </div>
 
         <div class="playground__stage">
