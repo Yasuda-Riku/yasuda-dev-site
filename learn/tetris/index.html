@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Tetris in Java — Learn — yasuda-dev</title>
+  <meta name="description" content="Java だけでテトリスを作る全12ステップのコース。ブラウザで動作、インストール不要。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/tetris/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/tetris/">
+  <meta property="og:title" content="Tetris in Java — 12 steps in the browser">
+  <meta property="og:description" content="Java だけでテトリスを作る全12ステップのコース。ブラウザで動作、インストール不要。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/tetris/course.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="course-hero" aria-labelledby="course-heading">
+      <div class="course-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Tetris in Java</span>
+        </nav>
+        <p class="eyebrow">Course · 12 steps</p>
+        <h1 id="course-heading" class="course-hero__title">Build a Tetris<br>in pure Java.</h1>
+        <p class="course-hero__lead">
+          ブラウザの中で Java だけを書いて、自分のテトリスを作り上げる全12ステップ。
+          毎ステップで画面が動き、最後には遊べるゲームが完成します。
+        </p>
+
+        <div class="course-hero__meta" aria-label="Course facts">
+          <div>
+            <dt>Language</dt>
+            <dd>Java 17</dd>
+          </div>
+          <div>
+            <dt>Runtime</dt>
+            <dd>Browser (CheerpJ)</dd>
+          </div>
+          <div>
+            <dt>Level</dt>
+            <dd>他言語を少しかじった人</dd>
+          </div>
+          <div>
+            <dt>Estimated</dt>
+            <dd>10&ndash;15 hours</dd>
+          </div>
+        </div>
+
+        <p class="course-hero__status">
+          <span class="course-hero__status-dot" aria-hidden="true"></span>
+          Step 1 は準備中です。まずはコース全体の構成を確認してください。
+        </p>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="who-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Who this is for</p>
+          <h2 id="who-heading" class="section-title">他言語かじった人の<br>"応用編"</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            会社や学校の Java 研修を終えたばかりで、文法はわかるけど応用で手が止まる &mdash;
+            そんな人のためのコースです。他の言語（Python, JavaScript, C など）を少し触ったことがあれば、
+            変数・if・for・関数・クラスの基本がわかっていれば十分。
+          </p>
+          <p>
+            作るのは、ルールが明快で、見た目が派手で、
+            研修で習う文法が全部ちょうど1回ずつ使われる題材 &mdash; テトリス。
+            ステップごとに画面で何かが動くので、<strong>自分が今どこまで作ったか</strong>が
+            常に目に見えます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="preview-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">What you'll build</p>
+          <h2 id="preview-heading" class="section-title">これが、あなたの Java だけで動く。</h2>
+        </header>
+
+        <div class="course-preview">
+          <div class="tetris-board" role="img" aria-label="テトリス盤面のプレビュー。落下中のT字ミノと積み上がったブロック。">
+            <!-- 10 x 20 grid. Filled cells hand-authored to show a believable mid-game state. -->
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--t"></div><div class="tetris-cell tetris-cell--t"></div><div class="tetris-cell tetris-cell--t"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--t"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell tetris-cell--j"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell tetris-cell--j"></div><div class="tetris-cell"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell tetris-cell--j"></div><div class="tetris-cell tetris-cell--j"></div><div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell"></div>
+            <div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--o"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--t"></div>
+            <div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell tetris-cell--z"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--l"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell tetris-cell--s"></div><div class="tetris-cell tetris-cell--j"></div><div class="tetris-cell tetris-cell--i"></div><div class="tetris-cell tetris-cell--t"></div>
+          </div>
+          <div class="course-preview__caption">
+            <p class="course-preview__score">
+              <span>SCORE</span>
+              <strong>12,400</strong>
+            </p>
+            <p class="course-preview__note">
+              モック画像です。ステップ12到達時、<br>
+              これが実際に Java で動きます。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section course-section--bordered" aria-labelledby="how-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2 id="how-heading" class="section-title">学習者は Java だけ書く。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            HTML も CSS も JavaScript も触りません。教材側が用意する
+            <code>Game</code> クラスを継承し、4つのメソッドを埋めていくだけ。
+            画面描画・キー入力・時間管理はすべてフレームワークが裏で処理します。
+          </p>
+          <p>
+            ブラウザ内で Java バイトコードを実行する <a href="https://cheerpj.com/" target="_blank" rel="noopener">CheerpJ</a>
+            を使うので、インストール不要・サーバ不要。URL を開いたらその場で書き始められます。
+          </p>
+        </div>
+
+        <div class="course-code" role="region" aria-label="Sample code">
+          <div class="course-code__label">
+            <span>Java</span>
+            <span class="course-code__filename">MyTetris.java</span>
+          </div>
+<pre><code class="course-code__body"><span class="k">public class</span> <span class="t">MyTetris</span> <span class="k">extends</span> <span class="t">Game</span> {
+
+    <span class="k">int</span>[][] board = <span class="k">new</span> <span class="k">int</span>[<span class="n">20</span>][<span class="n">10</span>];
+
+    <span class="a">@Override</span>
+    <span class="k">public void</span> setup() {
+        <span class="c">// 最初に1回だけ呼ばれる</span>
+    }
+
+    <span class="a">@Override</span>
+    <span class="k">public void</span> update(<span class="k">double</span> dt) {
+        <span class="c">// 毎フレーム、ゲームの状態を進める</span>
+    }
+
+    <span class="a">@Override</span>
+    <span class="k">public void</span> render(<span class="t">Screen</span> screen) {
+        screen.clear(<span class="t">Color</span>.<span class="f">BLACK</span>);
+        screen.fillRect(x, y, <span class="n">30</span>, <span class="n">30</span>, <span class="t">Color</span>.<span class="f">RED</span>);
+    }
+
+    <span class="a">@Override</span>
+    <span class="k">public void</span> onKey(<span class="t">Key</span> key) {
+        <span class="k">if</span> (key == <span class="t">Key</span>.<span class="f">LEFT</span>)  movePiece(-<span class="n">1</span>);
+        <span class="k">if</span> (key == <span class="t">Key</span>.<span class="f">RIGHT</span>) movePiece(<span class="n">1</span>);
+    }
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="curriculum-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Curriculum</p>
+          <h2 id="curriculum-heading" class="section-title">全12ステップ。<br>毎回、画面が動く。</h2>
+        </header>
+
+        <ol class="curriculum" aria-label="Course steps">
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 01</p>
+            <h3 class="curriculum__title">盤面を描く</h3>
+            <p class="curriculum__goal">10×20 のグリッドが画面に出る。</p>
+            <p class="curriculum__learn">2次元配列 · for の二重ループ</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 02</p>
+            <h3 class="curriculum__title">ブロックを1つ置く</h3>
+            <p class="curriculum__goal">中央に赤い四角が表示される。</p>
+            <p class="curriculum__learn">フィールド · メソッド分割</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 03</p>
+            <h3 class="curriculum__title">自由落下</h3>
+            <p class="curriculum__goal">ブロックが1秒で1マス落ちる。</p>
+            <p class="curriculum__learn">フレーム経過 · dt · 状態変数</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 04</p>
+            <h3 class="curriculum__title">左右キー操作</h3>
+            <p class="curriculum__goal">矢印キーで動かせる。</p>
+            <p class="curriculum__learn">switch · enum 比較</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 05</p>
+            <h3 class="curriculum__title">壁と床の衝突判定</h3>
+            <p class="curriculum__goal">壁や床を突き抜けなくなる。</p>
+            <p class="curriculum__learn">boolean 返すメソッド · 境界条件</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 06</p>
+            <h3 class="curriculum__title">ブロックの固定</h3>
+            <p class="curriculum__goal">着地したブロックが積み上がる。</p>
+            <p class="curriculum__learn">配列への書き込み · 状態遷移</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 07</p>
+            <h3 class="curriculum__title">7種類のミノ</h3>
+            <p class="curriculum__goal">I, O, T, S, Z, L, J が順に出る。</p>
+            <p class="curriculum__learn">enum + フィールド · 静的配列</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 08</p>
+            <h3 class="curriculum__title">ランダムに出す</h3>
+            <p class="curriculum__goal">次のミノがランダム抽選される。</p>
+            <p class="curriculum__learn">java.util.Random · Queue</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 09</p>
+            <h3 class="curriculum__title">回転</h3>
+            <p class="curriculum__goal">R キーでミノが回る。</p>
+            <p class="curriculum__learn">2次元配列の転置</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 10</p>
+            <h3 class="curriculum__title">ライン消去</h3>
+            <p class="curriculum__goal">1行そろったら光って消える。</p>
+            <p class="curriculum__learn">配列走査 · シフト · ループ中削除の罠</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 11</p>
+            <h3 class="curriculum__title">スコアとレベル</h3>
+            <p class="curriculum__goal">点数が増え、だんだん速くなる。</p>
+            <p class="curriculum__learn">状態管理 · 計算式</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 12</p>
+            <h3 class="curriculum__title">ゲームオーバーとリスタート</h3>
+            <p class="curriculum__goal">積み切ったら終了、R で再開。</p>
+            <p class="curriculum__learn">状態リセット · 例外 or 状態遷移</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="course-section course-section--bordered" aria-labelledby="api-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">The API</p>
+          <h2 id="api-heading" class="section-title">用意されているクラス。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            学習者が使う Java API は、驚くほど小さいです。
+            これ以外は全部「普通の Java」&mdash;
+            <code>int</code>, <code>String</code>, <code>if</code>, <code>for</code>,
+            <code>class</code>, <code>new</code>, 配列、<code>List</code>、例外&hellip; 研修で習う文法がそのまま武器になります。
+          </p>
+        </div>
+
+        <dl class="course-api">
+          <div>
+            <dt><code>Game</code></dt>
+            <dd>継承して使う親クラス。<code>setup</code> / <code>update</code> / <code>render</code> / <code>onKey</code> の4つを実装する。</dd>
+          </div>
+          <div>
+            <dt><code>Screen</code></dt>
+            <dd><code>fillRect</code>, <code>strokeRect</code>, <code>text</code>, <code>clear</code>。描画の全て。</dd>
+          </div>
+          <div>
+            <dt><code>Color</code></dt>
+            <dd><code>RED</code>, <code>BLUE</code>, ... の定数。<code>Color.rgb(r, g, b)</code> で自作も可能。</dd>
+          </div>
+          <div>
+            <dt><code>Key</code> (enum)</dt>
+            <dd><code>LEFT</code>, <code>RIGHT</code>, <code>UP</code>, <code>DOWN</code>, <code>SPACE</code>, <code>R</code>, <code>ENTER</code> ほか。</dd>
+          </div>
+          <div>
+            <dt><code>Sound</code></dt>
+            <dd><code>Sound.play("beep")</code>。内蔵効果音と自作波形。</dd>
+          </div>
+          <div>
+            <dt><code>Storage</code></dt>
+            <dd>ハイスコアの保存用。<code>Storage.putInt</code> / <code>Storage.getInt</code>。</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="start-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Get started</p>
+          <h2 id="start-heading" class="section-title">始めましょうか。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            Step 1 のインタラクティブ版は現在制作中です。公開されたら、このページ下部から進めます。
+            ブラウザだけで完結するので、環境構築は一切不要 &mdash; リンクを開くだけ。
+          </p>
+        </div>
+
+        <div class="course-start">
+          <a class="course-start__cta course-start__cta--disabled" aria-disabled="true">
+            <span>Step 01 · 盤面を描く</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <p class="course-start__note">Coming soon</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
