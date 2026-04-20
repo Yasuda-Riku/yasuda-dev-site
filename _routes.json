@@ -1,6 +1,0 @@
-{
-  "version": 1,
-  "description": "Force requests under /learn/tetris/ through Pages Functions so the .jar Range-handling middleware actually runs. Everything else (and /learn/tetris/ HTML/CSS/JS that the middleware passes through via next()) stays static.",
-  "include": ["/learn/tetris/*"],
-  "exclude": []
-}
