@@ -1,0 +1,12 @@
+[
+  { "name": "(col 3, row 3) に白石が置かれている",
+    "type": "cell-color", "col": 3, "row": 3, "color": [255, 255, 255], "tolerance": 20 },
+  { "name": "(col 4, row 4) に白石が置かれている",
+    "type": "cell-color", "col": 4, "row": 4, "color": [255, 255, 255], "tolerance": 20 },
+  { "name": "(col 4, row 3) に黒石が置かれている",
+    "type": "cell-color", "col": 4, "row": 3, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "(col 3, row 4) に黒石が置かれている",
+    "type": "cell-color", "col": 3, "row": 4, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "空マスはまだ緑のまま",
+    "type": "cell-color", "col": 0, "row": 0, "color": [30, 120, 72], "tolerance": 20 }
+]

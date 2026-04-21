@@ -1,0 +1,4 @@
+# One hint per non-empty line.
+setup() では代入文を 4 つ並べるだけ。例: board[3][3] = WHITE;
+render の石描画は、まず stone を取り出す: int stone = board[row][col]; 次に if (stone != EMPTY) の中で描く。
+石の色は三項演算子で一発: Color c = (stone == BLACK) ? Color.BLACK : Color.WHITE; 半径は CELL/2 - 4 で盤面より少し小さく。
