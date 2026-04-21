@@ -98,7 +98,7 @@ public class MyTetris extends Game {
         if (key == Key.DOWN  && canMove(currentCells, pieceCol, pieceRow + 1)) pieceRow++;
         if (key == Key.UP) {
             int[][] rotated = rotateCW(currentCells);
-            if (canMove(rotated, pieceCol, pieceRow)) {
+            if (!isAllZero(rotated) && canMove(rotated, pieceCol, pieceRow)) {
                 currentCells = rotated;
             }
         }
@@ -106,13 +106,25 @@ public class MyTetris extends Game {
 
     static int[][] rotateCW(int[][] cells) {
         int n = cells.length;
-        int[][] out = new int[n][n];
+        int[][] out = new int[n][];
+        for (int i = 0; i < n; i++) {
+            out[i] = new int[n];
+        }
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < n; c++) {
                 out[c][n - 1 - r] = cells[r][c];
             }
         }
         return out;
+    }
+
+    static boolean isAllZero(int[][] cells) {
+        for (int r = 0; r < cells.length; r++) {
+            for (int c = 0; c < cells[r].length; c++) {
+                if (cells[r][c] != 0) return false;
+            }
+        }
+        return true;
     }
 
     boolean canMove(int[][] cells, int col, int row) {

@@ -83,7 +83,7 @@ public class MyTetris extends Game {
         if (key == Key.UP) {
             int[][] rotated = rotateCW(currentCells);
             // 回した結果が置けるなら差し替え、ダメならそのまま捨てる
-            if (canMove(rotated, pieceCol, pieceRow)) {
+            if (!isAllZero(rotated) && canMove(rotated, pieceCol, pieceRow)) {
                 currentCells = rotated;
             }
         }
@@ -92,7 +92,10 @@ public class MyTetris extends Game {
     /** 正方形のセル配列を 90 度時計回りに回した新しい配列を返す。 */
     static int[][] rotateCW(int[][] cells) {
         int n = cells.length;
-        int[][] out = new int[n][n];
+        int[][] out = new int[n][];
+        for (int i = 0; i < n; i++) {
+            out[i] = new int[n];
+        }
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < n; c++) {
                 // TODO: 時計回り 90° の公式: out[c][n - 1 - r] = cells[r][c]
@@ -101,6 +104,15 @@ public class MyTetris extends Game {
             }
         }
         return out;
+    }
+
+    static boolean isAllZero(int[][] cells) {
+        for (int r = 0; r < cells.length; r++) {
+            for (int c = 0; c < cells[r].length; c++) {
+                if (cells[r][c] != 0) return false;
+            }
+        }
+        return true;
     }
 
     boolean canMove(int[][] cells, int col, int row) {
