@@ -196,13 +196,19 @@
   overflow: hidden;
   tab-size: 4;
 }
-/* Syntax overlay: a <pre> stacked under a transparent-text textarea.
-   The overlay shows the same characters re-rendered with inline
-   highlighting (currently just TODO in red); the textarea catches
-   input and shows the caret and selection. */
+/* Syntax overlay: a <pre> stacked with a transparent-text textarea
+   inside a single grid cell. The overlay shows the same characters
+   re-rendered with inline highlighting; the textarea catches input
+   and shows the caret / selection. Grid stacking avoids the stacking
+   pitfalls of absolute positioning. */
 .playground__code-wrap {
   position: relative;
   flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+}
+.playground__code-wrap > * {
+  grid-area: 1 / 1;
   min-width: 0;
 }
 .playground__code-gutter span {
@@ -259,8 +265,6 @@
   color: #8A6A12;
 }
 .playground__code-highlight {
-  position: absolute;
-  inset: 0;
   margin: 0;
   padding: 20px 24px;
   font-family: var(--font-mono);
@@ -269,10 +273,13 @@
   color: var(--fg);
   background: transparent;
   white-space: pre;
-  overflow: hidden;
-  pointer-events: none;
+  overflow: hidden;        /* textarea scrolls, overlay is synced in JS */
+  pointer-events: none;    /* clicks pass through to the textarea */
   tab-size: 4;
   box-sizing: border-box;
+  /* Overlay must have the same outer size as the textarea so its text
+     aligns pixel-exact. min-height matches textarea. */
+  min-height: 420px;
 }
 .playground__code-highlight .tok-todo {
   color: #D43A2F;
@@ -285,8 +292,6 @@
 
 .playground__code textarea {
   display: block;
-  position: relative;
-  z-index: 1;
   width: 100%;
   min-height: 420px;
   border: 0;
@@ -295,9 +300,8 @@
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
-  /* Make glyph invisible but keep selection + caret; use a transparent
-     text-shadow trick so Firefox selection paints the background
-     correctly without revealing the glyph. */
+  /* Glyph color is transparent so the overlay's colored text shows
+     through; caret stays visible via caret-color. */
   color: transparent;
   caret-color: var(--fg);
   padding: 20px 24px;
