@@ -193,6 +193,25 @@
   margin: 0;
   max-width: 28ch;
 }
+.course-preview__note strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+.course-preview__cta {
+  margin: 18px 0 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.course-preview__cta a {
+  color: var(--fg);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.course-preview__cta a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 
 /* ---------- Code block ---------- */
 .course-code {
