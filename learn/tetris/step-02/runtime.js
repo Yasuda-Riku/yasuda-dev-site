@@ -13,10 +13,11 @@
 (function () {
   "use strict";
 
-  var SDK_JAR_B64   = "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";
+  var SDK_JAR_B64   = "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";
   var STARTER_CODE  = "import dev.yasuda.tetris.*;\n\n/**\n * Step 2 \u2014 \u30d6\u30ed\u30c3\u30af\u30921\u3064\u7f6e\u304f\u3002\n *\n * \u76ee\u6a19: Step 1 \u306e\u76e4\u9762\u306b\u52a0\u3048\u3066\u3001\u8d64\u3044\u30d6\u30ed\u30c3\u30af\u30921\u3064\u63cf\u304f\u3002\n *\n * TODO \u306f\u672a\u5b9a\u7fa9\u306e\u8b58\u5225\u5b50\u3067\u3059\u3002\u6b8b\u3057\u305f\u307e\u307e Run \u3059\u308b\u3068\u30b3\u30f3\u30d1\u30a4\u30eb\u30a8\u30e9\u30fc\u306b\u306a\u308a\u307e\u3059\u3002\u6b63\u3057\u3044\u5024\u30fb\u5f0f\u306b\u66f8\u304d\u63db\u3048\u3066\u304f\u3060\u3055\u3044\u3002\n */\npublic class MyTetris extends Game {\n\n    static final int COLS = 10;\n    static final int ROWS = 20;\n    static final int CELL = 24;\n    // \u30d6\u30ed\u30c3\u30af\u306e\u4f4d\u7f6e\n    int blockCol = TODO;   // \u2190 \u4e2d\u592e\u5bc4\u308a\u306e\u5217\uff08\u4f8b: 4\uff09\n    int blockRow = TODO;   // \u2190 \u4e0a\u7aef\u306e\u884c\uff08\u4f8b: 0\uff09\n\n    public static void main(String[] args) {\n        new MyTetris().run();\n    }\n\n    @Override\n    public void render(Screen screen) {\n        screen.clear(Color.BLACK);\n\n        // \u7a7a\u306e\u76e4\u9762\uff08Step 1 \u3068\u540c\u3058\uff09\n        for (int row = 0; row < ROWS; row++) {\n            for (int col = 0; col < COLS; col++) {\n                int x = col * CELL;\n                int y = row * CELL;\n                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);\n            }\n        }\n\n        // \u76e4\u9762\u306e\u4e0a\u306b\u8d64\u30d6\u30ed\u30c3\u30af\u30921\u3064\u91cd\u306d\u308b\n        int bx = TODO;   // \u2190 blockCol \u3068 CELL \u304b\u3089\n        int by = TODO;   // \u2190 blockRow \u3068 CELL \u304b\u3089\n        screen.fillRect(TODO, TODO, TODO, TODO, Color.RED);\n    }\n}\n";
   var SOLUTION_CODE = "import dev.yasuda.tetris.*;\n\n/**\n * Step 2 \u2014 \u30d6\u30ed\u30c3\u30af\u30921\u3064\u7f6e\u304f\u3002\n *\n * \u76ee\u6a19: \u76e4\u9762\u306e\u4e2d\u592e\u4e0a\u5bc4\u308a\u306b\u3001\u8d64\u3044\u30d6\u30ed\u30c3\u30af\u30921\u3064\u8868\u793a\u3059\u308b\u3002\n * \u5b66\u3076\u3053\u3068: \u30d5\u30a3\u30fc\u30eb\u30c9\u5909\u6570\uff08blockCol / blockRow\uff09\u3067\u72b6\u614b\u3092\u6301\u3061\u3001\n *           \u76e4\u9762\u306e\u4e0a\u306b\u3082\u3046\u4e00\u5ea6 fillRect \u3092\u91cd\u306d\u308b\u63cf\u753b\u306e\u300c\u9806\u756a\u300d\u3002\n */\npublic class MyTetris extends Game {\n\n    static final int COLS = 10;\n    static final int ROWS = 20;\n    static final int CELL = 24;\n\n    // \u30d6\u30ed\u30c3\u30af\u304c\u4eca\u3069\u3053\u306b\u3042\u308b\u304b\uff08\u5217\u30fb\u884c\uff09\n    int blockCol = 4;\n    int blockRow = 0;\n\n    public static void main(String[] args) {\n        new MyTetris().run();\n    }\n\n    @Override\n    public void render(Screen screen) {\n        screen.clear(Color.BLACK);\n\n        // --- \u7a7a\u306e\u76e4\u9762\uff08Step 1 \u3068\u540c\u3058\uff09 ---\n        for (int row = 0; row < ROWS; row++) {\n            for (int col = 0; col < COLS; col++) {\n                int x = col * CELL;\n                int y = row * CELL;\n                screen.fillRect(x + 1, y + 1, CELL - 2, CELL - 2, Color.DARK_GRAY);\n            }\n        }\n\n        // --- \u76e4\u9762\u306e\u4e0a\u306b\u8d64\u30d6\u30ed\u30c3\u30af\u30921\u3064\u91cd\u306d\u308b ---\n        int bx = blockCol * CELL;\n        int by = blockRow * CELL;\n        screen.fillRect(bx + 1, by + 1, CELL - 2, CELL - 2, Color.RED);\n    }\n}\n";
   var HINTS         = ["blockCol は 4（盤面の中央寄り）、blockRow は 0（上端）からスタートするのが定番。好きな値で OK。", "ブロックの位置計算は盤面と同じ考え方: bx = blockCol * CELL; by = blockRow * CELL;", "fillRect も盤面と同じく (x + 1, y + 1) の位置に (CELL - 2) 四方で塗ると、他のマスと見た目が揃います。"];
+  var TESTS         = [{"name": "空のセルは暗いグレーで塗られている", "type": "cell-color", "col": 0, "row": 0, "color": [38, 34, 30]}, {"name": "(4, 0) の位置に赤いブロックが表示されている", "type": "cell-color", "col": 4, "row": 0, "color": [200, 80, 80]}, {"name": "ブロックの隣は暗いグレーのまま", "type": "cell-color", "col": 5, "row": 0, "color": [38, 34, 30]}];
   var STEP_ID       = "step-02";
 
   function b64ToBytes(b64) {
@@ -37,6 +38,7 @@
   var gutter    = document.getElementById("code-gutter");
   var highlight = document.getElementById("code-highlight");
   var errorsEl  = document.getElementById("code-errors");
+  var testsEl   = document.getElementById("tests-area");
   var statusEl  = document.getElementById("run-status");
   var loadEl    = document.getElementById("loading-overlay");
   var consoleEl = document.getElementById("console-output");
@@ -553,6 +555,116 @@
     logLine("[run] frame loop starting");
     try { canvas.focus(); } catch (_) {}
     startFrameLoop();
+
+    // Let the first couple of frames land before we start sampling.
+    setTimeout(function () { runAutoTests(); }, 300);
+  }
+
+  /* ---------- Auto-grading: canvas pixel assertions ---------- */
+  function sleep(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+  }
+  function getPixel(x, y) {
+    var d = ctx.getImageData(x, y, 1, 1).data;
+    return [d[0], d[1], d[2]];
+  }
+  function getCellPixel(col, row) {
+    // Cells are 24 px and the playfield starts at x=0, y=0. Sample
+    // the center of each cell (12, 12) so we don't fall on the 1 px
+    // gap between cells.
+    return getPixel(col * 24 + 12, row * 24 + 12);
+  }
+  function colorMatches(actual, expected, tolerance) {
+    var tol = (tolerance == null) ? 12 : tolerance;
+    return Math.abs(actual[0] - expected[0]) <= tol &&
+           Math.abs(actual[1] - expected[1]) <= tol &&
+           Math.abs(actual[2] - expected[2]) <= tol;
+  }
+  function findColorRow(col, color, tolerance) {
+    for (var r = 0; r < 20; r++) {
+      if (colorMatches(getCellPixel(col, r), color, tolerance)) return r;
+    }
+    return -1;
+  }
+
+  async function evaluateTest(t) {
+    switch (t.type) {
+      case "cell-color":
+        return colorMatches(getCellPixel(t.col, t.row), t.color, t.tolerance);
+      case "cell-color-after":
+        await sleep(t.waitMs || 1000);
+        return colorMatches(getCellPixel(t.col, t.row), t.color, t.tolerance);
+      case "pixel-color":
+        return colorMatches(getPixel(t.x, t.y), t.color, t.tolerance);
+      case "color-moves-down":
+        var before = findColorRow(t.col, t.color, t.tolerance);
+        if (before < 0) return false;
+        await sleep(t.waitMs || 1200);
+        var after = findColorRow(t.col, t.color, t.tolerance);
+        if (after < 0) return false;
+        return (after - before) >= (t.minDelta || 1);
+      default:
+        return false;
+    }
+  }
+
+  function renderTestItem(name, state) {
+    var item = document.createElement("div");
+    item.className = "playground__tests-item playground__tests-item--" + state;
+    var mark = document.createElement("span");
+    mark.className = "playground__tests-mark";
+    item.appendChild(mark);
+    var label = document.createElement("span");
+    label.textContent = name;
+    item.appendChild(label);
+    testsEl.appendChild(item);
+    return item;
+  }
+
+  async function runAutoTests() {
+    if (!testsEl) return;
+    testsEl.innerHTML = "";
+    if (!TESTS || TESTS.length === 0) {
+      testsEl.hidden = true;
+      return;
+    }
+    testsEl.hidden = false;
+    var header = document.createElement("div");
+    header.className = "playground__tests-header";
+    header.textContent = "自動チェック";
+    testsEl.appendChild(header);
+
+    var passed = 0;
+    var items = [];
+    for (var i = 0; i < TESTS.length; i++) {
+      items.push(renderTestItem(TESTS[i].name, "pending"));
+    }
+
+    for (var j = 0; j < TESTS.length; j++) {
+      try {
+        var ok = await evaluateTest(TESTS[j]);
+        items[j].classList.remove("playground__tests-item--pending");
+        items[j].classList.add("playground__tests-item--" + (ok ? "pass" : "fail"));
+        if (ok) passed++;
+      } catch (e) {
+        items[j].classList.remove("playground__tests-item--pending");
+        items[j].classList.add("playground__tests-item--fail");
+      }
+    }
+
+    var summary = document.createElement("div");
+    summary.className = "playground__tests-summary";
+    var allPass = (passed === TESTS.length);
+    summary.textContent = allPass
+      ? "🎉 全テスト通過！ このステップは完了です。"
+      : ("通過 " + passed + " / " + TESTS.length + "。赤い項目を直してもう一度 Run。");
+    summary.classList.add(allPass ? "playground__tests-summary--pass" : "playground__tests-summary--fail");
+    testsEl.appendChild(summary);
+
+    try {
+      if (allPass) localStorage.setItem("tetris-done-" + STEP_ID, "1");
+      else         localStorage.removeItem("tetris-done-" + STEP_ID);
+    } catch (_) {}
   }
 
   runBtn.addEventListener("click", async function () {

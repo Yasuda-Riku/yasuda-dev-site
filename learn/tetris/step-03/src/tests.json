@@ -1,0 +1,4 @@
+[
+  { "name": "開始時、赤ブロックが盤面の上段にある",         "type": "cell-color", "col": 4, "row": 0, "color": [200, 80, 80] },
+  { "name": "1.2 秒後に赤ブロックが下へ 1 マス以上移動している", "type": "color-moves-down", "col": 4, "color": [200, 80, 80], "waitMs": 1200, "minDelta": 1 }
+]

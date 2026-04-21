@@ -426,6 +426,55 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* Auto-graded test results panel, shown after each successful Run. */
+.playground__tests {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  background: #FDFCFA;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.playground__tests[hidden] { display: none; }
+.playground__tests-header {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.playground__tests-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.playground__tests-mark {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+.playground__tests-item--pending .playground__tests-mark::before { content: "…"; color: var(--muted); }
+.playground__tests-item--pass    .playground__tests-mark::before { content: "✓"; color: #2C7A3F; }
+.playground__tests-item--fail    .playground__tests-mark::before { content: "✗"; color: #B8322A; }
+.playground__tests-item--pass    { color: #2C7A3F; }
+.playground__tests-item--fail    { color: #B8322A; }
+.playground__tests-summary {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-weight: 500;
+}
+.playground__tests-summary--pass { color: #2C7A3F; }
+.playground__tests-summary--fail { color: #B8322A; }
 .playground__console:empty::before {
   content: "console output";
   color: #B8B4AC;

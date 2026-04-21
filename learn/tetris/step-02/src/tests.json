@@ -1,0 +1,5 @@
+[
+  { "name": "空のセルは暗いグレーで塗られている",        "type": "cell-color", "col": 0, "row": 0, "color": [38, 34, 30] },
+  { "name": "(4, 0) の位置に赤いブロックが表示されている", "type": "cell-color", "col": 4, "row": 0, "color": [200, 80, 80] },
+  { "name": "ブロックの隣は暗いグレーのまま",           "type": "cell-color", "col": 5, "row": 0, "color": [38, 34, 30] }
+]

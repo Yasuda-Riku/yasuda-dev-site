@@ -1,0 +1,5 @@
+[
+  { "name": "左上のセルが暗いグレーで塗られている", "type": "cell-color", "col": 0, "row": 0, "color": [38, 34, 30] },
+  { "name": "中央のセルも暗いグレー",                 "type": "cell-color", "col": 5, "row": 10, "color": [38, 34, 30] },
+  { "name": "右下のセルも暗いグレー",                 "type": "cell-color", "col": 9, "row": 19, "color": [38, 34, 30] }
+]
