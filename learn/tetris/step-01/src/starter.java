@@ -6,18 +6,14 @@ import dev.yasuda.tetris.*;
  * 目標: 10 × 20 の空のグリッドを画面に表示する。
  *
  * コード中の「TODO」は「ここを埋めてください」という意味の仮の値です。
- * そのままでも動きますが、期待する絵は出ません。
- * 正しい式に書き換えていくと盤面が表示されます。
+ * TODO は未定義なので、残ったまま Run するとコンパイルエラーになります。
+ * 正しい式に書き換えるとエラーが消えて盤面が表示されます。
  */
 public class MyTetris extends Game {
 
     static final int COLS = 10;
     static final int ROWS = 20;
     static final int CELL = 24;
-
-    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
-    static final int TODO = 0;
-
     public static void main(String[] args) {
         new MyTetris().run();
     }

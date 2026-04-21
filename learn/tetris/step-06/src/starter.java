@@ -5,7 +5,7 @@ import dev.yasuda.tetris.*;
  *
  * 目標: 落ち切ったブロックを盤面に書き込み、新しいブロックを上から出す。
  *
- * 「TODO」は「ここを埋めてください」の仮値です。
+ * TODO は未定義の識別子です。残したまま Run するとコンパイルエラーになります。
  */
 public class MyTetris extends Game {
 
@@ -14,10 +14,6 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
-
-    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
-    static final int TODO = 0;
-
     // 0 = 空、0 以外 = 固定済みブロック
     int[][] board = new int[ROWS][COLS];
 

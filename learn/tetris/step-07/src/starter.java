@@ -6,7 +6,7 @@ import dev.yasuda.tetris.*;
  * 目標: 1 セルのブロックを I, O, T, S, Z, L, J の 7 種類に置き換える。
  *       順番にループ出現する（ランダム化は Step 8）。
  *
- * 「TODO」は「ここを埋めてください」の仮値です。
+ * TODO は未定義の識別子です。残したまま Run するとコンパイルエラーになります。
  */
 public class MyTetris extends Game {
 
@@ -15,10 +15,6 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
-
-    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
-    static final int TODO = 0;
-
     /** 各ミノは「色」と「1/0 のセル配列」を持つ。 */
     enum Shape {
         I(Color.CYAN,   new int[][]{

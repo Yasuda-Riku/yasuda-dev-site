@@ -7,16 +7,13 @@ import java.util.Random;
  * 目標: 消したライン数からスコアを計算、10 行ごとにレベルアップ、
  *       レベルが上がるほど落下速度が上がる。右側にサイドパネルを表示。
  *
- * 「TODO」は「ここを埋めてください」の仮値です。
+ * TODO は未定義の識別子です。残したまま Run するとコンパイルエラーになります。
  */
 public class MyTetris extends Game {
 
     static final int COLS = 10;
     static final int ROWS = 20;
     static final int CELL = 24;
-
-    static final int TODO = 0;
-
     enum Shape {
         I(Color.CYAN,   new int[][]{
             {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}

@@ -6,7 +6,7 @@ import java.util.Random;
  *
  * 目標: 横一列が埋まったら消去し、上の行を下にシフト。
  *
- * 「TODO」は「ここを埋めてください」の仮値です。
+ * TODO は未定義の識別子です。残したまま Run するとコンパイルエラーになります。
  */
 public class MyTetris extends Game {
 
@@ -14,9 +14,6 @@ public class MyTetris extends Game {
     static final int ROWS = 20;
     static final int CELL = 24;
     static final double DROP_SECONDS = 1.0;
-
-    static final int TODO = 0;
-
     enum Shape {
         I(Color.CYAN,   new int[][]{
             {0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}

@@ -6,7 +6,7 @@ import dev.yasuda.tetris.*;
  * 目標: ブロックが DROP_SECONDS (= 1.0 秒) ごとに 1 マス下がる。
  *       下まで行ったら上に戻ってループする。
  *
- * 「TODO」は「ここを埋めてください」の仮値です。
+ * TODO は未定義の識別子です。残したまま Run するとコンパイルエラーになります。
  */
 public class MyTetris extends Game {
 
@@ -15,10 +15,6 @@ public class MyTetris extends Game {
     static final int CELL = 24;
 
     static final double DROP_SECONDS = 1.0;
-
-    /** 「ここを書き換えてね」の目印。値としてはただの 0。 */
-    static final int TODO = 0;
-
     int blockCol = 4;
     int blockRow = 0;
     double accumulator = 0.0;
