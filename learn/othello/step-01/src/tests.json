@@ -1,0 +1,8 @@
+[
+  { "name": "左上のマスが緑で塗られている",
+    "type": "cell-color", "col": 0, "row": 0, "color": [30, 120, 72], "tolerance": 20 },
+  { "name": "右下のマスも緑で塗られている",
+    "type": "cell-color", "col": 7, "row": 7, "color": [30, 120, 72], "tolerance": 20 },
+  { "name": "中央付近も緑で塗られている",
+    "type": "cell-color", "col": 3, "row": 4, "color": [30, 120, 72], "tolerance": 20 }
+]

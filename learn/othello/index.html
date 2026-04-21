@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Othello in Java — Learn — yasuda-dev</title>
+  <meta name="description" content="Java でオセロ + AI 対戦を作る全12ステップ。テトリスより一段応用的、経験者向け。ブラウザで動作、インストール不要。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/othello/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/othello/">
+  <meta property="og:title" content="Othello in Java — 12 steps, with AI opponent">
+  <meta property="og:description" content="Java でオセロ + AI 対戦を作る全12ステップ。テトリスより一段応用的、経験者向け。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/othello/course.css">
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="course-hero" aria-labelledby="course-heading">
+      <div class="course-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Othello in Java</span>
+        </nav>
+        <p class="eyebrow">Course · 12 steps · 経験者向け</p>
+        <h1 id="course-heading" class="course-hero__title">Build an Othello<br>with an AI opponent.</h1>
+        <p class="course-hero__lead">
+          Java だけで書く全12ステップ。盤面を描くところから始めて、
+          最後は minimax + α-β 枝刈りの AI と対戦できるオセロが完成します。
+        </p>
+
+        <div class="course-hero__meta" aria-label="Course facts">
+          <div>
+            <dt>Language</dt>
+            <dd>Java 17</dd>
+          </div>
+          <div>
+            <dt>Runtime</dt>
+            <dd>Browser (CheerpJ)</dd>
+          </div>
+          <div>
+            <dt>Level</dt>
+            <dd>Tetris コースの次 / 経験者</dd>
+          </div>
+          <div>
+            <dt>Estimated</dt>
+            <dd>15&ndash;20 hours</dd>
+          </div>
+        </div>
+
+        <p class="course-hero__status">
+          <span class="course-hero__status-dot" aria-hidden="true"></span>
+          Step 01 公開中。残りは順次公開。
+        </p>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="who-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Who this is for</p>
+          <h2 id="who-heading" class="section-title">Tetris が物足りなかった人へ。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            <a href="/learn/tetris/">Tetris コース</a>が「式を1つ埋める」粒度だったのに対し、
+            Othello は「メソッドを1つ書く」粒度に上げています。穴埋めの量は同じでも、
+            書くコード1行あたりに必要な思考量が一段重くなります。
+          </p>
+          <p>
+            後半は AI の探索・評価関数の設計に踏み込むので、
+            既に他言語で再帰やアルゴリズムを触った経験があるとスムーズです。
+            逆に、Java 研修を終えたばかりで手応えが足りない人にちょうど刺さる難度です。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section course-section--bordered" aria-labelledby="how-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2 id="how-heading" class="section-title">Tetris と同じ教材構成。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            フレームワーク（<code>Game</code> / <code>Screen</code> / <code>Color</code> / <code>Key</code>）は
+            Tetris コースとほぼ同じ。丸を描く <code>fillCircle</code> が追加された以外は共通です。
+            各ステップに「穴埋めスターター / 段階ヒント / 解答例 / 自動チェック」が揃っていて、
+            詰まっても自力で進めます。
+          </p>
+          <p>
+            最後の AI パートでは、自分が書いた AI に実際に勝てるかどうかが
+            画面の上で直接わかります。評価関数の重みを 1 行いじれば強さが変わる、
+            という「手応えのあるフィードバックループ」を繰り返しながら学びます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="curriculum-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Curriculum</p>
+          <h2 id="curriculum-heading" class="section-title">12 ステップ。<br>後半は AI に踏み込む。</h2>
+        </header>
+
+        <ol class="curriculum" aria-label="Course steps">
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 01</p>
+            <h3 class="curriculum__title">盤面を描く</h3>
+            <p class="curriculum__goal">8×8 の緑の盤面と格子線。</p>
+            <p class="curriculum__learn">Screen · 2重ループ · 定数</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 02</p>
+            <h3 class="curriculum__title">初期配置</h3>
+            <p class="curriculum__goal">中央 4 マスに黒白 2 石ずつ。</p>
+            <p class="curriculum__learn">2次元配列 · 初期化</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 03</p>
+            <h3 class="curriculum__title">石を円で描く</h3>
+            <p class="curriculum__goal">fillCircle で石を描画。</p>
+            <p class="curriculum__learn">新 API · 盤面スキャン</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 04</p>
+            <h3 class="curriculum__title">カーソル操作</h3>
+            <p class="curriculum__goal">矢印キーでカーソル移動。</p>
+            <p class="curriculum__learn">Key enum · 境界チェック</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 05</p>
+            <h3 class="curriculum__title">合法手の判定</h3>
+            <p class="curriculum__goal">置ける場所にはヒントを表示。</p>
+            <p class="curriculum__learn">8 方向スキャン · boolean メソッド</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 06</p>
+            <h3 class="curriculum__title">石を裏返す</h3>
+            <p class="curriculum__goal">Enter で着手 → 挟んだ石が反転。</p>
+            <p class="curriculum__learn">flip メソッド設計 · 配列書き換え</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 07</p>
+            <h3 class="curriculum__title">手番交代とパス</h3>
+            <p class="curriculum__goal">合法手なしならパス、両者なしで終局。</p>
+            <p class="curriculum__learn">状態遷移 · ゲームフロー</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 08</p>
+            <h3 class="curriculum__title">ランダム AI</h3>
+            <p class="curriculum__goal">相手番を AI が打つ。</p>
+            <p class="curriculum__learn">List&lt;int[]&gt; · Random</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 09</p>
+            <h3 class="curriculum__title">評価関数</h3>
+            <p class="curriculum__goal">盤面を点数化して貪欲 AI に。</p>
+            <p class="curriculum__learn">重みテーブル · 静的配列</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 10</p>
+            <h3 class="curriculum__title">minimax</h3>
+            <p class="curriculum__goal">数手先を読む AI。</p>
+            <p class="curriculum__learn">再帰 · ゲーム木</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 11</p>
+            <h3 class="curriculum__title">α-β 枝刈り</h3>
+            <p class="curriculum__goal">深く読んでも遅くならない。</p>
+            <p class="curriculum__learn">最適化 · 早期 return</p>
+          </li>
+          <li class="curriculum__step">
+            <p class="curriculum__index">Step 12</p>
+            <h3 class="curriculum__title">スコアと勝敗</h3>
+            <p class="curriculum__goal">石数、勝敗表示、R でリスタート。</p>
+            <p class="curriculum__learn">UI 仕上げ · 状態リセット</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="course-section course-section--bordered" aria-labelledby="api-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">The API</p>
+          <h2 id="api-heading" class="section-title">追加されたもの。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            Tetris と同じ <code>Game</code>, <code>Screen</code>, <code>Color</code>, <code>Key</code> を使います。
+            Othello 固有の追加はたった1つ &mdash; 丸を描く <code>fillCircle</code> だけ。
+            残りの力は全部 Java 本体（再帰・コレクション・<code>List</code>）で引き出します。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="start-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">Get started</p>
+          <h2 id="start-heading" class="section-title">始めましょうか。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            環境構築は不要 &mdash; リンクを開いて「Run Java」を押すだけ。
+            初回は Java ランタイム（CheerpJ）のダウンロードで 10〜30 秒ほどかかります。
+            2回目以降はキャッシュから瞬時に立ち上がります。
+          </p>
+        </div>
+
+        <div class="course-start">
+          <a class="course-start__cta" href="/learn/othello/step-01/">
+            <span>Step 01 · 盤面を描く</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>

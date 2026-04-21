@@ -1,0 +1,4 @@
+# One hint per non-empty line. Lines starting with # are comments.
+画面座標はピクセル単位。col 列目の左端は col * CELL、row 行目の上端は row * CELL。
+マス本体は screen.fillRect(x, y, CELL, CELL, Color.BOARD)。引数は左上 x, 左上 y, 幅, 高さ, 色。
+枠線は screen.strokeRect を同じ引数で。塗りの上から細い線が乗り、格子っぽく見える。
