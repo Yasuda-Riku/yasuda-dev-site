@@ -136,6 +136,17 @@
   }
 }
 
+.course-preview__image {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  justify-self: start;
+  background: #0D0D0D;
+}
+
 .tetris-board {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
