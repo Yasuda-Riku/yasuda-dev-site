@@ -385,6 +385,28 @@
   font-size: 10px;
 }
 
+.playground__test {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid rgba(26, 26, 26, 0.25);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease);
+}
+.playground__test:hover:not(:disabled) {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.playground__test:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .playground__status {
   font-family: var(--font-mono);
   font-size: 12px;
