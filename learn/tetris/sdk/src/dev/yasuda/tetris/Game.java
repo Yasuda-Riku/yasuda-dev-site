@@ -33,6 +33,11 @@ public abstract class Game {
         return current;
     }
 
+    /** Called by the SDK's Loader between runs so the old instance is released. */
+    public static void resetCurrent() {
+        current = null;
+    }
+
     public void setup() {}
 
     public void update(double dt) {}
