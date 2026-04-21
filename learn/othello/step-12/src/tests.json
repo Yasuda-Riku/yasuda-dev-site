@@ -7,7 +7,7 @@
     "type": "press-sequence-then-cell-color",
     "keys": [82], "intervalMs": 100, "waitMs": 300,
     "col": 3, "row": 3, "color": [255, 255, 255], "tolerance": 20 },
-  { "name": "リセット後 (col=3, row=2) は緑に戻っている",
+  { "name": "リセット後、盤面の角 (col=0, row=0) は空の緑マスに戻っている",
     "type": "cell-color",
-    "col": 3, "row": 2, "color": [30, 120, 72], "tolerance": 20 }
+    "col": 0, "row": 0, "color": [30, 120, 72], "tolerance": 20 }
 ]
