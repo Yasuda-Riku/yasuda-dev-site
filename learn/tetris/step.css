@@ -196,6 +196,15 @@
   overflow: hidden;
   tab-size: 4;
 }
+/* Syntax overlay: a <pre> stacked under a transparent-text textarea.
+   The overlay shows the same characters re-rendered with inline
+   highlighting (currently just TODO in red); the textarea catches
+   input and shows the caret and selection. */
+.playground__code-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .playground__code-gutter span {
   display: inline;
 }
@@ -249,26 +258,62 @@
 .playground__errors-item--warning {
   color: #8A6A12;
 }
+.playground__code-highlight {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fg);
+  background: transparent;
+  white-space: pre;
+  overflow: hidden;
+  pointer-events: none;
+  tab-size: 4;
+  box-sizing: border-box;
+}
+.playground__code-highlight .tok-todo {
+  color: #D43A2F;
+  background: #FFE8E4;
+  padding: 0 3px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .playground__code textarea {
   display: block;
-  flex: 1 1 auto;
+  position: relative;
+  z-index: 1;
   width: 100%;
+  min-height: 420px;
   border: 0;
   resize: vertical;
   background: transparent;
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
-  color: var(--fg);
+  /* Make glyph invisible but keep selection + caret; use a transparent
+     text-shadow trick so Firefox selection paints the background
+     correctly without revealing the glyph. */
+  color: transparent;
+  caret-color: var(--fg);
   padding: 20px 24px;
   outline: none;
   overflow: auto;
-  min-height: 420px;
   tab-size: 4;
   white-space: pre;
+  box-sizing: border-box;
 }
-.playground__code textarea:focus {
-  background: #FDFCFA;
+.playground__code textarea::selection {
+  background: rgba(255, 90, 31, 0.22);
+  color: transparent;
+}
+.playground__code textarea::-moz-selection {
+  background: rgba(255, 90, 31, 0.22);
+  color: transparent;
 }
 
 /* ---------- Right column: canvas + controls ---------- */
