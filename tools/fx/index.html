@@ -73,6 +73,16 @@
     .row:focus-within {
       border-color: var(--accent);
     }
+    .row--mult {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color .15s, background-color .15s;
+    }
+    .row--mult:hover, .row--mult:active {
+      border-color: var(--accent);
+      background: #FFF8F4;
+    }
+    .row--mult .input { pointer-events: none; }
     .label {
       font-family: var(--font-mono);
       font-size: 0.875rem;
@@ -174,14 +184,22 @@
       <span class="label">LTC</span>
       <input class="input" id="ltc" inputmode="decimal" autocomplete="off" placeholder="0.000000" data-currency="ltc">
     </label>
-    <label class="row">
+    <div class="row row--mult">
       <span class="label">×1.5</span>
       <input class="input" id="jpy15" readonly tabindex="-1" placeholder="0">
-    </label>
-    <label class="row">
+    </div>
+    <div class="row row--mult">
       <span class="label">×2</span>
       <input class="input" id="jpy2" readonly tabindex="-1" placeholder="0">
-    </label>
+    </div>
+    <div class="row row--mult">
+      <span class="label">×0.8</span>
+      <input class="input" id="jpy08" readonly tabindex="-1" placeholder="0">
+    </div>
+    <div class="row row--mult">
+      <span class="label">×0.75</span>
+      <input class="input" id="jpy075" readonly tabindex="-1" placeholder="0">
+    </div>
 
     <div class="meta">
       <span class="meta__time" id="time">取得中…</span>
@@ -210,6 +228,8 @@
     };
     const jpy15El = $('jpy15');
     const jpy2El = $('jpy2');
+    const jpy08El = $('jpy08');
+    const jpy075El = $('jpy075');
     const timeEl = $('time');
     const refreshBtn = $('refresh');
     const errEl = $('err');
@@ -245,6 +265,8 @@
         targets.forEach(c => { inputs[c].value = ''; });
         jpy15El.value = '';
         jpy2El.value = '';
+        jpy08El.value = '';
+        jpy075El.value = '';
         return;
       }
       let jpy, usd, ltc;
@@ -255,6 +277,8 @@
       targets.forEach(c => { inputs[c].value = fmt[c](vals[c]); });
       jpy15El.value = fmt.jpy(jpy * 1.5);
       jpy2El.value = fmt.jpy(jpy * 2);
+      jpy08El.value = fmt.jpy(jpy * 0.8);
+      jpy075El.value = fmt.jpy(jpy * 0.75);
     }
 
     function reformatAll() {
@@ -324,6 +348,17 @@
     Object.entries(inputs).forEach(([key, el]) => {
       el.addEventListener('focus', () => { activeInput = key; });
       el.addEventListener('input', () => { activeInput = key; recompute(key); });
+    });
+
+    document.querySelectorAll('.row--mult').forEach(row => {
+      row.addEventListener('click', () => {
+        const el = row.querySelector('.input');
+        const v = parseNum(el.value);
+        if (!Number.isFinite(v) || v === 0) return;
+        inputs.jpy.value = fmt.jpy(v);
+        activeInput = 'jpy';
+        recompute('jpy');
+      });
     });
 
     refreshBtn.addEventListener('click', fetchRates);
