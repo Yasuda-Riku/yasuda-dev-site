@@ -1,0 +1,11 @@
+[
+  { "name": "← 連打しても壁を越えず、col 0 に赤が現れる",
+    "type": "press-keys-then-col-has-color", "keyCode": 37, "count": 12, "intervalMs": 30,
+    "col": 0, "color": [200, 80, 80] },
+  { "name": "さらに ← 連打しても盤面の外には消えない",
+    "type": "press-keys-then-col-has-color", "keyCode": 37, "count": 20, "intervalMs": 20,
+    "col": 0, "color": [200, 80, 80] },
+  { "name": "↓ 連打で床に到達し、row 19 で止まる",
+    "type": "press-keys-then-cell-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 0, "row": 19, "color": [200, 80, 80] }
+]

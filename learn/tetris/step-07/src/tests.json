@@ -1,0 +1,10 @@
+[
+  { "name": "最初の I ミノが上段に表示されている",
+    "type": "cell-color", "col": 4, "row": 1, "color": [111, 183, 189] },
+  { "name": "↓ 連打で I ミノを落として盤面に固定する",
+    "type": "press-keys-then-col-has-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 4, "color": [111, 183, 189], "rowMin": 18, "rowMax": 19 },
+  { "name": "次のミノ (O) が上から出てくる",
+    "type": "press-keys-then-col-has-color", "keyCode": 40, "count": 30, "intervalMs": 25,
+    "col": 4, "color": [215, 186, 90], "rowMin": 0, "rowMax": 2 }
+]

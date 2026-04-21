@@ -1,0 +1,10 @@
+[
+  { "name": "↓ 連打でブロックが床に固定される",
+    "type": "press-keys-then-cell-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 4, "row": 19, "color": [200, 80, 80] },
+  { "name": "さらに ↓ 連打で新しいブロックが上から出る",
+    "type": "press-keys-then-col-has-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 4, "color": [200, 80, 80], "rowMin": 0, "rowMax": 3 },
+  { "name": "固定されたブロックは盤面に残り続ける",
+    "type": "cell-color", "col": 4, "row": 19, "color": [200, 80, 80] }
+]

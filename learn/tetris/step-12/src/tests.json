@@ -1,0 +1,9 @@
+[
+  { "name": "サイドパネルにスコア・レベル・ライン数が出ている",
+    "type": "area-has-color",
+    "x1": 248, "y1": 10, "x2": 335, "y2": 170,
+    "color": [128, 128, 128], "tolerance": 40 },
+  { "name": "ブロックが普通に落ちる (ゲーム開始直後はゲームオーバーではない)",
+    "type": "press-keys-then-cell-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 4, "row": 19, "color": [111, 183, 189], "tolerance": 200 }
+]

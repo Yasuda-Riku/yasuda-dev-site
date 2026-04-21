@@ -1,0 +1,6 @@
+[
+  { "name": "↓ 連打でブロックが床に固定される",
+    "type": "press-keys-then-col-has-color", "keyCode": 40, "count": 25, "intervalMs": 25,
+    "col": 4, "color": [111, 183, 189], "rowMin": 18, "rowMax": 19,
+    "tolerance": 200 }
+]

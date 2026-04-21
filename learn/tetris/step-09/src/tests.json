@@ -1,0 +1,6 @@
+[
+  { "name": "↑ キーで盤面の絵が変化する (回転している)",
+    "type": "press-key-changes-canvas", "keyCode": 38,
+    "x": 0, "y": 0, "w": 240, "h": 96,
+    "minPixelDiff": 20 }
+]

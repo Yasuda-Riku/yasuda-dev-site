@@ -1,0 +1,13 @@
+[
+  { "name": "開始時、赤ブロックが (4, 0) にある",
+    "type": "cell-color", "col": 4, "row": 0, "color": [200, 80, 80] },
+  { "name": "← で左の列に赤が移動する",
+    "type": "press-keys-then-col-has-color", "keyCode": 37, "count": 1,
+    "col": 3, "color": [200, 80, 80], "rowMin": 0, "rowMax": 3 },
+  { "name": "→ で右の列に赤が戻る",
+    "type": "press-keys-then-col-has-color", "keyCode": 39, "count": 1,
+    "col": 4, "color": [200, 80, 80], "rowMin": 0, "rowMax": 3 },
+  { "name": "↓ で赤ブロックが下の行にも現れる",
+    "type": "press-keys-then-col-has-color", "keyCode": 40, "count": 1,
+    "col": 4, "color": [200, 80, 80], "rowMin": 1, "rowMax": 4 }
+]
