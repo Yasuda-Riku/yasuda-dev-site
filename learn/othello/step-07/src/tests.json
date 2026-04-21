@@ -1,0 +1,11 @@
+[
+  { "name": "↑ + Enter で黒が (col=3, row=2) に着手する",
+    "type": "press-sequence-then-cell-color",
+    "keys": [38, 13], "intervalMs": 100, "waitMs": 300,
+    "col": 3, "row": 2, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "1.5 秒以内に白 AI が応手する (3 つの合法手のどれかに白石)",
+    "type": "press-sequence-then-any-cell-color",
+    "keys": [], "intervalMs": 100, "waitMs": 1500,
+    "cells": [[2, 2], [2, 4], [4, 2]],
+    "color": [255, 255, 255], "tolerance": 20 }
+]

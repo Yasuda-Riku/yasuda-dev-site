@@ -1,0 +1,3 @@
+endTurn は 3 行で書ける。currentPlayer を 3 項演算子で反転、hasAnyLegalMove で判定、必要ならもう一度反転して gameOver。
+hasAnyLegalMove は 2 重 for で全マス走査。中で isValidMove(r, c, player) が true なら return true。全部見終わって false。
+3 項演算子で反転: currentPlayer = (currentPlayer == BLACK) ? WHITE : BLACK; 同じ式を 2 回書くので、変数に取っても OK。

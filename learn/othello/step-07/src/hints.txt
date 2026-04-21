@@ -1,0 +1,3 @@
+legalMoves は List<int[]> result = new ArrayList<>(); → 2重forで走査 → add → return result; の 4 ステップ。
+aiMove は: List<int[]> ms = legalMoves(AI); if (ms.isEmpty()) return; int[] m = ms.get(rng.nextInt(ms.size())); placeAt(m[0], m[1], AI); endTurn();
+int[] は「長さ 2 の配列」として [row, col] を表現する慣用。AI ライブラリを使わずとも十分動く。

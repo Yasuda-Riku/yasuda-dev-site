@@ -1,0 +1,3 @@
+resetGame は board を全部 0 で埋めてから中央 4 マスに初期石、その他の状態 (currentPlayer / gameOver / cursor / aiCooldown) も初期値に戻す。
+onKey では if (key == Key.R) { resetGame(); return; } を最初に書く。これで gameOver 中でも R が効く。
+勝敗判定: int b = countStones(BLACK); int w = countStones(WHITE); if (b > w) "BLACK WINS"; else if (w > b) "WHITE WINS"; else "DRAW";

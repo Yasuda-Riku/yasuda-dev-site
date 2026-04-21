@@ -1,0 +1,3 @@
+onKey の典型形: if (key == Key.LEFT && cursorCol > 0) cursorCol--;  — 4 方向分並べる。
+太い枠は strokeRect を 2-3 本重ねて作る。例: (cx, cy, CELL, CELL) と (cx+1, cy+1, CELL-2, CELL-2)。
+境界チェックを忘れると cursorCol が -1 や 8 になって next step で落ちる。端で止めるのが正解。

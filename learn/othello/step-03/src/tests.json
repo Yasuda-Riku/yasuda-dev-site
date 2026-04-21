@@ -1,0 +1,14 @@
+[
+  { "name": "初期状態でカーソル枠が画面に出ている (HIGHLIGHT色)",
+    "type": "area-has-color",
+    "x1": 148, "y1": 148, "x2": 202, "y2": 202,
+    "color": [255, 220, 90], "tolerance": 30 },
+  { "name": "↓ キー 1 回でカーソルが下に移動する",
+    "type": "press-keys-then-area-has-color", "keyCode": 40, "count": 1,
+    "x1": 148, "y1": 198, "x2": 202, "y2": 252,
+    "color": [255, 220, 90], "tolerance": 30 },
+  { "name": "→ キー 3 回でカーソルが右に移動する",
+    "type": "press-keys-then-area-has-color", "keyCode": 39, "count": 3,
+    "x1": 298, "y1": 148, "x2": 352, "y2": 202,
+    "color": [255, 220, 90], "tolerance": 30 }
+]

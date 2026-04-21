@@ -1,0 +1,12 @@
+[
+  { "name": "↑ + Enter で黒が (col=3, row=2) に着手する",
+    "type": "press-sequence-then-cell-color",
+    "keys": [38, 13], "intervalMs": 100, "waitMs": 200,
+    "col": 3, "row": 2, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "着手後、白に手番が移る ((col=2, row=2) に白向けヒント)",
+    "type": "cell-color",
+    "col": 2, "row": 2, "color": [255, 200, 50], "tolerance": 30 },
+  { "name": "手番が白に移ったので (col=3, row=2) の周りに黒向けヒントは消える (col=5, row=4 が緑)",
+    "type": "cell-color",
+    "col": 5, "row": 4, "color": [30, 120, 72], "tolerance": 20 }
+]

@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
 
-  <title>Step 02 · 初期配置 — Othello in Java</title>
-  <meta name="description" content="Othello in Java Step 2。盤面配列と中央 4 石の初期配置。Screen.fillCircle で石を描く。">
-  <link rel="canonical" href="https://yasuda-dev.com/learn/othello/step-02/">
+  <title>Step 03 · カーソル操作 — Othello in Java</title>
+  <meta name="description" content="Othello in Java Step 3。矢印キーでカーソルを動かし、現在位置をハイライト表示。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/othello/step-03/">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yasuda-dev.com/learn/othello/step-02/">
-  <meta property="og:title" content="Step 02 · 初期配置 — Othello in Java">
-  <meta property="og:description" content="Othello in Java Step 2。盤面配列と中央 4 石の初期配置。Screen.fillCircle で石を描く。">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/othello/step-03/">
+  <meta property="og:title" content="Step 03 · カーソル操作 — Othello in Java">
+  <meta property="og:description" content="Othello in Java Step 3。矢印キーでカーソルを動かし、現在位置をハイライト表示。">
   <meta property="og:image" content="https://yasuda-dev.com/og.png">
   <meta property="og:locale" content="ja_JP">
 
@@ -59,14 +59,13 @@
           <span aria-hidden="true">/</span>
           <a href="/learn/othello/">Othello in Java</a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">Step 02</span>
+          <span aria-current="page">Step 03</span>
         </nav>
-        <p class="step-hero__no">Step 02 of 12</p>
-        <h1 id="step-heading" class="step-hero__title">初期配置</h1>
+        <p class="step-hero__no">Step 03 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">カーソル操作</h1>
         <p class="step-hero__goal">
-          オセロは中央 4 マスに黒白 2 石ずつ置いて始まります。
-          盤面を <code>int[][] board</code> で持ち、<code>setup()</code> で初期値を入れ、
-          <code>render()</code> 内で <strong>円</strong>として石を描きます。
+          矢印キーでカーソルを動かし、<strong>今どこを選んでいるか</strong>を
+          HIGHLIGHT 色の太枠で示します。これ以降、プレイヤーは必ずこのカーソル経由で石を置きます。
         </p>
       </div>
     </section>
@@ -90,16 +89,10 @@
 <textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyOthello.java source code">import dev.yasuda.othello.*;
 
 /**
- * Step 02 — 中央 4 マスに初期配置を置く。
+ * Step 03 — カーソル操作。
  *
- * 目標: 盤面配列 board に初期配置を記録し、render で石を描く。
- *       オセロの初期配置は中央 4 マス:
- *         (col=3, row=3) = 白
- *         (col=4, row=4) = 白
- *         (col=4, row=3) = 黒
- *         (col=3, row=4) = 黒
- *
- * ヒント: 石の代入は board[row][col] = 値 の順（行が先）。
+ * 目標: 矢印キーで盤面上のカーソルを動かし、その位置を HIGHLIGHT 色の
+ *       枠で示す。盤面の端で止まること（はみ出さない）。
  */
 public class MyOthello extends Game {
 
@@ -113,14 +106,26 @@ public class MyOthello extends Game {
 
     int[][] board = new int[ROWS][COLS];
 
+    int cursorCol = 3;
+    int cursorRow = 3;
+
     public static void main(String[] args) {
         new MyOthello().run();
     }
 
     @Override
     public void setup() {
-        // TODO: 中央 4 マスに初期配置を入れる。
-        //       (3,3) と (4,4) は WHITE、(4,3) と (3,4) は BLACK。
+        board[3][3] = WHITE;
+        board[4][4] = WHITE;
+        board[3][4] = BLACK;
+        board[4][3] = BLACK;
+    }
+
+    @Override
+    public void onKey(Key key) {
+        // TODO: LEFT/RIGHT/UP/DOWN に応じて cursorCol / cursorRow を更新する。
+        //       ただし 0 未満や COLS/ROWS 以上にはならないようにする。
+        //       参考: if (key == Key.LEFT &amp;&amp; cursorCol &gt; 0) cursorCol--;
         TODO;
     }
 
@@ -135,13 +140,19 @@ public class MyOthello extends Game {
                 screen.fillRect(x, y, CELL, CELL, Color.BOARD);
                 screen.strokeRect(x, y, CELL, CELL, Color.BOARD_LINE);
 
-                // TODO: board[row][col] が EMPTY でなければ石を描く。
-                //       中心は (x + CELL/2, y + CELL/2)、半径は CELL/2 - 4。
-                //       BLACK なら Color.BLACK、WHITE なら Color.WHITE。
-                //       使うメソッドは screen.fillCircle(cx, cy, radius, color)。
-                TODO;
+                int stone = board[row][col];
+                if (stone != EMPTY) {
+                    Color c = (stone == BLACK) ? Color.BLACK : Color.WHITE;
+                    screen.fillCircle(x + CELL / 2, y + CELL / 2, CELL / 2 - 4, c);
+                }
             }
         }
+
+        // TODO: カーソル位置 (cursorCol, cursorRow) のマスに HIGHLIGHT 色の
+        //       枠を描く。strokeRect は 1px 線なので、少しずらしながら
+        //       2〜3 本重ねて「太い枠」に見せる。
+        //       左上座標は (cursorCol * CELL, cursorRow * CELL)。
+        TODO;
     }
 }
 </textarea>
@@ -185,43 +196,29 @@ public class MyOthello extends Game {
           <div>
 
             <div class="step-body__section">
-              <h2 id="explain-heading">setup() って何？</h2>
+              <h2 id="explain-heading">onKey の書き方</h2>
               <p>
-                <code>setup()</code> は「ゲーム開始時に 1 回だけ呼ばれる」メソッド。
-                <code>render()</code> が毎フレーム呼ばれるのに対し、こちらは初期化用です。
-                ここで盤面の <strong>初期状態</strong>を作ります。
-              </p>
-              <p>
-                盤面は <code>int[][] board</code> という 2 次元配列で持ちます。
-                各マスは <code>EMPTY (0)</code> / <code>BLACK (1)</code> / <code>WHITE (2)</code> のいずれか。
-                「数字で状態を表す」のはゲームプログラミングでよく使う型です。
+                <code>onKey(Key key)</code> は、キーが押されたときに 1 回だけ呼ばれます。
+                中身は「どのキーか」「動ける範囲か」を <code>&amp;&amp;</code> で組み合わせて
+                <code>if</code> を並べるだけ。4 方向それぞれに 1 行書きます。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>なぜ board[row][col]？</h2>
+              <h2>境界チェックの重要性</h2>
               <p>
-                「行（row）が先、列（col）が後」と覚えます。行列でも画像でも同じ流儀。
-                逆にしても動くコードは書けますが、<strong>後で合法手判定や flip を書くとき混乱します</strong>。
-                ここで揃えておくと後が楽。
+                <code>cursorCol</code> が負の値や 8 以上になると、次の Step 以降で
+                <code>board[row][col]</code> にアクセスしたときに <code>ArrayIndexOutOfBoundsException</code> で落ちます。
+                端で動きを止める条件 (<code>cursorCol &gt; 0</code> / <code>cursorCol &lt; COLS - 1</code>) をここで仕込むこと。
               </p>
             </div>
 
             <div class="step-body__section">
-              <h2>fillCircle の使い方</h2>
+              <h2>太い枠の作り方</h2>
               <p>
-                このコースで初登場の API。
-                <code>screen.fillCircle(cx, cy, radius, color)</code>。
-                左上の座標ではなく <strong>中心</strong>の座標を渡します。
-                半径を <code>CELL/2 - 4</code> にすると、マスの中にぴったり収まる石になります。
-              </p>
-            </div>
-
-            <div class="step-body__section">
-              <h2>動かしてみる</h2>
-              <p>
-                Run Java を押して、中央 4 マスに <strong>黒 2 つ、白 2 つ</strong>が置かれていれば成功。
-                右上が白、左下が白、左上と右下が黒 … ではなく、斜めに同じ色が並ぶのがオセロの正しい初期配置です。
+                <code>strokeRect</code> は線幅 1px 固定です。太く見せたいときは、
+                位置とサイズを 1 ピクセルずつずらしながら 2〜3 本重ねるのが定番。
+                Canvas 系 API で普通に使うテクニックです。
               </p>
             </div>
 
@@ -232,12 +229,12 @@ public class MyOthello extends Game {
 
     <nav class="step-nav" aria-label="Step navigation">
       <div class="step-nav__inner">
-        <a href="/learn/othello/step-01/">
+        <a href="/learn/othello/step-02/">
           <span class="step-nav__arrow" aria-hidden="true">←</span>
-          <span>Step 01 · 盤面を描く</span>
+          <span>Step 02 · 初期配置</span>
         </a>
-        <a href="/learn/othello/step-03/">
-          <span>Step 03 · カーソル操作</span>
+        <a href="/learn/othello/step-04/">
+          <span>Step 04 · 合法手の判定</span>
           <span class="step-nav__arrow" aria-hidden="true">→</span>
         </a>
       </div>
@@ -252,6 +249,6 @@ public class MyOthello extends Game {
     </div>
   </footer>
 
-  <script src="/learn/othello/step-02/runtime.js" defer></script>
+  <script src="/learn/othello/step-03/runtime.js" defer></script>
 </body>
 </html>

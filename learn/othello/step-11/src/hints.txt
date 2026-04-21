@@ -1,0 +1,3 @@
+countStones は 2 重 for + if + ++ の典型。int count = 0; ループ; return count; の 3 行骨格。
+サイドパネルの左端は int px = COLS * CELL + 14; とすると x = 414 になる。画面右側の余白ちょうど。
+ラベル用に screen.text(px, 16, "BLACK", Color.GRAY); を 3 組、数値用に String.valueOf(countStones(...)) を 2 組 + 手番名。

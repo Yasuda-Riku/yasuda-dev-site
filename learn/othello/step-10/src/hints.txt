@@ -1,0 +1,3 @@
+base case と パスの扱いは Step 09 と全く同じ。「return alphaBeta(...)」のように alpha/beta を伝搬させることだけ注意。
+maximizing の典型: value = Math.max(value, score); alpha = Math.max(alpha, value); if (alpha >= beta) break;
+minimizing の典型: value = Math.min(value, score); beta = Math.min(beta, value); if (alpha >= beta) break; alpha/beta どっちを縮めるかが違うだけ。

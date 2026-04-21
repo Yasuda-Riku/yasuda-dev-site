@@ -1,0 +1,11 @@
+[
+  { "name": "↑ + Enter で (col=3, row=2) に黒石が置かれる",
+    "type": "press-sequence-then-cell-color",
+    "keys": [38, 13], "intervalMs": 100, "waitMs": 200,
+    "col": 3, "row": 2, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "挟まれた (col=3, row=3) が白から黒に反転している",
+    "type": "cell-color",
+    "col": 3, "row": 3, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "置いた直後の黒の手番 (まだ交代しないので) で (5,4) にヒントが残る",
+    "type": "cell-color", "col": 5, "row": 4, "color": [255, 200, 50], "tolerance": 30 }
+]

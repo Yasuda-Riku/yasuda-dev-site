@@ -1,0 +1,3 @@
+onKey の ENTER は if (isValidMove(cursorRow, cursorCol, currentPlayer)) の中で placeAt を呼ぶだけ。
+flip は方向ごとに 2 段構え。Phase 1: while (board[r][c] == opponent) r += dr; c += dc; で相手の端を探す。
+Phase 2: ループ脱出後、そこが player の石なら、逆向きに 1 マスずつ戻しながら board[r][c] = player。(row,col) に戻ったら止める。

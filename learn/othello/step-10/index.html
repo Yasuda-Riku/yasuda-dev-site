@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Step 10 · α-β 枝刈り — Othello in Java</title>
+  <meta name="description" content="Othello in Java Step 10。α-β 枝刈りで minimax を高速化し、MAX_DEPTH を深くする。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/othello/step-10/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/othello/step-10/">
+  <meta property="og:title" content="Step 10 · α-β 枝刈り — Othello in Java">
+  <meta property="og:description" content="Othello in Java Step 10。α-β 枝刈りで minimax を高速化し、MAX_DEPTH を深くする。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/othello/course.css">
+  <link rel="stylesheet" href="/learn/othello/step.css">
+  <style>.playground__canvas-wrap { aspect-ratio: 1 / 1; max-width: 480px; }</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="step-hero" aria-labelledby="step-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/othello/">Othello in Java</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Step 10</span>
+        </nav>
+        <p class="step-hero__no">Step 10 of 12</p>
+        <h1 id="step-heading" class="step-hero__title">α-β 枝刈り</h1>
+        <p class="step-hero__goal">
+          minimax の結果を変えずに、無駄な探索を早期に打ち切って高速化します。
+          これで MAX_DEPTH を 4 まで上げても遅延なしで AI が応手できるように &mdash;
+          数手先を本気で読む AI の完成です。
+        </p>
+      </div>
+    </section>
+
+    <section class="playground" aria-label="Playground">
+      <div class="playground__inner">
+        <div class="playground__code">
+          <div class="playground__code-label">
+            <span class="playground__code-filename">MyOthello.java</span>
+            <div class="playground__code-actions">
+              <button id="hint-btn" type="button" class="playground__code-btn playground__code-btn--hint" title="段階的にヒントを見る">ヒント</button>
+              <button id="answer-btn" type="button" class="playground__code-btn playground__code-btn--answer" title="解答例に置き換える">解答例</button>
+              <button id="reset-btn" type="button" class="playground__code-btn" title="スタートコードに戻す">Reset</button>
+            </div>
+          </div>
+<div class="playground__code-body">
+            <pre id="code-gutter" class="playground__code-gutter" aria-hidden="true"></pre>
+<div class="playground__code-wrap">
+              <pre id="code-highlight" class="playground__code-highlight" aria-hidden="true"></pre>
+<textarea id="code-editor" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="MyOthello.java source code">import dev.yasuda.othello.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Step 10 — α-β 枝刈り。
+ *
+ * 目標: minimax に α / β を追加し、不要な探索を早期に打ち切る。
+ *       同じ深さなら圧倒的に速いので、MAX_DEPTH を 4 まで上げる。
+ */
+public class MyOthello extends Game {
+
+    static final int COLS = 8;
+    static final int ROWS = 8;
+    static final int CELL = 50;
+
+    static final int EMPTY = 0;
+    static final int BLACK = 1;
+    static final int WHITE = 2;
+
+    static final int HUMAN = BLACK;
+    static final int AI    = WHITE;
+
+    static final double AI_DELAY = 0.3;
+    static final int MAX_DEPTH = 4;
+
+    static final int[][] DIRECTIONS = {
+        {-1, -1}, {-1, 0}, {-1, 1},
+        { 0, -1},          { 0, 1},
+        { 1, -1}, { 1, 0}, { 1, 1}
+    };
+
+    static final int[][] POSITION_WEIGHTS = {
+        {120, -20,  20,   5,   5,  20, -20, 120},
+        {-20, -40,  -5,  -5,  -5,  -5, -40, -20},
+        { 20,  -5,  15,   3,   3,  15,  -5,  20},
+        {  5,  -5,   3,   3,   3,   3,  -5,   5},
+        {  5,  -5,   3,   3,   3,   3,  -5,   5},
+        { 20,  -5,  15,   3,   3,  15,  -5,  20},
+        {-20, -40,  -5,  -5,  -5,  -5, -40, -20},
+        {120, -20,  20,   5,   5,  20, -20, 120}
+    };
+
+    int[][] board = new int[ROWS][COLS];
+    int currentPlayer = BLACK;
+    boolean gameOver = false;
+
+    int cursorCol = 3;
+    int cursorRow = 3;
+
+    double aiCooldown = 0.0;
+
+    public static void main(String[] args) {
+        new MyOthello().run();
+    }
+
+    @Override
+    public void setup() {
+        board[3][3] = WHITE;
+        board[4][4] = WHITE;
+        board[3][4] = BLACK;
+        board[4][3] = BLACK;
+    }
+
+    @Override
+    public void update(double dt) {
+        if (gameOver || currentPlayer != AI) {
+            aiCooldown = 0.0;
+            return;
+        }
+        aiCooldown += dt;
+        if (aiCooldown &lt; AI_DELAY) return;
+        aiCooldown = 0.0;
+        aiMove();
+    }
+
+    void aiMove() {
+        List&lt;int[]&gt; moves = legalMoves(AI);
+        if (moves.isEmpty()) return;
+        int[] best = moves.get(0);
+        int bestScore = Integer.MIN_VALUE;
+        int alpha = Integer.MIN_VALUE;
+        int beta  = Integer.MAX_VALUE;
+        for (int[] m : moves) {
+            int[][] snap = snapshot();
+            placeAt(m[0], m[1], AI);
+            int score = alphaBeta(MAX_DEPTH - 1, alpha, beta, HUMAN);
+            restore(snap);
+            if (score &gt; bestScore) {
+                bestScore = score;
+                best = m;
+            }
+            alpha = Math.max(alpha, bestScore);
+        }
+        placeAt(best[0], best[1], AI);
+        endTurn();
+    }
+
+    /**
+     * α-β 枝刈り付き minimax。
+     *
+     * 実装の骨子（Step 09 の minimax との差分）:
+     *   - 引数に alpha, beta が増える
+     *   - maximizing のブランチ:
+     *       value = Math.max(value, score);
+     *       alpha = Math.max(alpha, value);
+     *       if (alpha &gt;= beta) break;    // β-カット
+     *   - minimizing のブランチ:
+     *       value = Math.min(value, score);
+     *       beta  = Math.min(beta,  value);
+     *       if (alpha &gt;= beta) break;    // α-カット
+     *   - base case と パス処理は Step 09 と同じ
+     */
+    int alphaBeta(int depth, int alpha, int beta, int player) {
+        // TODO: 上の骨子を実装する。Step 09 の minimax をコピーして、
+        //       alpha / beta の更新と break を追加するのが近道。
+        TODO;
+    }
+
+    int evaluate(int player) {
+        int opponent = (player == BLACK) ? WHITE : BLACK;
+        int score = 0;
+        for (int r = 0; r &lt; ROWS; r++)
+            for (int c = 0; c &lt; COLS; c++)
+                if (board[r][c] == player) score += POSITION_WEIGHTS[r][c];
+                else if (board[r][c] == opponent) score -= POSITION_WEIGHTS[r][c];
+        return score;
+    }
+
+    int[][] snapshot() {
+        int[][] out = new int[ROWS][COLS];
+        for (int r = 0; r &lt; ROWS; r++) System.arraycopy(board[r], 0, out[r], 0, COLS);
+        return out;
+    }
+
+    void restore(int[][] snap) {
+        for (int r = 0; r &lt; ROWS; r++) System.arraycopy(snap[r], 0, board[r], 0, COLS);
+    }
+
+    List&lt;int[]&gt; legalMoves(int player) {
+        List&lt;int[]&gt; out = new ArrayList&lt;&gt;();
+        for (int r = 0; r &lt; ROWS; r++)
+            for (int c = 0; c &lt; COLS; c++)
+                if (isValidMove(r, c, player)) out.add(new int[]{r, c});
+        return out;
+    }
+
+    @Override
+    public void onKey(Key key) {
+        if (gameOver || currentPlayer != HUMAN) return;
+        if (key == Key.LEFT  &amp;&amp; cursorCol &gt; 0)        cursorCol--;
+        if (key == Key.RIGHT &amp;&amp; cursorCol &lt; COLS - 1) cursorCol++;
+        if (key == Key.UP    &amp;&amp; cursorRow &gt; 0)        cursorRow--;
+        if (key == Key.DOWN  &amp;&amp; cursorRow &lt; ROWS - 1) cursorRow++;
+        if (key == Key.ENTER) {
+            if (isValidMove(cursorRow, cursorCol, HUMAN)) {
+                placeAt(cursorRow, cursorCol, HUMAN);
+                endTurn();
+            }
+        }
+    }
+
+    void placeAt(int row, int col, int player) {
+        board[row][col] = player;
+        flip(row, col, player);
+    }
+
+    void endTurn() {
+        currentPlayer = (currentPlayer == BLACK) ? WHITE : BLACK;
+        if (!hasAnyLegalMove(currentPlayer)) {
+            currentPlayer = (currentPlayer == BLACK) ? WHITE : BLACK;
+            if (!hasAnyLegalMove(currentPlayer)) {
+                gameOver = true;
+            }
+        }
+    }
+
+    boolean hasAnyLegalMove(int player) {
+        for (int r = 0; r &lt; ROWS; r++)
+            for (int c = 0; c &lt; COLS; c++)
+                if (isValidMove(r, c, player)) return true;
+        return false;
+    }
+
+    void flip(int row, int col, int player) {
+        int opponent = (player == BLACK) ? WHITE : BLACK;
+        for (int[] d : DIRECTIONS) {
+            int dr = d[0], dc = d[1];
+            int r = row + dr, c = col + dc;
+            while (r &gt;= 0 &amp;&amp; r &lt; ROWS &amp;&amp; c &gt;= 0 &amp;&amp; c &lt; COLS &amp;&amp; board[r][c] == opponent) {
+                r += dr; c += dc;
+            }
+            if (r &lt; 0 || r &gt;= ROWS || c &lt; 0 || c &gt;= COLS) continue;
+            if (board[r][c] != player) continue;
+            r -= dr; c -= dc;
+            while (!(r == row &amp;&amp; c == col)) {
+                board[r][c] = player;
+                r -= dr; c -= dc;
+            }
+        }
+    }
+
+    boolean isValidMove(int row, int col, int player) {
+        if (board[row][col] != EMPTY) return false;
+        int opponent = (player == BLACK) ? WHITE : BLACK;
+        for (int[] d : DIRECTIONS) {
+            int dr = d[0], dc = d[1];
+            int r = row + dr, c = col + dc;
+            boolean sawOpponent = false;
+            while (r &gt;= 0 &amp;&amp; r &lt; ROWS &amp;&amp; c &gt;= 0 &amp;&amp; c &lt; COLS) {
+                if (board[r][c] == opponent) {
+                    sawOpponent = true;
+                } else if (board[r][c] == player &amp;&amp; sawOpponent) {
+                    return true;
+                } else {
+                    break;
+                }
+                r += dr; c += dc;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void render(Screen screen) {
+        screen.clear(Color.DARK_GRAY);
+
+        for (int row = 0; row &lt; ROWS; row++) {
+            for (int col = 0; col &lt; COLS; col++) {
+                int x = col * CELL;
+                int y = row * CELL;
+                screen.fillRect(x, y, CELL, CELL, Color.BOARD);
+                screen.strokeRect(x, y, CELL, CELL, Color.BOARD_LINE);
+
+                int stone = board[row][col];
+                if (stone != EMPTY) {
+                    Color c = (stone == BLACK) ? Color.BLACK : Color.WHITE;
+                    screen.fillCircle(x + CELL / 2, y + CELL / 2, CELL / 2 - 4, c);
+                } else if (!gameOver &amp;&amp; currentPlayer == HUMAN &amp;&amp; isValidMove(row, col, HUMAN)) {
+                    screen.fillCircle(x + CELL / 2, y + CELL / 2, 6, Color.HINT);
+                }
+            }
+        }
+
+        if (currentPlayer == HUMAN) {
+            int cx = cursorCol * CELL;
+            int cy = cursorRow * CELL;
+            screen.strokeRect(cx,     cy,     CELL,     CELL,     Color.HIGHLIGHT);
+            screen.strokeRect(cx + 1, cy + 1, CELL - 2, CELL - 2, Color.HIGHLIGHT);
+            screen.strokeRect(cx + 2, cy + 2, CELL - 4, CELL - 4, Color.HIGHLIGHT);
+        }
+    }
+}
+</textarea>
+            </div>
+          </div>
+          <div id="code-errors" class="playground__errors" hidden></div>
+          <div id="hints-area" class="playground__hints" hidden></div>
+        </div>
+
+        <div class="playground__stage">
+          <div class="playground__canvas-wrap">
+            <canvas id="stage-canvas" class="playground__canvas" width="400" height="400" tabindex="0" aria-label="Othello board"></canvas>
+            <div id="loading-overlay" class="playground__loading" data-visible="false" role="status" aria-live="polite">
+              <div class="playground__loading-spinner" aria-hidden="true"></div>
+              <div>Java runtime を初回読み込み中…</div>
+              <small>CheerpJ の JRE (数十 MB) をダウンロードしています。</small>
+            </div>
+          </div>
+          <div class="playground__controls">
+            <button id="run-btn" type="button" class="playground__run">
+              <span class="playground__run-icon" aria-hidden="true">▶</span>
+              <span>Run Java</span>
+            </button>
+            <button id="test-btn" type="button" class="playground__test" disabled title="自動テストを走らせる">テストなし</button>
+            <span id="run-status" class="playground__status" data-mode="idle">preparing</span>
+          </div>
+          <pre id="console" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"></pre>
+          <div id="tests-area" class="playground__tests" hidden aria-live="polite"></div>
+          <div id="console-output" class="playground__console" role="log" aria-live="polite" aria-atomic="false"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step-body" aria-labelledby="explain-heading">
+      <div class="step-body__inner">
+        <div class="step-body__grid">
+          <p class="step-body__eyebrow">About this step</p>
+          <div>
+            <div class="step-body__section">
+              <h2 id="explain-heading">alpha / beta が何者か</h2>
+              <p>
+                <code>alpha</code>: 最大化側がこれまでに確保した <strong>最低保証</strong>。
+                <code>beta</code>: 最小化側がこれまでに確保した <strong>最大許容</strong>。
+                途中で <code>alpha &gt;= beta</code> になったら、「相手がここに到達させない」ことが確定するので、
+                その枝のその先は読む意味がなくなる &mdash; <code>break</code> で打ち切り。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>結果は変わらない</h2>
+              <p>
+                α-β 枝刈りは「探索する枝を減らすだけ」で、返す最終スコアは minimax と完全に同じです。
+                単純な高速化。MAX_DEPTH を 2 → 4 に上げても AI の応手時間が実用範囲に収まります。
+                これ以上深くするなら「move ordering（角を先に見る）」などの追加最適化が効きます &mdash; 発展課題。
+              </p>
+            </div>
+
+            <div class="step-body__section">
+              <h2>動かしてみる</h2>
+              <p>
+                Step 09 と同じ入力でも、AI が明らかに <strong>「2 手先まで視えた手」</strong>を打つようになります。
+                プレイヤーが角を取りにいく隙を潰しに来ることも。対局してみて、勝てるかどうか試してみてください。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__inner">
+        <a href="/learn/othello/step-09/">
+          <span class="step-nav__arrow" aria-hidden="true">←</span>
+          <span>Step 09 · minimax</span>
+        </a>
+        <a href="/learn/othello/step-11/">
+          <span>Step 11 · スコアと勝敗</span>
+          <span class="step-nav__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script src="/learn/othello/step-10/runtime.js" defer></script>
+</body>
+</html>

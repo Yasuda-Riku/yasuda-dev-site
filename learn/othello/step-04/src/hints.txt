@@ -1,0 +1,3 @@
+まず空マスでなければ false。空なら opponent を求める: int opponent = (player == BLACK) ? WHITE : BLACK;
+8 方向は DIRECTIONS を for-each: for (int[] d : DIRECTIONS) { int dr = d[0]; int dc = d[1]; ... }
+方向ごとに r = row + dr、c = col + dc から始めて while で進む。相手石を通った後で自分の石に当たったら return true。

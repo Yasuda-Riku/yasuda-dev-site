@@ -1,0 +1,13 @@
+[
+  { "name": "↑ + Enter で黒が (col=3, row=2) に置ける (ゲームが通常通り動く)",
+    "type": "press-sequence-then-cell-color",
+    "keys": [38, 13], "intervalMs": 100, "waitMs": 300,
+    "col": 3, "row": 2, "color": [0, 0, 0], "tolerance": 20 },
+  { "name": "R キーで盤面がリセットされ (col=3, row=3) が白に戻る",
+    "type": "press-sequence-then-cell-color",
+    "keys": [82], "intervalMs": 100, "waitMs": 300,
+    "col": 3, "row": 3, "color": [255, 255, 255], "tolerance": 20 },
+  { "name": "リセット後 (col=3, row=2) は緑に戻っている",
+    "type": "cell-color",
+    "col": 3, "row": 2, "color": [30, 120, 72], "tolerance": 20 }
+]

@@ -1,0 +1,3 @@
+evaluate は 2 重 for + 3 分岐。board[r][c] == player なら +weight、opponent なら -weight。
+chooseBestMove の骨子: List<int[]> moves = legalMoves(player); 空なら null。int bestScore = Integer.MIN_VALUE; int[] best = moves.get(0); for 内で snapshot → placeAt → evaluate → restore → max 更新。
+restore を忘れると「実際に打ち終えた盤面」で次の評価をするので、1 手目の評価しか正しく出なくなる。for の中で必ず呼ぶ。
