@@ -268,12 +268,11 @@
 }
 .playground__code-highlight {
   margin: 0;
-  /* overlay 側は textarea より右 padding を厚くする。textarea は
-     scrollbar-gutter: stable でスクロールバー分 (〜15px) の余白が
-     右に加わるのに対し、overlay (overflow: hidden) ではブラウザによって
-     gutter が効かないため、overlay のテキストが textarea のスクロール
-     バー上に描かれる現象があった。+16px の明示的 padding で確実に避ける。 */
-  padding: 20px 56px 20px 24px;
+  /* textarea と padding を揃え、両方に scrollbar-gutter: stable を
+     付けて内寸を一致させる。scrollbar thumb は不透明なので、仮に
+     overlay がスクロールバーに届いてもテキストは見えない。 */
+  padding: 20px 40px 20px 24px;
+  scrollbar-gutter: stable;
   font-family: var(--font-mono);
   font-size: 13px;
   /* line-height は整数 px で固定。1.7 (22.1px) だと textarea と pre で
@@ -324,7 +323,7 @@
      overlay と textarea の内寸がズレてカーソルが浮いたりする。 */
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: rgba(26, 26, 26, 0.25) transparent;
+  scrollbar-color: #C5C0B8 #FDFCFA;
   tab-size: 4;
   letter-spacing: 0;
   font-kerning: none;
@@ -333,18 +332,21 @@
   box-sizing: border-box;
 }
 .playground__code textarea::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
+/* thumb / track とも不透明色にする。半透明だと overlay の文字が
+   スクロールバー越しに透けて見えてしまう。 */
 .playground__code textarea::-webkit-scrollbar-thumb {
-  background: rgba(26, 26, 26, 0.25);
-  border-radius: 5px;
+  background: #C5C0B8;
+  border-radius: 6px;
+  border: 3px solid #FDFCFA;
 }
 .playground__code textarea::-webkit-scrollbar-thumb:hover {
-  background: rgba(26, 26, 26, 0.4);
+  background: #9A948B;
 }
 .playground__code textarea::-webkit-scrollbar-track {
-  background: transparent;
+  background: #FDFCFA;
 }
 .playground__code textarea::selection {
   background: rgba(255, 90, 31, 0.22);
