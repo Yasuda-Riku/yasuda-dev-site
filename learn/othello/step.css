@@ -268,7 +268,9 @@
 }
 .playground__code-highlight {
   margin: 0;
-  padding: 20px 24px;
+  /* 右側は 40px にしてスクロールバー下に文字が隠れないようにする。
+     textarea と overlay で scrollbar-gutter を揃えて内寸を一致させる。 */
+  padding: 20px 40px 20px 24px;
   font-family: var(--font-mono);
   font-size: 13px;
   /* line-height は整数 px で固定。1.7 (22.1px) だと textarea と pre で
@@ -278,6 +280,7 @@
   background: transparent;
   white-space: pre;
   overflow: hidden;        /* textarea scrolls, overlay is synced in JS */
+  scrollbar-gutter: stable;
   pointer-events: none;    /* clicks pass through to the textarea */
   tab-size: 4;
   letter-spacing: 0;
@@ -311,15 +314,35 @@
      through; caret stays visible via caret-color. */
   color: transparent;
   caret-color: var(--fg);
-  padding: 20px 24px;
+  padding: 20px 40px 20px 24px;
   outline: none;
   overflow: auto;
+  /* スクロールバーは細く、常に gutter を確保する。
+     こうしないと、縦スクロール時に右端の文字が隠れたり、
+     overlay と textarea の内寸がズレてカーソルが浮いたりする。 */
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 26, 26, 0.25) transparent;
   tab-size: 4;
   letter-spacing: 0;
   font-kerning: none;
   font-variant-ligatures: none;
   white-space: pre;
   box-sizing: border-box;
+}
+.playground__code textarea::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.playground__code textarea::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.25);
+  border-radius: 5px;
+}
+.playground__code textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 26, 26, 0.4);
+}
+.playground__code textarea::-webkit-scrollbar-track {
+  background: transparent;
 }
 .playground__code textarea::selection {
   background: rgba(255, 90, 31, 0.22);
