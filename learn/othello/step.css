@@ -268,9 +268,12 @@
 }
 .playground__code-highlight {
   margin: 0;
-  /* 右側は 40px にしてスクロールバー下に文字が隠れないようにする。
-     textarea と overlay で scrollbar-gutter を揃えて内寸を一致させる。 */
-  padding: 20px 40px 20px 24px;
+  /* overlay 側は textarea より右 padding を厚くする。textarea は
+     scrollbar-gutter: stable でスクロールバー分 (〜15px) の余白が
+     右に加わるのに対し、overlay (overflow: hidden) ではブラウザによって
+     gutter が効かないため、overlay のテキストが textarea のスクロール
+     バー上に描かれる現象があった。+16px の明示的 padding で確実に避ける。 */
+  padding: 20px 56px 20px 24px;
   font-family: var(--font-mono);
   font-size: 13px;
   /* line-height は整数 px で固定。1.7 (22.1px) だと textarea と pre で
@@ -280,7 +283,6 @@
   background: transparent;
   white-space: pre;
   overflow: hidden;        /* textarea scrolls, overlay is synced in JS */
-  scrollbar-gutter: stable;
   pointer-events: none;    /* clicks pass through to the textarea */
   tab-size: 4;
   letter-spacing: 0;
