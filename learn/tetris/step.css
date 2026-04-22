@@ -188,7 +188,7 @@
   margin: 0;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 22px;
   color: #B8B4AC;
   background: #F1EFEA;
   border-right: 1px solid var(--border);
@@ -271,25 +271,30 @@
   padding: 20px 24px;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 1.7;
+  /* line-height は整数 px で固定。1.7 (22.1px) だと textarea と pre で
+     丸めが異なり、行数が増えるほど縦位置がずれてカーソルが浮いて見える。 */
+  line-height: 22px;
   color: var(--fg);
   background: transparent;
   white-space: pre;
   overflow: hidden;        /* textarea scrolls, overlay is synced in JS */
   pointer-events: none;    /* clicks pass through to the textarea */
   tab-size: 4;
+  letter-spacing: 0;
+  font-kerning: none;
+  font-variant-ligatures: none;
   box-sizing: border-box;
-  /* Overlay must have the same outer size as the textarea so its text
-     aligns pixel-exact. min-height matches textarea. */
   min-height: 420px;
 }
+/* TODO トークンのハイライト。
+   padding / letter-spacing を足すと overlay の文字幅が textarea より
+   広がり、以降の文字が右にずれてカーソル位置が合わなくなるので、
+   幅に影響しない色と太さだけで表現する。 */
 .playground__code-highlight .tok-todo {
   color: #D43A2F;
   background: #FFE8E4;
-  padding: 0 3px;
   border-radius: 3px;
   font-weight: 700;
-  letter-spacing: 0.02em;
 }
 
 .playground__code textarea {
@@ -301,7 +306,7 @@
   background: transparent;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 22px;
   /* Glyph color is transparent so the overlay's colored text shows
      through; caret stays visible via caret-color. */
   color: transparent;
@@ -310,6 +315,9 @@
   outline: none;
   overflow: auto;
   tab-size: 4;
+  letter-spacing: 0;
+  font-kerning: none;
+  font-variant-ligatures: none;
   white-space: pre;
   box-sizing: border-box;
 }
