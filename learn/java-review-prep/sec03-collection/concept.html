@@ -73,17 +73,15 @@
   <h2>図で見ると</h2>
 <pre class="mermaid">
 flowchart LR
-    subgraph データベースからデータを運ぶ
-        DB[(データベース)] -->|1件ずつ| rs[while rs.next]
-        rs -->|DTOを作成| DTO[Employee]
-        DTO -->|list.add| List["List<Employee>"]
+    subgraph S1["DAO で List を返す"]
+        DB[(データベース)] -->|"1件ずつ取得"| RS[while rs.next]
+        RS -->|"DTO に詰める"| DTO[Employee]
+        DTO -->|"list.add"| L["List&lt;Employee&gt;"]
     end
-    
-    subgraph ブラウザからデータを受け取る
-        Browser[ブラウザ] -->|送信| Servlet[Servlet]
-        Servlet -->|getParameterMap| Map["Map<String, String[]>"]
-        Map --> Key1[キー: name / 値: 配列 '田中']
-        Map --> Key2[キー: hobby / 値: 配列 '読書', '映画']
+
+    subgraph S2["Servlet が Map で受け取る"]
+        Browser[ブラウザ] -->|"送信"| SV[Servlet]
+        SV -->|"getParameterMap"| M["Map&lt;String, String 配列&gt;"]
     end
 </pre>
   <p>データベースから取得した結果は <code>List</code> に詰めてアプリケーション内で持ち回り、ブラウザからのリクエストは <code>Map</code> で受け取って処理をします。</p>
