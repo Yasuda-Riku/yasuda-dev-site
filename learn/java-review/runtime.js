@@ -30,15 +30,44 @@ if (root) start(root).catch((err) => {
   root.innerHTML = `<p>問題の読み込みに失敗しました: ${escapeHtml(err.message)}</p>`;
 });
 
+const ALL_QUESTION_FILES = [
+  "/learn/java-review/warmup/questions.json",
+  "/learn/java-review/ch01-class-instance/questions.json",
+  "/learn/java-review/ch02-class-usage/questions.json",
+  "/learn/java-review/ch03-inheritance/questions.json",
+  "/learn/java-review/ch04-interface/questions.json",
+  "/learn/java-review/ch05-collection/questions.json",
+  "/learn/java-review/ch06-exception/questions.json",
+  "/learn/java-review/ch07-package/questions.json",
+];
+
 async function start(rootEl) {
   const sectionId = rootEl.dataset.section || "unknown";
-  const url = rootEl.dataset.questionsUrl || "./questions.json";
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
-  const questions = await res.json();
-  if (!Array.isArray(questions) || questions.length === 0) {
-    throw new Error("questions.json が空です");
+  const mode = rootEl.dataset.mode;
+
+  let questions;
+  if (mode === "review-wrong") {
+    questions = await loadWrongAnsweredQuestions();
+    if (questions.length === 0) {
+      rootEl.innerHTML = `
+        <div class="quiz__card quiz__done">
+          <h2>まだ間違えた問題はありません</h2>
+          <p>各章を解いて、間違えた問題があるとここに溜まります。<br>
+             正解できた問題は自動的にこのリストから消えます。</p>
+          <p><a href="../">コースに戻る</a></p>
+        </div>`;
+      return;
+    }
+  } else {
+    const url = rootEl.dataset.questionsUrl || "./questions.json";
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
+    questions = await res.json();
+    if (!Array.isArray(questions) || questions.length === 0) {
+      throw new Error("questions.json が空です");
+    }
   }
+
   renderShell(rootEl, questions.length);
   const ctx = {
     rootEl,
@@ -48,8 +77,9 @@ async function start(rootEl) {
     state: loadState(),
   };
 
-  // 前回の途中位置があれば、再開するか最初からかを尋ねる
-  const saved = getSectionProgress(sectionId);
+  // 前回の途中位置があれば、再開するか最初からかを尋ねる。
+  // review-wrong は対象が動的に変わるので再開しない。
+  const saved = mode === "review-wrong" ? null : getSectionProgress(sectionId);
   if (saved && saved.index > 0 && saved.index < questions.length) {
     showResumePrompt(ctx, saved.index);
   } else {
@@ -102,8 +132,11 @@ function renderQuestion(ctx) {
   const card = ctx.rootEl.querySelector("[data-card]");
   const total = ctx.questions.length;
 
-  // 現在位置を保存。途中で離脱しても次回はここから再開できる
-  setSectionProgress(ctx.sectionId, ctx.index, total);
+  // 現在位置を保存。途中で離脱しても次回はここから再開できる。
+  // review-wrong は内容が動的なので再開対象から外す。
+  if (ctx.sectionId !== "review-wrong") {
+    setSectionProgress(ctx.sectionId, ctx.index, total);
+  }
 
   // progress
   ctx.rootEl.querySelector(".quiz__progress-label").textContent = `${ctx.index + 1} / ${total}`;
@@ -231,7 +264,13 @@ function goNext(ctx) {
 }
 
 function finish(ctx) {
-  recordSectionComplete(ctx.sectionId, ctx.questions.length);
+  // 通常セクションは完了マークを保存。「間違えた問題」は動的に内容が変わるので、
+  // 完了マークは付けず、進捗保存だけクリアする。
+  if (ctx.sectionId !== "review-wrong") {
+    recordSectionComplete(ctx.sectionId, ctx.questions.length);
+  } else {
+    clearSectionProgress(ctx.sectionId);
+  }
   ctx.rootEl.querySelector(".quiz__progress-bar-fill").style.width = "100%";
   ctx.rootEl.querySelector(".quiz__progress-label").textContent =
     `${ctx.questions.length} / ${ctx.questions.length}`;
@@ -239,13 +278,31 @@ function finish(ctx) {
   card.className = "quiz__card quiz__done";
   card.innerHTML = `
     <h2>このセクションは以上です。お疲れさま！</h2>
-    <p>間違えた問題は明日以降の「復習対象」として戻ってきます。</p>
+    <p>間違えた問題は「間違えた問題」セクションから後でまとめて復習できます。</p>
     <p>
       <a href="../">コースに戻る</a>
     </p>
   `;
   const nav = ctx.rootEl.querySelector(".quiz__nav");
   if (nav) nav.remove();
+}
+
+/** localStorage の state を見て、まだ正解していない問題だけを全章から集める。 */
+async function loadWrongAnsweredQuestions() {
+  const all = [];
+  for (const url of ALL_QUESTION_FILES) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      const items = await res.json();
+      if (Array.isArray(items)) all.push(...items);
+    } catch (_) { /* 1 章だけ取得失敗してもほかは続行 */ }
+  }
+  const state = loadState();
+  return all.filter((q) => {
+    const rec = state.questions?.[q.id];
+    return rec && rec.correct === false;
+  });
 }
 
 function matches(q, raw) {

@@ -91,9 +91,9 @@
             <div class="review-dashboard__card-detail" id="dash-solved-detail">セクションを開いて始めよう</div>
           </div>
           <div class="review-dashboard__card">
-            <div class="review-dashboard__card-label">復習対象</div>
-            <div class="review-dashboard__card-value" id="dash-due">0</div>
-            <div class="review-dashboard__card-detail" id="dash-due-detail">間違えた問題が時間を空けて戻ります</div>
+            <div class="review-dashboard__card-label">未正解</div>
+            <div class="review-dashboard__card-value" id="dash-wrong">0</div>
+            <div class="review-dashboard__card-detail" id="dash-wrong-detail">「間違えた問題」セクションで復習できます</div>
           </div>
         </div>
       </div>
@@ -107,6 +107,14 @@
         </header>
 
         <div class="review-sections">
+          <a class="review-section-card" href="./review/" data-section="review-wrong" id="card-review-wrong">
+            <span class="review-section-card__no">復習</span>
+            <span class="review-section-card__title">間違えた問題</span>
+            <span class="review-section-card__meta" id="card-review-meta">
+              まだ正解できていない問題だけを章をまたいで集めて出題
+            </span>
+          </a>
+
           <a class="review-section-card" href="./warmup/" data-section="warmup">
             <span class="review-section-card__no">Phase A · ウォームアップ</span>
             <span class="review-section-card__title">言語入門の確認 (20 問)</span>
@@ -220,13 +228,13 @@
   </footer>
 
   <script type="module">
-    import { loadState, streakStatus, dueReviewIds } from "./storage.js";
+    import { loadState, streakStatus } from "./storage.js";
 
     const state = loadState();
     const streak = streakStatus();
-    const due = dueReviewIds();
     const totalSolved = Object.values(state.questions).filter((q) => q.correct).length;
     const totalSeen = Object.keys(state.questions).length;
+    const totalWrong = Object.values(state.questions).filter((q) => q.correct === false).length;
 
     document.getElementById("dash-streak").textContent = streak.count;
     document.getElementById("dash-streak-detail").textContent =
@@ -240,15 +248,24 @@
         ? "セクションを開いて始めよう"
         : `これまでに ${totalSeen} 問にチャレンジ`;
 
-    document.getElementById("dash-due").textContent = due.length;
-    document.getElementById("dash-due-detail").textContent =
-      due.length === 0
-        ? "間違えた問題が時間を空けて戻ります"
-        : `${due.length} 問の復習が今日まで`;
+    document.getElementById("dash-wrong").textContent = totalWrong;
+    document.getElementById("dash-wrong-detail").textContent =
+      totalWrong === 0
+        ? "「間違えた問題」セクションで復習できます"
+        : `${totalWrong} 問が「間違えた問題」セクションで復習可能`;
+
+    // 「間違えた問題」カードのメタ表示を更新
+    const wrongMeta = document.getElementById("card-review-meta");
+    if (wrongMeta) {
+      wrongMeta.textContent = totalWrong === 0
+        ? "まだ間違えた問題はありません。各章を進めてください。"
+        : `${totalWrong} 問の未正解 — まとめて復習できます`;
+    }
 
     // セクションごとの進捗バー (完了済み or 途中まで進めた状態を反映)
     document.querySelectorAll(".review-section-card[data-section]").forEach((card) => {
       const id = card.dataset.section;
+      if (id === "review-wrong") return;   // 動的なので進捗マークは出さない
       const completed = state.sections?.[id];
       const progress = state.sectionProgress?.[id];
       const bar = card.querySelector(".review-section-card__progress-bar");
