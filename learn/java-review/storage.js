@@ -40,18 +40,31 @@ export function saveState(state) {
   }
 }
 
-/** 問題を解いたときに呼ぶ。correct = true / false。 */
-export function recordAnswer(questionId, correct) {
+/**
+ * 問題を解いたときに呼ぶ。
+ *   correct: 解答が合っていたか
+ *   opts.assisted: その解答に至るまでにヒント or AI 解説を見たか
+ *
+ * assisted フラグが true の問題は、たとえ最終的に正解しても
+ * 「援助ありの正解」とみなして復習対象に残す。
+ *   - 援助なしで正解 → assisted = false (卒業)
+ *   - 援助ありで正解 → assisted = true (まだ復習対象)
+ *   - 不正解        → 前回までの assisted を維持しつつ今回の援助も足す
+ */
+export function recordAnswer(questionId, correct, opts = {}) {
   const state = loadState();
-  const prev = state.questions[questionId] || { correct: false, attempts: 0, lastAt: 0 };
+  const prev = state.questions[questionId] || { correct: false, attempts: 0, lastAt: 0, assisted: false };
+  const assistedNow = !!opts.assisted;
+  const nextAssisted = correct ? assistedNow : (prev.assisted || assistedNow);
   state.questions[questionId] = {
     correct: prev.correct || correct,
     attempts: prev.attempts + 1,
     lastAt: Date.now(),
+    assisted: nextAssisted,
   };
-  // 間隔反復: 間違えたものは復習キューに、正解したら抜く
+  // 間隔反復: 「援助なしの正解」だけ抜く。それ以外 (不正解 or 援助ありの正解) は復習キューへ。
   state.reviewQueue = state.reviewQueue.filter((q) => q.id !== questionId);
-  if (!correct) {
+  if (!correct || nextAssisted) {
     const nextDays = Math.min(7, (prev.attempts || 0) + 1);
     state.reviewQueue.push({
       id: questionId,
@@ -59,6 +72,22 @@ export function recordAnswer(questionId, correct) {
     });
   }
   bumpStreak(state);
+  saveState(state);
+  return state;
+}
+
+/**
+ * ヒント / AI ボタンを押したときに呼ぶ。
+ * 援助を受けたという事実を即座に保存しておく
+ * (その後ユーザがそのまま閉じても、未正解として復習対象に残るよう)。
+ */
+export function markAssisted(questionId) {
+  const state = loadState();
+  const prev = state.questions[questionId] || { correct: false, attempts: 0, lastAt: 0, assisted: false };
+  state.questions[questionId] = {
+    ...prev,
+    assisted: true,
+  };
   saveState(state);
   return state;
 }

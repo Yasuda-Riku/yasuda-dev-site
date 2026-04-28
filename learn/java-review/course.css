@@ -247,6 +247,16 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+.quiz__feedback-note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: rgba(255, 90, 31, 0.08);
+  border-left: 2px solid var(--accent);
+  color: var(--fg);
+  font-size: 13px;
+  line-height: 1.6;
+}
 .quiz__action {
   font-family: var(--font-mono);
   font-size: 12px;

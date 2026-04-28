@@ -307,7 +307,8 @@
     import { loadState } from "./storage.js";
 
     const state = loadState();
-    const totalWrong = Object.values(state.questions).filter((q) => q.correct === false).length;
+    // 不正解 OR 援助あり正解 = 復習対象
+    const totalWrong = Object.values(state.questions).filter((q) => q.correct === false || q.assisted === true).length;
 
     // 「間違えた問題」カードのメタ表示を更新
     const wrongMeta = document.getElementById("card-review-meta");

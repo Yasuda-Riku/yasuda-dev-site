@@ -16,6 +16,7 @@
 import {
   loadState,
   recordAnswer,
+  markAssisted,
   recordSectionComplete,
   getSectionProgress,
   setSectionProgress,
@@ -134,6 +135,10 @@ function renderQuestion(ctx) {
   const card = ctx.rootEl.querySelector("[data-card]");
   const total = ctx.questions.length;
 
+  // この問題で援助 (ヒント or AI) を見たかを問題ローカルで追跡。
+  // 解答が合っていてもこのフラグが true なら「援助ありの正解」として復習対象に残る。
+  const attempt = { assisted: false };
+
   // 現在位置を保存。途中で離脱しても次回はここから再開できる。
   // review-wrong は内容が動的なので再開対象から外す。
   if (ctx.sectionId !== "review-wrong") {
@@ -174,7 +179,7 @@ function renderQuestion(ctx) {
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") submit.click();
   });
-  submit.addEventListener("click", () => grade(ctx, q, input.value));
+  submit.addEventListener("click", () => grade(ctx, q, input.value, attempt));
 
   prev.disabled = ctx.index === 0;
   prev.onclick = () => { ctx.index = Math.max(0, ctx.index - 1); renderQuestion(ctx); };
@@ -183,7 +188,7 @@ function renderQuestion(ctx) {
   next.onclick = () => goNext(ctx);
 }
 
-function grade(ctx, q, raw) {
+function grade(ctx, q, raw, attempt) {
   const card = ctx.rootEl.querySelector("[data-card]");
   const feedback = card.querySelector("[data-feedback]");
   const hintBox  = card.querySelector("[data-hint]");
@@ -192,13 +197,17 @@ function grade(ctx, q, raw) {
   aiBox.hidden = true;
 
   const ok = matches(q, raw);
-  recordAnswer(q.id, ok);
+  recordAnswer(q.id, ok, { assisted: attempt.assisted });
 
   if (ok) {
     feedback.className = "quiz__feedback quiz__feedback--correct";
+    const assistedNote = attempt.assisted
+      ? `<div class="quiz__feedback-note">ヒント / AI を使ったので、この問題は「間違えた問題」セクションに残ります。</div>`
+      : "";
     feedback.innerHTML = `
       <strong>正解です。</strong>
       ${q.explanation ? `<div style="margin-top:6px;">${escapeHtml(q.explanation)}</div>` : ""}
+      ${assistedNote}
       <div class="quiz__feedback-actions">
         <button type="button" class="quiz__action" data-go-next>次の問題へ →</button>
       </div>
@@ -216,11 +225,17 @@ function grade(ctx, q, raw) {
       </div>
     `;
     feedback.querySelector("[data-show-hint]").onclick = () => {
+      attempt.assisted = true;
+      markAssisted(q.id);
       hintBox.querySelector("[data-hint-text]").textContent =
         q.hint || "問題文をもう一度よく読んで、求められている形を確認してみよう。";
       hintBox.hidden = false;
     };
-    feedback.querySelector("[data-ask-ai]").onclick = (e) => askAi(ctx, q, raw, e.target);
+    feedback.querySelector("[data-ask-ai]").onclick = (e) => {
+      attempt.assisted = true;
+      markAssisted(q.id);
+      askAi(ctx, q, raw, e.target);
+    };
     feedback.querySelector("[data-skip]").onclick = () => goNext(ctx);
   }
 }
@@ -303,7 +318,9 @@ async function loadWrongAnsweredQuestions() {
   const state = loadState();
   return all.filter((q) => {
     const rec = state.questions?.[q.id];
-    return rec && rec.correct === false;
+    if (!rec) return false;
+    // 不正解 OR 援助あり (ヒント/AI を見て正解した) は復習対象。
+    return rec.correct === false || rec.assisted === true;
   });
 }
 
