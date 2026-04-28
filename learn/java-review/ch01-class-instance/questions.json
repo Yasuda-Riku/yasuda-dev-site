@@ -1,0 +1,192 @@
+[
+  {
+    "id": "ch01-1-01",
+    "subtopic": "1-1 クラスの定義とフィールド",
+    "prompt": "クラスを定義するためのキーワードを答えてください。",
+    "starter": "public ___ Person {\n    String name;\n}",
+    "answer": "class",
+    "hint": "「種類」「分類」を意味する英単語です。",
+    "explanation": "class はクラスを定義するキーワード。あとに続く識別子 (Person) がクラス名になります。"
+  },
+  {
+    "id": "ch01-1-02",
+    "subtopic": "1-1 クラスの定義とフィールド",
+    "prompt": "Person クラスに「年齢」を表す int 型のフィールドを宣言してください。フィールド名は age。",
+    "starter": "public class Person {\n    String name;\n    ___;\n}",
+    "answer": "int age",
+    "hint": "型 名前 の形でクラスの中に書くだけです。",
+    "explanation": "クラスのトップレベルに 型 名前; と書くとフィールド (インスタンス変数) になります。デフォルト値は型ごとに自動付与され、int は 0。"
+  },
+  {
+    "id": "ch01-1-03",
+    "subtopic": "1-1 クラスの定義とフィールド",
+    "prompt": "Person クラスのフィールドの初期値を 18 にしたい。宣言時に初期化するコードを答えてください。",
+    "starter": "public class Person {\n    int age = ___;\n}",
+    "answer": "18",
+    "hint": "= のあとに値を書くだけで初期化できます。",
+    "explanation": "フィールドは宣言時に = で初期値を与えられます。コンストラクタが呼ばれる前にこの値がセットされる。"
+  },
+  {
+    "id": "ch01-1-04",
+    "subtopic": "1-1 クラスの定義とフィールド",
+    "prompt": "Java のソースファイル名のルール: public class Foo を含むファイル名は何にすべき？",
+    "starter": "// ファイル名は ___ にする",
+    "answer": "Foo.java",
+    "hint": "「クラス名 + 拡張子」です。拡張子は java。",
+    "explanation": "Java のルール: public なクラス名と同じ名前のファイル名 + .java にする必要があります。"
+  },
+  {
+    "id": "ch01-1-05",
+    "subtopic": "1-1 クラスの定義とフィールド",
+    "prompt": "「フィールドにアクセスする」とは、クラスの中のどんな要素にアクセスすることを指す？ 1 単語で答えてください。",
+    "starter": "Person p = new Person();\np.name = \"taro\";  // ← この name はクラスの ___",
+    "answer": "field",
+    "alternatives": ["フィールド"],
+    "hint": "日本語ではフィールド、英語では field。",
+    "explanation": "クラスの中で宣言した変数 (state) のことを field と呼びます。インスタンスごとに値が独立。"
+  },
+
+  {
+    "id": "ch01-2-01",
+    "subtopic": "1-2 インスタンス化と new",
+    "prompt": "Person クラスのインスタンスを 1 つ作る式を答えてください。コンストラクタの引数は無し。",
+    "starter": "Person p = ___;",
+    "answer": "new Person()",
+    "alternatives": ["new Person ()"],
+    "hint": "「新しく作る」のキーワードと、クラス名の () です。",
+    "explanation": "new クラス名(引数...) でインスタンスを生成し、参照を返します。p はその参照を持つ変数になります。"
+  },
+  {
+    "id": "ch01-2-02",
+    "subtopic": "1-2 インスタンス化と new",
+    "prompt": "「クラスは設計図、インスタンスは ___」という関係性。1 単語で。",
+    "starter": "// クラス = 設計図 / インスタンス = ___",
+    "answer": "実物",
+    "alternatives": ["インスタンス", "オブジェクト", "実体"],
+    "hint": "設計図に対して、それを元に実際に作られたものを指します。",
+    "explanation": "クラスから new で生み出された実体がインスタンス。設計図 (クラス) は 1 つでも、実体 (インスタンス) は何個でも作れます。"
+  },
+  {
+    "id": "ch01-2-03",
+    "subtopic": "1-2 インスタンス化と new",
+    "prompt": "Person を 2 つ作って別の名前を入れたい。p2 のフィールド name に \"hanako\" を代入する式を答えてください。",
+    "starter": "Person p1 = new Person();\nPerson p2 = new Person();\np1.name = \"taro\";\n___ = \"hanako\";",
+    "answer": "p2.name",
+    "hint": "対象のインスタンス変数とフィールド名を . でつなぎます。",
+    "explanation": ". はインスタンスのフィールド/メソッドへのアクセス演算子。インスタンスごとに独立した状態を持てます。"
+  },
+  {
+    "id": "ch01-2-04",
+    "subtopic": "1-2 インスタンス化と new",
+    "prompt": "オブジェクト変数に何も指していないことを表すリテラルを答えてください。",
+    "starter": "Person p = ___;\n// 「まだ何も指していない」状態を表す",
+    "answer": "null",
+    "hint": "「無」を表す英語の予約語です。",
+    "explanation": "null は「参照先が無い」を表します。null のまま p.name とすると NullPointerException で落ちます。"
+  },
+  {
+    "id": "ch01-2-05",
+    "subtopic": "1-2 インスタンス化と new",
+    "prompt": "Person p1 = new Person(); Person p2 = p1; のとき、p1 と p2 は同じインスタンスを指す? それとも別?",
+    "starter": "// p1 と p2 は ___ インスタンスを指す",
+    "answer": "同じ",
+    "alternatives": ["same", "おなじ"],
+    "hint": "= はコピーではなく、参照の付け替えです。",
+    "explanation": "Person 型変数は「参照」を保持しています。p2 = p1 は同じインスタンスへの参照のコピー。p2.name の変更は p1 からも見えます。"
+  },
+
+  {
+    "id": "ch01-3-01",
+    "subtopic": "1-3 メソッド呼び出し",
+    "prompt": "Person クラスに自己紹介を表示するメソッド greet を加えたい。メソッドの戻り値型は何にする?",
+    "starter": "public class Person {\n    String name;\n    public ___ greet() {\n        System.out.println(name);\n    }\n}",
+    "answer": "void",
+    "hint": "値を返さないメソッドの型です。",
+    "explanation": "値を返さないメソッドの戻り値型は void。print して終わるだけのメソッドはほぼ void。"
+  },
+  {
+    "id": "ch01-3-02",
+    "subtopic": "1-3 メソッド呼び出し",
+    "prompt": "Person p のインスタンスメソッド greet() を呼び出す式を答えてください。",
+    "starter": "Person p = new Person();\np.name = \"taro\";\n___;",
+    "answer": "p.greet()",
+    "hint": ". でメソッドを呼び出します。",
+    "explanation": "インスタンスメソッドは インスタンス.メソッド名(引数) の形で呼びます。p の中の name にアクセスできます。"
+  },
+  {
+    "id": "ch01-3-03",
+    "subtopic": "1-3 メソッド呼び出し",
+    "prompt": "戻り値が int のメソッド getAge() の中身を完成させてください。フィールド age を返したい。",
+    "starter": "public int getAge() {\n    ___;\n}",
+    "answer": "return age",
+    "alternatives": ["return this.age"],
+    "hint": "値を呼び出し元に返すキーワードがあります。",
+    "explanation": "return 式; で値を呼び出し元に返します。型は戻り値型 int と一致する必要があります。"
+  },
+  {
+    "id": "ch01-3-04",
+    "subtopic": "1-3 メソッド呼び出し",
+    "prompt": "メソッドの引数として int の年齢を受け取る setAge を完成させてください。",
+    "starter": "public void setAge(int ___) {\n    age = newAge;\n}",
+    "answer": "newAge",
+    "hint": "メソッド本体で使っている変数名と一致させる。",
+    "explanation": "メソッドの () の中はパラメータ宣言。型 名前 の形で書きます。本体の参照と名前を合わせる。"
+  },
+  {
+    "id": "ch01-3-05",
+    "subtopic": "1-3 メソッド呼び出し",
+    "prompt": "メソッドを呼び出した後、戻り値を受け取る変数の宣言を完成させてください。getAge() は int を返す。",
+    "starter": "Person p = new Person();\n___ = p.getAge();",
+    "answer": "int age",
+    "hint": "戻り値型 と 変数名 を書きます。",
+    "explanation": "戻り値型に合った型の変数を宣言して受け取ります。getAge() の戻り値型が int なので int で受ける。"
+  },
+
+  {
+    "id": "ch01-4-01",
+    "subtopic": "1-4 this の意味",
+    "prompt": "this とは何を指す? 1 単語で。",
+    "starter": "// this = ___ インスタンス",
+    "answer": "自分",
+    "alternatives": ["自分自身", "自身", "現在", "そのインスタンス"],
+    "hint": "メソッドが呼ばれているインスタンスのこと。",
+    "explanation": "this は「いま実行中のメソッドが属しているインスタンス」を指す参照。フィールドとパラメータの名前が衝突するときの区別に使えます。"
+  },
+  {
+    "id": "ch01-4-02",
+    "subtopic": "1-4 this の意味",
+    "prompt": "フィールド age と引数 age の名前が衝突。引数ではなくフィールド側に代入したい。空欄を埋めてください。",
+    "starter": "public void setAge(int age) {\n    ___ = age;\n}",
+    "answer": "this.age",
+    "hint": "this でフィールド側を明示します。",
+    "explanation": "this.age は「このインスタンスのフィールド age」を指します。引数の age と区別できます。"
+  },
+  {
+    "id": "ch01-4-03",
+    "subtopic": "1-4 this の意味",
+    "prompt": "this を省略してもよい場面: メソッド内で同名の引数や局所変数が無いとき、フィールドへのアクセスは this.x と x のどちらでも書ける。空欄に省略可な書き方を入れてください。",
+    "starter": "public void greet() {\n    System.out.println(___);\n}",
+    "answer": "name",
+    "hint": "this を省略しても同じ意味になります。",
+    "explanation": "メソッド内で衝突する局所変数や引数が無ければ、this.name と name は同じ意味。省略形が普通です。"
+  },
+  {
+    "id": "ch01-4-04",
+    "subtopic": "1-4 this の意味",
+    "prompt": "static メソッドの中で this は使える?",
+    "starter": "// static メソッドで this を使うのは ___",
+    "answer": "できない",
+    "alternatives": ["不可", "NG", "不正", "no", "できません"],
+    "hint": "static はインスタンスに紐付かないメソッド。",
+    "explanation": "static メソッドはインスタンスに属さないので this が指すものが存在しません。コンパイルエラーになります。"
+  },
+  {
+    "id": "ch01-4-05",
+    "subtopic": "1-4 this の意味",
+    "prompt": "this をメソッドの戻り値として返すと、何ができる?",
+    "starter": "public Person rename(String n) {\n    this.name = n;\n    return ___;\n}",
+    "answer": "this",
+    "hint": "そのまま this を返します。",
+    "explanation": "this を返すと、p.rename(\"taro\").rename(\"jiro\") のようにメソッドチェーンが書けます。Builder パターンの基本形。"
+  }
+]

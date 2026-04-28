@@ -1,0 +1,191 @@
+[
+  {
+    "id": "warmup-01",
+    "subtopic": "変数とデータ型",
+    "prompt": "int 型の変数 x に 100 を代入する宣言を完成させてください。",
+    "starter": "int x = ___;",
+    "answer": "100",
+    "hint": "宣言のあとに代入する整数値をそのまま書きます。",
+    "explanation": "int は整数型。代入は = に続けて値を書きます。"
+  },
+  {
+    "id": "warmup-02",
+    "subtopic": "変数とデータ型",
+    "prompt": "double 型の変数 pi に 3.14 を代入する宣言を完成させてください。",
+    "starter": "double pi = ___;",
+    "answer": "3.14",
+    "hint": "小数を表すリテラルをそのまま書くだけです。",
+    "explanation": "double は小数も扱える数値型。リテラルは 3.14 のように直接書けます。"
+  },
+  {
+    "id": "warmup-03",
+    "subtopic": "変数とデータ型",
+    "prompt": "String 型の変数 name に文字列 \"Java\" を代入してください。空欄に入る式を答えてください。",
+    "starter": "String name = ___;",
+    "answer": "\"Java\"",
+    "alternatives": ["\"Java\""],
+    "hint": "文字列リテラルはダブルクォートで囲みます。",
+    "explanation": "Java の文字列リテラルは \" で囲みます。シングルクォートは char 用。"
+  },
+  {
+    "id": "warmup-04",
+    "subtopic": "演算子と式",
+    "prompt": "整数の余り (剰余) を求める演算子は何ですか？ 1 文字で答えてください。",
+    "starter": "int rest = a ___ b;   // 例: 7 ___ 3 → 1",
+    "answer": "%",
+    "hint": "数学で「mod」と呼ばれる演算です。",
+    "explanation": "%  は剰余演算子。a / b の余りを返します。"
+  },
+  {
+    "id": "warmup-05",
+    "subtopic": "演算子と式",
+    "prompt": "int a = 5, b = 5; を踏まえて、a と b が等しいか調べる比較演算子は？",
+    "starter": "if (a ___ b) { ... }",
+    "answer": "==",
+    "hint": "代入は = ですが、比較は記号を 2 つ重ねます。",
+    "explanation": "== は等価比較。基本型 (int など) の値の一致を見ます。代入の = と区別。"
+  },
+  {
+    "id": "warmup-06",
+    "subtopic": "演算子と式",
+    "prompt": "x が 10 以上 \"かつ\" 20 未満であるかを調べる条件式を空欄に書いてください。",
+    "starter": "if (___) { ... }",
+    "answer": "x >= 10 && x < 20",
+    "alternatives": ["10 <= x && x < 20", "x >= 10 && 20 > x"],
+    "regex": "^\\s*(\\(?\\s*x\\s*>=\\s*10\\s*\\)?|\\(?\\s*10\\s*<=\\s*x\\s*\\)?)\\s*&&\\s*(\\(?\\s*x\\s*<\\s*20\\s*\\)?|\\(?\\s*20\\s*>\\s*x\\s*\\)?)\\s*$",
+    "hint": "「かつ」は && で 2 つの条件をつなぎます。",
+    "explanation": "&& は論理積。両方が true のときだけ全体も true。"
+  },
+  {
+    "id": "warmup-07",
+    "subtopic": "条件分岐",
+    "prompt": "if 文で「score が 60 以上なら『合格』を表示」する処理を完成させてください。",
+    "starter": "if (___) {\n    System.out.println(\"合格\");\n}",
+    "answer": "score >= 60",
+    "alternatives": ["60 <= score"],
+    "hint": "「以上」は >= で表します。",
+    "explanation": ">= は左が右より大きい、または等しい、で true。"
+  },
+  {
+    "id": "warmup-08",
+    "subtopic": "条件分岐",
+    "prompt": "if-else 構文の else に書くキーワードを答えてください。",
+    "starter": "if (n > 0) { ... } ___ { ... }",
+    "answer": "else",
+    "hint": "「そうでなければ」を意味する英単語です。",
+    "explanation": "else は if の条件が false のときに実行する側のブロックを示すキーワード。"
+  },
+  {
+    "id": "warmup-09",
+    "subtopic": "条件分岐",
+    "prompt": "switch 文で各 case の最後に書いて、後続の case に流れないようにするキーワードは？",
+    "starter": "switch (n) {\n    case 1:\n        ...\n        ___;\n    case 2:\n        ...\n}",
+    "answer": "break",
+    "hint": "ループでも使う、抜け出すための単語です。",
+    "explanation": "break が無いと次の case に「fall through」してしまうのが Java の仕様。"
+  },
+  {
+    "id": "warmup-10",
+    "subtopic": "条件分岐",
+    "prompt": "三項演算子で「a > b なら a、そうでなければ b」を返す式を答えてください。",
+    "starter": "int max = ___;",
+    "answer": "a > b ? a : b",
+    "hint": "条件 ? trueの値 : falseの値 という形です。",
+    "explanation": "三項演算子は条件 ? A : B の形。短い分岐をひとつの式にまとめられます。"
+  },
+  {
+    "id": "warmup-11",
+    "subtopic": "繰り返し",
+    "prompt": "for 文で 0 から 9 まで順に表示するための継続条件を空欄に書いてください。",
+    "starter": "for (int i = 0; ___; i++) {\n    System.out.println(i);\n}",
+    "answer": "i < 10",
+    "alternatives": ["i <= 9", "10 > i"],
+    "hint": "9 まで含むので「10 未満」と書くのが普通。",
+    "explanation": "i < 10 とすると i = 0, 1, ..., 9 で 10 回まわります。i <= 9 でも同じ結果ですが慣習として < N の形が多いです。"
+  },
+  {
+    "id": "warmup-12",
+    "subtopic": "繰り返し",
+    "prompt": "while ループで n が 0 より大きい間、繰り返したい。継続条件を答えてください。",
+    "starter": "while (___) {\n    n--;\n}",
+    "answer": "n > 0",
+    "alternatives": ["0 < n"],
+    "hint": "「〜の間」は while の括弧内に書く真偽式です。",
+    "explanation": "while (条件) は条件が true のあいだ本体を繰り返す。0 になったら終了。"
+  },
+  {
+    "id": "warmup-13",
+    "subtopic": "繰り返し",
+    "prompt": "ループの途中でループそのものを抜けるキーワードを答えてください。",
+    "starter": "for (int i = 0; i < 100; i++) {\n    if (i == 5) ___;\n}",
+    "answer": "break",
+    "hint": "switch でも同じキーワードを使います。",
+    "explanation": "break はもっとも内側のループ(または switch)を即座に終了させます。"
+  },
+  {
+    "id": "warmup-14",
+    "subtopic": "繰り返し",
+    "prompt": "ループの今回の周回だけスキップして次の周回に進むキーワードを答えてください。",
+    "starter": "for (int i = 0; i < 10; i++) {\n    if (i % 2 == 0) ___;\n    System.out.println(i);\n}",
+    "answer": "continue",
+    "hint": "「続ける」を意味する英単語です。",
+    "explanation": "continue は本体の残りをスキップしてループの先頭に戻ります。break との対比で覚える。"
+  },
+  {
+    "id": "warmup-15",
+    "subtopic": "配列",
+    "prompt": "配列 arr の要素数を取得する式を空欄に書いてください。",
+    "starter": "int n = ___;",
+    "answer": "arr.length",
+    "hint": "配列はメソッドではなくフィールドで長さを持っています。",
+    "explanation": "配列は length という (final な) フィールドを持ちます。String の length() (メソッド) との違いに注意。"
+  },
+  {
+    "id": "warmup-16",
+    "subtopic": "配列",
+    "prompt": "配列 nums の全要素を順に表示する拡張 for 文を完成させてください。",
+    "starter": "for (int n : ___) {\n    System.out.println(n);\n}",
+    "answer": "nums",
+    "hint": "「: の右側」には反復する対象 (配列やコレクション) を書きます。",
+    "explanation": "拡張 for は for (型 仮変数 : 反復対象) の形。Iterable または配列を受け取れます。"
+  },
+  {
+    "id": "warmup-17",
+    "subtopic": "配列",
+    "prompt": "int 型 3 要素の配列 a を初期化リストで作る宣言を完成させてください。値は 1, 2, 3。",
+    "starter": "int[] a = ___;",
+    "answer": "{1, 2, 3}",
+    "alternatives": ["{1,2,3}", "new int[]{1, 2, 3}", "new int[]{1,2,3}"],
+    "hint": "波括弧 { } で要素を並べる書き方が手軽です。",
+    "explanation": "宣言と同時に初期化リストを書く場合は { ... } 形式が許されます。あとから代入する場合は new int[] { ... } が必要。"
+  },
+  {
+    "id": "warmup-18",
+    "subtopic": "メソッド",
+    "prompt": "戻り値を返さないメソッドの戻り値型として書くキーワードを答えてください。",
+    "starter": "public ___ greet() {\n    System.out.println(\"hi\");\n}",
+    "answer": "void",
+    "hint": "「空」「無」を意味する英単語です。",
+    "explanation": "void は「戻り値なし」を表す予約語。return 文に値を付けないか、書かないことになります。"
+  },
+  {
+    "id": "warmup-19",
+    "subtopic": "メソッド",
+    "prompt": "int 2 つを受け取って合計を返すメソッド add の戻り値の式を答えてください。",
+    "starter": "public static int add(int a, int b) {\n    return ___;\n}",
+    "answer": "a + b",
+    "alternatives": ["b + a"],
+    "hint": "受け取った 2 つの値を + でつなぐだけ。",
+    "explanation": "return に続く式の値が呼び出し元へ返ります。型は宣言された戻り値型 int と一致する必要があります。"
+  },
+  {
+    "id": "warmup-20",
+    "subtopic": "メソッド",
+    "prompt": "メソッドを呼び出して戻り値を変数に受け取る代入式を完成させてください。",
+    "starter": "int sum = ___;",
+    "answer": "add(2, 3)",
+    "alternatives": ["add(2,3)"],
+    "hint": "メソッド名と引数を () で渡します。",
+    "explanation": "メソッド呼び出しは メソッド名(引数...) の形。戻り値が宣言の型 (int) に代入できれば OK。"
+  }
+]

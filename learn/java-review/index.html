@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+
+  <title>Java 復習 — Learn — yasuda-dev</title>
+  <meta name="description" content="Java 研修の復習用クイズ。問題を解いて、間違えたら AI が解説。未経験者目線で構成、進度はブラウザに保存。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/java-review/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yasuda-dev.com/learn/java-review/">
+  <meta property="og:title" content="Java 復習 — yasuda-dev">
+  <meta property="og:description" content="Java 研修の復習用クイズ。問題を解いて、間違えたら AI が解説。">
+  <meta property="og:image" content="https://yasuda-dev.com/og.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/java-review/course.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="course-hero" aria-labelledby="course-heading">
+      <div class="course-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Java 復習</span>
+        </nav>
+        <p class="eyebrow">Course · 復習用 · 未経験者目線</p>
+        <h1 id="course-heading" class="course-hero__title">Java 研修の<br>復習クイズ。</h1>
+        <p class="course-hero__lead">
+          会社の Java 研修で習った内容を、未経験者が詰まりやすい順に復習できる短いクイズ集です。
+          間違えたら AI が「なぜそうなのか」を解説します。
+          進度はブラウザに保存されるので、毎日少しずつ進められます。
+        </p>
+
+        <div class="course-hero__meta" aria-label="Course facts">
+          <div><dt>レベル</dt><dd>未経験者目線</dd></div>
+          <div><dt>形式</dt><dd>穴埋め (1 問 30 秒〜)</dd></div>
+          <div><dt>所要</dt><dd>1 章 = 約 15 分</dd></div>
+          <div><dt>解説</dt><dd>AI による個別解説</dd></div>
+        </div>
+
+        <p class="course-hero__status">
+          <span class="course-hero__status-dot" aria-hidden="true"></span>
+          Phase A (ウォームアップ) と章 1 (クラスとインスタンス) を公開中。残りの章は順次追加。
+        </p>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="dashboard-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">あなたの進捗</p>
+          <h2 id="dashboard-heading" class="section-title">今日もやろう。</h2>
+        </header>
+        <div class="review-dashboard" id="dashboard">
+          <div class="review-dashboard__card">
+            <div class="review-dashboard__card-label">連続学習</div>
+            <div class="review-dashboard__card-value" id="dash-streak">0</div>
+            <div class="review-dashboard__card-detail" id="dash-streak-detail">まだ始めていません</div>
+          </div>
+          <div class="review-dashboard__card">
+            <div class="review-dashboard__card-label">解いた問題</div>
+            <div class="review-dashboard__card-value" id="dash-solved">0</div>
+            <div class="review-dashboard__card-detail" id="dash-solved-detail">セクションを開いて始めよう</div>
+          </div>
+          <div class="review-dashboard__card">
+            <div class="review-dashboard__card-label">復習対象</div>
+            <div class="review-dashboard__card-value" id="dash-due">0</div>
+            <div class="review-dashboard__card-detail" id="dash-due-detail">間違えた問題が時間を空けて戻ります</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section course-section--bordered" aria-labelledby="curriculum-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">セクション</p>
+          <h2 id="curriculum-heading" class="section-title">気になるところから。</h2>
+        </header>
+
+        <div class="review-sections">
+          <a class="review-section-card" href="./warmup/" data-section="warmup">
+            <span class="review-section-card__no">Phase A · ウォームアップ</span>
+            <span class="review-section-card__title">言語入門の確認 (20 問)</span>
+            <span class="review-section-card__meta">
+              変数・条件分岐・繰り返し・配列・メソッド を一気に確認
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="./ch01-class-instance/" data-section="ch01-class-instance">
+            <span class="review-section-card__no">章 1 · 20 問</span>
+            <span class="review-section-card__title">クラスとインスタンス</span>
+            <span class="review-section-card__meta">
+              フィールド · new · this · メソッド呼び出し
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 2 · 公開予定</span>
+            <span class="review-section-card__title">クラスの活用</span>
+            <span class="review-section-card__meta">
+              コンストラクタ · アクセス修飾子 · static
+            </span>
+          </div>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 3 · 公開予定</span>
+            <span class="review-section-card__title">クラスの継承</span>
+            <span class="review-section-card__meta">
+              extends · オーバーライド · super · ポリモーフィズム
+            </span>
+          </div>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 4 · 公開予定</span>
+            <span class="review-section-card__title">インターフェース</span>
+            <span class="review-section-card__meta">
+              abstract · interface · 多態性
+            </span>
+          </div>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 5 · 公開予定</span>
+            <span class="review-section-card__title">コレクション</span>
+            <span class="review-section-card__meta">
+              ArrayList · HashMap · 拡張 for
+            </span>
+          </div>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 6 · 公開予定</span>
+            <span class="review-section-card__title">例外処理</span>
+            <span class="review-section-card__meta">
+              try-catch · throws · checked / unchecked
+            </span>
+          </div>
+
+          <div class="review-section-card" style="opacity:0.5;cursor:default;" aria-disabled="true">
+            <span class="review-section-card__no">章 7 · 公開予定</span>
+            <span class="review-section-card__title">パッケージ</span>
+            <span class="review-section-card__meta">
+              package · import · 可視性
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-section" aria-labelledby="how-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">使い方</p>
+          <h2 id="how-heading" class="section-title">3 ステップ。</h2>
+        </header>
+        <div class="course-prose">
+          <p>
+            1. セクションを開いて、空欄に答えを入力 →「解答」を押す。<br>
+            2. 正解なら次へ。間違いなら「ヒントを見る」、それでもわからなければ「<strong>AI に解説してもらう</strong>」。<br>
+            3. 間違えた問題は明日以降「復習対象」として戻ってきます。
+          </p>
+          <p>
+            進捗はブラウザの localStorage に保存されます。サーバには送られません。
+            別の端末や別のブラウザでは別の進捗として扱われます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { loadState, streakStatus, dueReviewIds } from "./storage.js";
+
+    const state = loadState();
+    const streak = streakStatus();
+    const due = dueReviewIds();
+    const totalSolved = Object.values(state.questions).filter((q) => q.correct).length;
+    const totalSeen = Object.keys(state.questions).length;
+
+    document.getElementById("dash-streak").textContent = streak.count;
+    document.getElementById("dash-streak-detail").textContent =
+      streak.count === 0
+        ? "まだ始めていません"
+        : `🔥 ${streak.count} 日連続`;
+
+    document.getElementById("dash-solved").textContent = totalSolved;
+    document.getElementById("dash-solved-detail").textContent =
+      totalSeen === 0
+        ? "セクションを開いて始めよう"
+        : `これまでに ${totalSeen} 問にチャレンジ`;
+
+    document.getElementById("dash-due").textContent = due.length;
+    document.getElementById("dash-due-detail").textContent =
+      due.length === 0
+        ? "間違えた問題が時間を空けて戻ります"
+        : `${due.length} 問の復習が今日まで`;
+
+    // セクションごとの進捗バー
+    document.querySelectorAll(".review-section-card[data-section]").forEach((card) => {
+      const id = card.dataset.section;
+      const completed = state.sections?.[id];
+      if (!completed) return;
+      const bar = card.querySelector(".review-section-card__progress-bar");
+      if (bar) bar.style.width = "100%";
+      const mark = card.querySelector(".review-section-card__done-mark");
+      if (mark) mark.hidden = false;
+    });
+  </script>
+</body>
+</html>
