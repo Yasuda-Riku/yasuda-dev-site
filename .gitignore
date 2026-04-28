@@ -54,3 +54,9 @@ cloudflare/**/node_modules/
 
 # Java 復習アプリの参考用 PDF (社内資料、コミット禁止)
 Javaプログラミング基礎_PDF/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
