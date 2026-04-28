@@ -24,12 +24,8 @@ import {
 
 const API_ENDPOINT = "/api/explain";
 
-const root = document.getElementById("quiz");
-if (root) start(root).catch((err) => {
-  console.error(err);
-  root.innerHTML = `<p>問題の読み込みに失敗しました: ${escapeHtml(err.message)}</p>`;
-});
-
+// review-wrong モードで全章を集めるためのファイル一覧。
+// ★ start(root) を呼ぶ前に初期化する必要がある (TDZ 対策)。
 const ALL_QUESTION_FILES = [
   "/learn/java-review/warmup/questions.json",
   "/learn/java-review/ch01-class-instance/questions.json",
@@ -40,6 +36,12 @@ const ALL_QUESTION_FILES = [
   "/learn/java-review/ch06-exception/questions.json",
   "/learn/java-review/ch07-package/questions.json",
 ];
+
+const root = document.getElementById("quiz");
+if (root) start(root).catch((err) => {
+  console.error(err);
+  root.innerHTML = `<p>問題の読み込みに失敗しました: ${escapeHtml(err.message)}</p>`;
+});
 
 async function start(rootEl) {
   const sectionId = rootEl.dataset.section || "unknown";
