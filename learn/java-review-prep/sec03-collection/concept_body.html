@@ -1,0 +1,104 @@
+<section class="concept__intro">
+  <h2>身近に置き換えると</h2>
+  <p>レストランの業務に例えてみましょう。データベースからデータを取り出して画面に運ぶのは「厨房から出来上がった料理をお盆に乗せて運ぶ」ようなものです。この「お盆」の役割を果たすのが <code>List</code> です。お盆には決まった料理しか乗せないため、何を乗せるかを明確にします。</p>
+  <p>一方、ユーザーがブラウザから送ってくる入力データは「注文伝票」です。「ハンバーガー1つ、トッピングはチーズとトマト」のように、1つの項目（キー）に対して複数の内容（値）が書かれることがあるため、伝票は <code>Map</code> という形式で受け取ります。</p>
+</section>
+
+<section class="concept__summary">
+  <h2>3 行でまとめると</h2>
+  <ul>
+    <li><code>List&lt;Employee&gt;</code> は、データベースから取り出した複数のデータをひとまとめにして運ぶ「専用のお盆」です。</li>
+    <li><code>while (rs.next())</code> でデータを1件ずつ DTO に詰め、<code>list.add()</code> でお盆に乗せていきます。</li>
+    <li>ブラウザからの入力データは <code>Map&lt;String, String[]&gt;</code> で受け取ります。同じ名前で複数の値が送られてくることがあるため、値は配列になります。</li>
+  </ul>
+</section>
+
+<section class="concept__diagram">
+  <h2>図で見ると</h2>
+<pre class="mermaid">
+flowchart LR
+    subgraph データベースからデータを運ぶ
+        DB[(データベース)] --&gt;|1件ずつ| rs[while rs.next]
+        rs --&gt;|DTOを作成| DTO[Employee]
+        DTO --&gt;|list.add| List[List&lt;Employee&gt;]
+    end
+    
+    subgraph ブラウザからデータを受け取る
+        Browser[ブラウザ] --&gt;|送信| Servlet[Servlet]
+        Servlet --&gt;|getParameterMap| Map[Map&lt;String, String[]&gt;]
+        Map --&gt; Key1[キー: name / 値: 配列 '田中']
+        Map --&gt; Key2[キー: hobby / 値: 配列 '読書', '映画']
+    end
+</pre>
+  <p>データベースから取得した結果は <code>List</code> に詰めてアプリケーション内で持ち回り、ブラウザからのリクエストは <code>Map</code> で受け取って処理をします。</p>
+</section>
+
+<section class="concept__steps">
+  <h2>順を追って理解する</h2>
+  
+  <h3>1. 専用のお盆を用意する (List とジェネリクス)</h3>
+  <p>複数のデータを運ぶために <code>List</code> を使いますが、「何を入れるリストか」を明確にするために <strong>ジェネリクス</strong> <code>&lt;Employee&gt;</code> を使います。インスタンスを作る際は <code>new ArrayList&lt;&gt;()</code> のように書きます。右側のカッコ内の型を省略できるこの書き方を <strong>ダイヤモンド演算子</strong> と呼びます。</p>
+  
+  <h3>2. お盆にデータを乗せる (while と add)</h3>
+  <p>データベースからデータを取り出すときは、<code>while (rs.next())</code> を使って1行ずつ処理します。取り出したデータから <code>Employee</code> オブジェクト（DTO）を作り、<code>list.add(e)</code> でリストに追加していきます。これで複数件のデータが1つのお盆にまとまり、メソッドの戻り値として安全に返すことができます。</p>
+  
+  <h3>3. お盆からデータを取り出す (拡張 for 文)</h3>
+  <p>まとめたリストの中身を1つずつ確認するには <strong>拡張 for 文</strong> が便利です。<code>for (Employee e : list)</code> のように書きます。リストには <code>Employee</code> しか入っていないことがジェネリクスによって保証されているため、仮変数の型も迷わず <code>Employee</code> になります。</p>
+  
+  <h3>4. 注文伝票を受け取る (Map と getParameterMap)</h3>
+  <p>ブラウザから送信されたデータ（リクエストパラメータ）は、Servlet で <code>getParameterMap()</code> を使って受け取ります。この戻り値の型は <code>Map&lt;String, String[]&gt;</code> です。なぜ値が <code>String</code> ではなく <code>String[]</code>（配列）なのでしょうか？ それは、チェックボックスのように「1つの項目（例：hobby）に対して複数の値（例：読書、映画）」が同時に送られてくる可能性があるからです。</p>
+</section>
+
+<section class="concept__code">
+  <h2>応用ではこう書く</h2>
+<pre><code class="language-java">// --- DAOクラスのメソッド ---
+public List&lt;Employee&gt; findAll() {
+    // 1. Employee専用のリスト（お盆）を用意する
+    List&lt;Employee&gt; list = new ArrayList&lt;&gt;();
+    
+    // (データベース接続とSQL実行の処理は省略)
+    
+    // 2. 1行ずつ取り出してDTOを作り、リストに詰める
+    while (rs.next()) {
+        Employee e = new Employee();
+        e.setId(rs.getInt("id"));
+        e.setName(rs.getString("name"));
+        list.add(e);
+    }
+    return list; // まとめたリストを戻り値として返す
+}
+
+// --- Servletの処理 ---
+protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    // 4. 送信されたデータをMapとして受け取る
+    Map&lt;String, String[]&gt; paramMap = request.getParameterMap();
+    
+    // "hobby" というキーに対して、複数の値が配列で入っている
+    String[] hobbies = paramMap.get("hobby");
+}
+
+// --- 別のクラスでの表示処理 ---
+public void printEmployees(List&lt;Employee&gt; list) {
+    // 3. 拡張for文でリストから1つずつ取り出す
+    for (Employee e : list) {
+        System.out.println(e.getName());
+    }
+}
+</code></pre>
+  <p>DAO で作られた <code>List</code> は Servlet を経由して JSP に渡され、画面表示に使われます。データの受け渡しには必ずこれらのコレクションが活躍します。</p>
+</section>
+
+<section class="concept__pitfall">
+  <h2>よくある誤解</h2>
+  
+  <h3>誤解: Map の値は常に1つの文字列だと思って String で受け取ろうとする</h3>
+  <p>正しくは: ブラウザからの入力データを受け取る <code>getParameterMap()</code> の戻り値は <code>Map&lt;String, String[]&gt;</code> です。テキストボックスの入力が1つだけでも、仕様上必ず「配列」として格納されています。単一の値を取り出したい場合は <code>request.getParameter("name")</code> を使うか、配列の1つ目 <code>配列[0]</code> にアクセスする必要があります。</p>
+  
+  <h3>誤解: 拡張 for 文の仮変数の型を Object にしてしまう</h3>
+  <p>正しくは: <code>List&lt;Employee&gt;</code> を拡張 for 文で回す場合、取り出される要素は必ず <code>Employee</code> 型になります。<code>for (Object e : list)</code> のように曖昧な型にする必要はありません。ジェネリクス <code>&lt;Employee&gt;</code> のおかげで、安全かつ明確に型を指定してメソッドを呼び出すことができます。</p>
+</section>
+
+<section class="concept__next">
+  <h2>つまずいたら</h2>
+  <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch05-collection/">章 5 コレクション</a></p>
+</section>

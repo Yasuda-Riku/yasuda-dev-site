@@ -1,0 +1,102 @@
+<section class="concept__intro">
+  <h2>身近に置き換えると</h2>
+  <p>遊園地の「入場リストバンド」と「手荷物預かり所」を想像してください。</p>
+  <p>Webサイトは通常、ページを移動するたびに「あなたが誰か」を忘れてしまいます。そこで、ログイン時に「リストバンド（HttpSession）」を渡し、あなた専用の「手荷物預かり所」を用意します。</p>
+  <p>預かり所にはどんな荷物でも預けられますが（setAttribute）、取り出すときは中身が何であれ「ただの荷物（Object）」として渡されます。そのため、受け取る側が「これはカメラだ」と明示的に確認（ダウンキャスト）しなければ使えません。そして帰るときは、リストバンドをハサミで切って（invalidate）すべてをリセットします。</p>
+</section>
+
+<section class="concept__summary">
+  <h2>3 行でまとめると</h2>
+  <ul>
+    <li><code>req.getSession()</code> で自分専用の保管庫（セッション）を取得し、<code>setAttribute</code> でデータを保存する。</li>
+    <li><code>getAttribute</code> で取り出すデータはすべて「Object型」になるため、元の型に戻す「ダウンキャスト」が必須。</li>
+    <li>ログアウト時などは <code>invalidate()</code> を呼んで、保管庫を安全に破棄する。</li>
+  </ul>
+</section>
+
+<section class="concept__diagram">
+  <h2>図で見ると</h2>
+<pre class="mermaid">
+sequenceDiagram
+    participant B as ブラウザ
+    participant S as Servlet
+    participant H as HttpSession
+
+    B->>S: ログイン要求
+    S->>H: req.getSession() で取得
+    S->>H: setAttribute("user", user)<br/>(User型を預ける)
+    
+    B->>S: マイページ要求
+    S->>H: getAttribute("user")
+    H-->>S: Object型 として返却
+    Note over S: (User) でダウンキャストして復元
+    
+    B->>S: ログアウト要求
+    S->>H: invalidate() で破棄
+</pre>
+  <p>ページをまたいでも、同じリストバンド（セッションID）を持っていれば、サーバー側で以前預けたデータを取り出すことができます。</p>
+</section>
+
+<section class="concept__steps">
+  <h2>順を追って理解する</h2>
+  <h3>1. セッションを取得する</h3>
+  <p><code>req.getSession()</code> を呼び出すと、リクエストを送ってきたユーザー専用の <code>HttpSession</code> オブジェクトが取得できます。まだ存在しない場合は、新しく作成されます。</p>
+  
+  <h3>2. データを保存する</h3>
+  <p><code>session.setAttribute("キー名", 保存したいオブジェクト)</code> を使ってデータを預けます。キー名は、後で取り出すときの「引換券」の役割を果たします。</p>
+
+  <h3>3. データを取り出してキャストする</h3>
+  <p>別のページで <code>session.getAttribute("キー名")</code> を呼び出すとデータを取り出せます。ただし、セッションはどんな型でも預かれるように設計されているため、戻り値はすべて <code>Object</code> 型になります。元のオブジェクトとして使うには、<code>(User)</code> のように <strong>ダウンキャスト</strong> を行う必要があります。</p>
+
+  <h3>4. 間違った型へのキャスト（ClassCastException）</h3>
+  <p>もし <code>"user"</code> というキーで <code>String</code> を預けていたのに、取り出すときに <code>(User)</code> にキャストしようとすると、Javaは「型が違う」と判断し、実行時に <code>ClassCastException</code> というエラーを発生させます。預けた型と取り出す型は必ず一致させなければなりません。</p>
+
+  <h3>5. セッションを破棄する</h3>
+  <p>ユーザーがログアウトするときは、<code>session.invalidate()</code> を呼び出します。これにより、セッション内のデータがすべて消去され、セキュリティが保たれます。</p>
+</section>
+
+<section class="concept__code">
+  <h2>応用ではこう書く</h2>
+<pre><code class="language-java">// --- ログイン処理を行う Servlet ---
+HttpSession session = req.getSession();
+User loginUser = new User("Taro", "taro@example.com");
+
+// セッションに User オブジェクトを保存
+session.setAttribute("user", loginUser);
+
+
+// --- マイページを表示する Servlet ---
+HttpSession session = req.getSession();
+
+// getAttribute は Object 型を返すため、(User) でダウンキャストする
+User user = (User) session.getAttribute("user");
+
+if (user != null) {
+    // キャストしたことで、User クラスのメソッドが呼べるようになる
+    System.out.println("ようこそ、" + user.getName() + "さん");
+} else {
+    System.out.println("ログインしていません");
+}
+
+
+// --- ログアウト処理を行う Servlet ---
+HttpSession session = req.getSession();
+// セッションを破棄（保存されていたデータもすべて消去される）
+session.invalidate();
+</code></pre>
+  <p>MVCアーキテクチャでは、Controller（Servlet）で取得したデータをセッションに保存し、View（JSPなど）や別のControllerで取り出して使う、という流れが基本になります。</p>
+</section>
+
+<section class="concept__pitfall">
+  <h2>よくある誤解</h2>
+  <h3>誤解: getAttribute で取り出した値は、そのまま元の型の変数に入れられる</h3>
+  <p>正しくは: <code>getAttribute</code> の戻り値は常に <code>Object</code> 型です。そのため、<code>User user = session.getAttribute("user");</code> と書くとコンパイルエラーになります。必ず <code>User user = (User) session.getAttribute("user");</code> のように、明示的にキャストの記述をする必要があります。</p>
+
+  <h3>誤解: invalidate() を呼ばなくても、ブラウザを閉じればセッションはすぐに消える</h3>
+  <p>正しくは: ブラウザを閉じるとセッションID（リストバンド）が失われるためアクセスできなくなりますが、サーバー側のセッションデータ自体は一定時間（デフォルトで30分など）残り続けます。ログアウト機能を作る際は、必ず <code>invalidate()</code> を明示的に呼んで即座に破棄するのが安全です。</p>
+</section>
+
+<section class="concept__next">
+  <h2>つまずいたら</h2>
+  <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch03-inheritance/">章 3 クラスの継承 (キャスト周り)</a></p>
+</section>

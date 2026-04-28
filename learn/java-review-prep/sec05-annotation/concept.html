@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF7">
+  <title>解説 · アノテーション基礎 — 応用準備</title>
+  <meta name="description" content="@WebServlet と @Override の意味、アノテーション = メタ情報の感覚をつかみます。">
+  <link rel="canonical" href="https://yasuda-dev.com/learn/java-review-prep/sec05-annotation/concept.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono&display=swap"></noscript>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/learn/java-review/course.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="yasuda-dev — home">yasuda-dev</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/#selected">Selected</a>
+        <a href="/apps/">Apps</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="step-hero" aria-labelledby="page-heading">
+      <div class="step-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/learn/">Learn</a>
+          <span aria-hidden="true">/</span>
+          <a href="/learn/java-review/">Java 復習</a>
+          <span aria-hidden="true">/</span>
+          <span>応用準備</span>
+          <span aria-hidden="true">/</span>
+          <a href="./">セクション 5</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">解説</span>
+        </nav>
+        <p class="step-hero__no">解説 · セクション 5</p>
+        <h1 id="page-heading" class="step-hero__title">アノテーション基礎</h1>
+        <p class="step-hero__goal">@WebServlet と @Override の意味、アノテーション = メタ情報の感覚をつかみます。</p>
+      </div>
+    </section>
+    <section class="concept" aria-label="解説">
+      <div class="concept__inner">
+        <div class="concept-banner">
+          <span>読み終わったら問題に挑戦できます</span>
+          <a href="./">→ 演習に進む</a>
+        </div>
+<section class="concept__intro">
+  <h2>身近に置き換えると</h2>
+  <p>レストランのスタッフが胸につけている「店長」や「研修中」といった名札を想像してみてください。名札自体が料理を作るわけではありませんが、お客さんや他のスタッフに「その人がどんな役割か」を伝える重要な情報です。</p>
+  <p>Javaにおける「アノテーション（@から始まる言葉）」も、これと全く同じです。プログラムのコードにペタッと貼る「付箋」や「ラベル」のようなもので、パソコンやサーバーに「このコードはこういう役割だよ」と伝えるための追加情報（メタ情報）として働きます。</p>
+</section>
+
+<section class="concept__summary">
+  <h2>3 行でまとめると</h2>
+  <ul>
+    <li>アノテーション（@）は、コードの役割をコンパイラやサーバーに伝える「メタ情報（ラベル）」です。</li>
+    <li><code>@Override</code> は、親クラスのメソッドを正しく上書き（オーバーライド）できているか確認してくれる安全装置です。</li>
+    <li><code>@WebServlet("/users")</code> を使うと、指定したURLにアクセスが来たときにどのプログラムを動かすかを簡単に設定できます。</li>
+  </ul>
+</section>
+
+<section class="concept__diagram">
+  <h2>図で見ると</h2>
+<pre class="mermaid">
+flowchart LR
+    Client[ブラウザ] -- "/users にアクセス" --> Server[Webサーバー]
+    Server -- "@WebServlet を探す" --> Label{アノテーション}
+    Label -- "/users を発見!" --> Servlet[UserServletクラス]
+    
+    style Label fill:#f9f,stroke:#333,stroke-width:2px
+</pre>
+  <p>サーバーは、アクセスされたURLと一致する「@WebServlet」というラベル（アノテーション）が貼られたクラスを探し出して実行します。</p>
+</section>
+
+<section class="concept__steps">
+  <h2>順を追って理解する</h2>
+  
+  <h3>1. アノテーションは「メタ情報（ラベル）」</h3>
+  <p>アノテーションとは、英語で「注釈」という意味です。Javaでは <code>@</code> 記号を使って記述します。プログラムの計算処理そのものではなく、「このメソッドは上書き用です」「このクラスはWeb用です」といった、コードに関する情報（メタ情報）をコンパイラや実行環境に伝える役割を持ちます。</p>
+
+  <h3>2. タイポを防ぐ安全装置「@Override」</h3>
+  <p>親クラスのメソッドを子クラスで上書き（オーバーライド）するとき、メソッド名を1文字でも間違えると「新しい別のメソッド」として扱われてしまい、エラーにもならないためバグの原因になります。そこでメソッドの上に <code>@Override</code> というラベルを貼ります。これを貼っておくと、もし名前を間違えていた場合に「親クラスにそんなメソッドはありませんよ！」とJavaがエラーを出して教えてくれる強力な安全装置になります。</p>
+
+  <h3>3. URLとプログラムを結びつける「@WebServlet」</h3>
+  <p>Webアプリケーションでは、「どのURLにアクセスされたら、どのJavaプログラムを動かすか」を決める必要があります。ここで活躍するのが <code>@WebServlet</code> です。クラスの上に <code>@WebServlet("/users")</code> と書くだけで、「このクラスは /users というURLを担当します」とサーバーに宣言することができます。</p>
+
+  <h3>4. 複数のURLを1つのプログラムで担当する</h3>
+  <p>場合によっては、「/users」と「/members」の両方のURLを同じプログラムで処理したいことがあります。その場合は、アノテーションの値に配列（中括弧 <code>{ }</code>）を使って <code>@WebServlet({"/users", "/members"})</code> のように書くことで、複数のURLを簡単にマッピング（結びつけ）することができます。</p>
+</section>
+
+<section class="concept__code">
+  <h2>応用ではこう書く</h2>
+<pre><code class="language-java">import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+// アノテーションで、2つのURLをこのServletにマッピングする
+@WebServlet({"/users", "/members"})
+public class UserServlet extends HttpServlet {
+
+    // 親クラス(HttpServlet)のメソッドを上書きする目印
+    // もし "doGet" を "doget" とタイポしたらコンパイルエラーで教えてくれる
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        // URLにアクセスされたときの処理をここに書く
+        response.setContentType("text/html; charset=UTF-8");
+        response.getWriter().println("ユーザー一覧ページです");
+    }
+}
+</code></pre>
+  <p>応用講義では、このようにクラスの先頭に <code>@WebServlet</code> を書き、処理を行うメソッドに <code>@Override</code> を付けるスタイルが基本の形になります。</p>
+</section>
+
+<section class="concept__pitfall">
+  <h2>よくある誤解</h2>
+  
+  <h3>誤解: アノテーション自体がすごい処理をしてくれている</h3>
+  <p>正しくは: アノテーション自体はただの「目印（文字列）」に過ぎません。その目印を見つけたコンパイラや、TomcatなどのWebサーバーが「おっ、この目印があるならこういう処理をしよう」と裏側で頑張ってくれています。アノテーションはあくまで「指示書」です。</p>
+
+  <h3>誤解: @Override は書かなくても動くから、書かなくていい</h3>
+  <p>正しくは: 確かに書かなくてもオーバーライド自体は成立しますが、絶対に書くべきです。人間は必ずタイポ（打ち間違い）をします。バグを探すために何時間も無駄にするのを防ぐため、プロの現場でも <code>@Override</code> は必須のルールになっています。</p>
+</section>
+
+<section class="concept__next">
+  <h2>つまずいたら</h2>
+  <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch03-inheritance/">章 3 クラスの継承</a></p>
+</section>
+        <div class="concept-banner" style="margin-top: 32px;">
+          <span>準備できたら問題に挑戦</span>
+          <a href="./">→ 演習に進む (4 問)</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <span class="site-footer__mark">yasuda-dev</span>
+      <span class="site-footer__year">2026</span>
+    </div>
+  </footer>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "default", securityLevel: "loose" });
+  </script>
+</body>
+</html>

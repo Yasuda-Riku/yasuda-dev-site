@@ -1,0 +1,99 @@
+<section class="concept__intro">
+  <h2>身近に置き換えると</h2>
+  <p>あなたが「配達員」として荷物を届ける場面を想像してください。配達には会社のトラック（リソース）を使います。もし途中で「通行止め」というトラブル（例外）が起きたら、自分では解決できないので営業所長に「通行止めで進めません」と報告（throws リレー）します。営業所長は、お客様に「配達できませんでした」と謝りますが、その際「原因は通行止めです」と元の理由も添えて伝えます（例外チェーン）。そして、配達が成功しても失敗しても、最後に必ずトラックの鍵は会社に返却しなければなりません（finally / try-with-resources）。</p>
+</section>
+
+<section class="concept__summary">
+  <h2>3 行でまとめると</h2>
+  <ul>
+    <li>データベース接続などの「借りた道具」は、<code>try-with-resources</code> を使って確実に返却（クローズ）する。</li>
+    <li>自分では対処できない例外は <code>throws</code> で呼び出し元（上司）に報告し、リレーのように受け渡す。</li>
+    <li>別の例外に変換して投げ直すときは、元の例外を「原因」として含める（例外チェーン）。</li>
+  </ul>
+</section>
+
+<section class="concept__diagram">
+  <h2>図で見ると</h2>
+  <pre class="mermaid">
+flowchart TD
+    A[メソッド実行] --> B{例外発生?}
+    B -- No --> C[正常終了]
+    B -- Yes: SQLException --> D[catchで捕まえる]
+    D --> E[新しい例外に原因を含めて投げる<br>例外チェーン]
+    C --> F[自動クローズ<br>try-with-resources]
+    E --> F
+    F --> G[呼び出し元へ]
+  </pre>
+  <p>正常に終わっても、途中でトラブル（例外）が起きて中断しても、最後に必ず「自動クローズ」が行われるのがポイントです。</p>
+</section>
+
+<section class="concept__steps">
+  <h2>順を追って理解する</h2>
+  <h3>1. 報告必須のトラブルと、そうでないトラブル (checked vs unchecked)</h3>
+  <p>Javaの例外には、コンパイラが「必ず対処または報告しなさい」と厳しくチェックする <strong>checked 例外</strong>（<code>SQLException</code> など）と、チェックされない <strong>unchecked 例外</strong>（<code>RuntimeException</code> の仲間）があります。<code>RuntimeException</code> 系は、ゼロ割りや「箱が空（Null）」といったプログラムのミスが主なので、わざわざメソッドに「この例外が起きるかも」と宣言（<code>throws</code>）する必要はありません。</p>
+
+  <h3>2. 自分では対処せずに上司に報告する (throws リレー)</h3>
+  <p>データベースのトラブル（<code>SQLException</code>）が起きたとき、そのメソッド内ではどうしようもないことがあります。その場合は、メソッド名の後ろに <code>throws SQLException</code> と書き、「このメソッドは <code>SQLException</code> を投げる可能性があります」と宣言します。これで、エラーの対処を呼び出し元（上司）に任せる「リレー」ができます。</p>
+
+  <h3>3. 借りたものは必ず返す (finally と try-with-resources)</h3>
+  <p>データベースとの接続などは、使い終わったら必ず切断（close）しなければなりません。昔は <code>finally</code> ブロックの中に <code>close()</code> を書いて、成功しても失敗しても必ず実行させるのが定石でした。しかし今は <strong>try-with-resources</strong> という構文を使います。<code>try (借りる処理) { ... }</code> と書くだけで、ブロックを抜けるときに自動で <code>close()</code> してくれます。ただし、これが使えるのは <strong>AutoCloseable</strong> というインターフェースを持っているクラスだけです。</p>
+
+  <h3>4. 複数のトラブルを待ち構える (catch の順序)</h3>
+  <p>複数の例外を <code>catch</code> するときは、<strong>具体的なクラスを先、共通の親クラスを後</strong> に書くという絶対のルールがあります。たとえば、具体的な <code>SQLException</code> を先に書き、より広い範囲をカバーする <code>Exception</code> を後に書きます。網の目が細かいアミを先に置かないと、すべて粗いアミ（親クラス）に引っかかってしまうからです。</p>
+
+  <h3>5. 原因を包んで投げ直す (例外チェーン)</h3>
+  <p><code>SQLException</code> を捕まえた後、「データベースエラー」という事実を、アプリケーション固有の <code>RuntimeException</code> などに変換して投げ直すことがよくあります。このとき、<code>throw new RuntimeException("DBエラー", e);</code> のように、捕まえた元の例外 <code>e</code> を一緒に渡します。これを <strong>例外チェーン</strong> と呼び、後でエラーの根本原因（通行止めだったという事実）をたどれるようにする重要なテクニックです。</p>
+</section>
+
+<section class="concept__code">
+  <h2>応用ではこう書く</h2>
+  <pre><code class="language-java">public class UserRepository {
+    // RuntimeException 系は unchecked なので throws 宣言は不要
+    public User findById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        
+        // try-with-resources 構文 (AutoCloseable なので自動で close される)
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return new User(rs.getString("name"));
+            }
+            return null;
+            
+        } catch (SQLException e) {
+            // 具体的な例外 (SQLException) を先に catch する
+            // 元の例外 e を渡して例外チェーンを作る (unchecked 例外に変換して投げる)
+            throw new RuntimeException("ユーザーの取得に失敗しました", e);
+            
+        } catch (Exception e) {
+            // 共通親 (Exception) は後に書く
+            throw new RuntimeException("予期せぬエラーが発生しました", e);
+        }
+        // finally を書かなくても、Connection や PreparedStatement は自動でクローズされる
+    }
+    
+    // もし自分で処理せずそのまま投げるなら、throws リレーを使う
+    public void update() throws SQLException {
+        // ...
+    }
+}</code></pre>
+  <p>JDBCのコードでは、<code>Connection</code> や <code>PreparedStatement</code> を <code>try (...)</code> の中で宣言します。これらは <code>AutoCloseable</code> を実装しているため、処理が終わるか例外が発生した時点で自動的に <code>close()</code> が呼ばれ、リソースの閉じ忘れ（close漏れ）を完全に防ぐことができます。</p>
+</section>
+
+<section class="concept__pitfall">
+  <h2>よくある誤解</h2>
+  <h3>誤解: catch ブロックの順番は適当でよい</h3>
+  <p>正しくは: <code>catch</code> は上から順に判定されます。もし親クラスである <code>Exception</code> を先に書いてしまうと、すべてそこで捕まってしまい、後に書いた <code>SQLException</code> のブロックには絶対に到達しません。そのため、Javaではコンパイルエラーになります。必ず「具体的な子クラス」から「抽象的な親クラス」の順に書きましょう。</p>
+  
+  <h3>誤解: try-with-resources を使えば、どんなクラスでも自動でクローズされる</h3>
+  <p>正しくは: 自動でクローズされるのは、<code>AutoCloseable</code> インターフェースを実装しているクラス（JDBCの <code>Connection</code> など）だけです。自分で作ったクラスを自動クローズさせたい場合は、<code>implements AutoCloseable</code> と記述し、<code>close()</code> メソッドを実装する必要があります。</p>
+</section>
+
+<section class="concept__next">
+  <h2>つまずいたら</h2>
+  <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch06-exception/">章 6 例外処理</a></p>
+</section>

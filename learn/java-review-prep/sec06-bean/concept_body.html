@@ -1,0 +1,100 @@
+<section class="concept__intro">
+  <h2>身近に置き換えると</h2>
+  <p>DTO（Data Transfer Object）は、荷物を安全に運ぶための「宅配便のダンボール箱」です。そして「JavaBeans規約」は、その箱を扱うための「全国共通の伝票ルール」です。ダンボール箱（DTO）にデータという荷物を詰め込み、データベース（DAO）や画面（JSP）、処理の裏側（Servlet）といった異なる部署間で受け渡しをします。ルール通りに箱を作り、伝票（メソッド名）を正しく書くことで、自動仕分けシステム（Javaの便利な仕組み）がスムーズに荷物を運んでくれるようになります。</p>
+</section>
+
+<section class="concept__summary">
+  <h2>3 行でまとめると</h2>
+  <ul>
+    <li>DTOは、プログラムの各層（DAO・Servlet・JSP）の間でデータをまとめて運ぶためのクラスです。</li>
+    <li>フィールドは必ず <code>private</code> に隠し、データの出し入れは <code>getter/setter</code> を使います。</li>
+    <li>フレームワークが自動で箱を作れるよう、「引数なしコンストラクタ」を必ず用意します（JavaBeans規約）。</li>
+  </ul>
+</section>
+
+<section class="concept__diagram">
+  <h2>図で見ると</h2>
+  <pre class="mermaid">
+flowchart LR
+    DB[(データベース)] &lt;--&gt; DAO[DAO]
+    DAO -- DTOを渡す --&gt; Servlet[Servlet]
+    Servlet -- DTOを渡す --&gt; JSP[JSP]
+    JSP -. 画面表示 .-&gt; User((ユーザー))
+    
+    style DAO fill:#f9f,stroke:#333,stroke-width:2px
+    style Servlet fill:#bbf,stroke:#333,stroke-width:2px
+    style JSP fill:#bfb,stroke:#333,stroke-width:2px
+  </pre>
+  <p>DTOという「箱」にデータを詰めることで、DAO（データベース操作）、Servlet（処理）、JSP（画面表示）の間で、バラバラのデータを一度にまとめて受け渡しできます。</p>
+</section>
+
+<section class="concept__steps">
+  <h2>順を追って理解する</h2>
+  <h3>1. DTO（Data Transfer Object）の役割</h3>
+  <p>DTOは、名前の通り「データを転送（Transfer）するためのオブジェクト」です。例えばユーザーの「ID」「名前」「年齢」という3つのデータを別々に運ぶのは大変ですが、<code>UserDTO</code> という1つの箱にまとめれば、メソッドの引数や戻り値がスッキリします。</p>
+  
+  <h3>2. JavaBeans規約という絶対ルール</h3>
+  <p>DTOを作る際、「JavaBeans（ジャバビーンズ）規約」というルールに従う必要があります。このルールを守ったクラスを「Bean（ビーン）」と呼びます。主なルールは以下の3つです。</p>
+  <ul>
+    <li>フィールドはすべて <code>private</code> にする</li>
+    <li><code>public</code> な <code>getter/setter</code> メソッドを用意する</li>
+    <li><code>public</code> な <strong>引数なしコンストラクタ</strong> を用意する</li>
+  </ul>
+
+  <h3>3. getter / setter の命名ルール</h3>
+  <p>フィールド名が <code>name</code> なら、メソッド名は先頭を大文字にして <code>getName()</code> と <code>setName(値)</code> にします。ただし、<code>boolean</code> 型（true/false）のフィールドの場合は特別で、<code>get</code> ではなく <code>is</code> を使い、<code>isXxx()</code>（例：<code>isAdmin()</code>）とするのが慣習です。</p>
+
+  <h3>4. なぜ「引数なしコンストラクタ」が必要なのか？</h3>
+  <p>今後の応用で学ぶ JSP の <code>useBean</code> アクションや、様々なフレームワークは、裏側で自動的に <code>new UserDTO()</code> のように「引数なし」でクラスを生成（インスタンス化）します。そのため、引数なしコンストラクタがないと、システムが空の箱を準備できずエラーになってしまいます。</p>
+</section>
+
+<section class="concept__code">
+  <h2>応用ではこう書く</h2>
+  <pre><code class="language-java">public class UserDTO {
+    // 1. フィールドはすべて private にする
+    private int id;
+    private String name;
+    private boolean admin;
+
+    // 2. 引数なしコンストラクタを必ず用意する
+    public UserDTO() {
+        // 処理がなくても明示的に書く
+    }
+
+    // 3. getter / setter を用意する
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // boolean型の getter は getAdmin() ではなく isAdmin() にする
+    public boolean isAdmin() {
+        return admin;
+    }
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+}
+</code></pre>
+  <p>このように、データを保持することだけに特化したシンプルなクラスを作ります。データベースから取得した値をDAOで <code>setter</code> を使って詰め込み、JSP側で <code>getter</code> を使って画面に表示します。</p>
+</section>
+
+<section class="concept__pitfall">
+  <h2>よくある誤解</h2>
+  <h3>誤解: フィールドを public にすれば、わざわざ getter/setter を書かなくて済むのでは？</h3>
+  <p>正しくは: Javaの基本として「カプセル化（データの保護）」の目的もありますが、応用技術における最大の理由は<strong>フレームワークが getter/setter の存在を前提に動いているから</strong>です。例えば JSP で <code>${user.name}</code> と短く書いたとき、裏側では自動的に <code>getName()</code> メソッドが探されて呼ばれています。フィールドが public でも、<code>getName()</code> が存在しないと JSP はデータを読み取れずエラーになります。JavaBeans規約は、システムに自動処理させるための「契約」なのです。</p>
+</section>
+
+<section class="concept__next">
+  <h2>つまずいたら</h2>
+  <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch02-class-usage/">章 2 クラスの活用</a></p>
+</section>

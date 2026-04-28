@@ -1,0 +1,114 @@
+<section class="concept__intro">
+    <h2>身近に置き換えると</h2>
+    <p>Servlet（サーブレット）をレストランの「受付係（ウェイター）」だと想像してみてください。お客さん（ブラウザ）がお店にやってきて、「ハンバーグ定食をお願い」と注文（リクエスト）をします。受付係は注文票を受け取り、厨房に伝えて、出来上がった料理（レスポンス）をお客さんのテーブルに運びます。</p>
+    <p>Javaでこの受付係をゼロから育てるのは大変なので、すでに基本的な接客マニュアルを身につけているベテラン受付係（<code>HttpServlet</code>）の能力を受け継ぎ（継承し）ます。そして、「注文の受け取り方」や「料理の出し方」だけを自分のお店専用に書き換える（オーバーライドする）ことで、簡単にWebアプリケーションを作ることができます。</p>
+</section>
+
+<section class="concept__summary">
+    <h2>3 行でまとめると</h2>
+    <ul>
+        <li>Webプログラムを作るには、便利な基本クラスである <code>HttpServlet</code> を <code>extends</code>（継承）する。</li>
+        <li>アクセス方法に合わせて <code>doGet</code> や <code>doPost</code> を <code>@Override</code> して、自分のお店のルールを書く。</li>
+        <li><code>req.getParameter</code> でお客さんの注文内容を受け取り、<code>res.getWriter</code> でお返事を書き込む。</li>
+    </ul>
+</section>
+
+<section class="concept__diagram">
+    <h2>図で見ると</h2>
+    <pre class="mermaid">
+classDiagram
+    class HttpServlet {
+        +doGet(req, res)
+        +doPost(req, res)
+    }
+    class MyServlet {
+        +doGet(req, res)
+        +doPost(req, res)
+    }
+    HttpServlet &lt;|-- MyServlet
+    
+    class HttpServletRequest {
+        +getParameter(name)
+    }
+    class HttpServletResponse {
+        +getWriter()
+    }
+    MyServlet ..&gt; HttpServletRequest : 注文を受け取る
+    MyServlet ..&gt; HttpServletResponse : 返事を書き込む
+    </pre>
+    <p><code>HttpServlet</code> を継承（矢印）することで、Webサーバーとやり取りする複雑な仕組みをそのまま引き継ぎます。私たちは <code>doGet</code> や <code>doPost</code> の中身を上書きするだけで済みます。</p>
+</section>
+
+<section class="concept__steps">
+    <h2>順を追って理解する</h2>
+    
+    <h3>1. HttpServlet を継承する</h3>
+    <p>Web上で動くプログラムを作るための第一歩は、クラス宣言に <code>extends HttpServlet</code> をつけることです。これにより、ただのJavaクラスが「Webサーバー上でリクエストを受け取れるServletクラス」に生まれ変わります。</p>
+
+    <h3>2. doGet / doPost をオーバーライドする</h3>
+    <p>お客さんからのアクセス方法には、主に「GET（ページを見るだけ）」と「POST（フォームからデータを送る）」があります。これに合わせて <code>doGet</code> または <code>doPost</code> メソッドを上書きします。このとき、引数の型は必ず <code>HttpServletRequest</code> と <code>HttpServletResponse</code> に固定されています。</p>
+    <p>また、通信エラーなどに備えて、メソッドには <code>throws ServletException, IOException</code> という例外を宣言する必要があります。</p>
+
+    <h3>3. 安全装置として @Override を書く</h3>
+    <p>メソッドを上書きする際は、必ずメソッドの直前に <code>@Override</code> を書きましょう。これは必須ではありませんが、「親クラスのメソッドを正しく上書きしているか」をJavaがチェックしてくれる強力な安全装置になります。</p>
+
+    <h3>4. リクエストからデータを取り出す</h3>
+    <p>お客さんが入力したデータ（検索キーワードや名前など）は、1つ目の引数である <code>HttpServletRequest</code>（よく <code>req</code> と略されます）に入っています。<code>req.getParameter("キー名")</code> を使うと、そのデータを文字列として取り出すことができます。</p>
+
+    <h3>5. レスポンスに結果を書き込む</h3>
+    <p>処理が終わったら、お客さんの画面（ブラウザ）に結果を返します。2つ目の引数である <code>HttpServletResponse</code>（よく <code>res</code> と略されます）から <code>res.getWriter()</code> を呼ぶと、文字を書き込むためのペン（出力ストリーム）がもらえます。これを使ってHTMLなどの文章を出力します。</p>
+</section>
+
+<section class="concept__code">
+    <h2>応用ではこう書く</h2>
+    <pre><code class="language-java">import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+// URLが "/hello" のときにこのServletが動く
+@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+
+    // GETリクエストが来たときの処理を上書き
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) 
+            throws ServletException, IOException {
+        
+        // 1. お客さんからのデータ（パラメータ）を受け取る
+        // 例: /hello?name=田中
+        String userName = req.getParameter("name");
+        if (userName == null) {
+            userName = "ゲスト";
+        }
+        
+        // 2. お客さんに返す文字のルール（文字化け対策）を設定
+        res.setContentType("text/html; charset=UTF-8");
+        
+        // 3. お客さんに返事（HTML）を書き込む
+        PrintWriter out = res.getWriter();
+        out.println("&lt;html&gt;&lt;body&gt;");
+        out.println("&lt;h1&gt;こんにちは、" + userName + "さん！&lt;/h1&gt;");
+        out.println("&lt;/body&gt;&lt;/html&gt;");
+    }
+}</code></pre>
+    <p>実際の開発では、Servletの中で直接HTMLをたくさん書くことは少なくなり、画面作りは「JSP（JavaServer Pages）」という別の仕組みに任せるようになります（MVCモデル）。しかし、リクエストを受け取ってレスポンスを返すという基本の流れは全く同じです。</p>
+</section>
+
+<section class="concept__pitfall">
+    <h2>よくある誤解</h2>
+    
+    <h3>誤解: @Override は書かなくても動くから不要？</h3>
+    <p><strong>正しくは:</strong> 動くこともありますが、必ず書くべきです。例えば <code>doget</code> のように小文字でタイポ（打ち間違い）をした場合、<code>@Override</code> がないとJavaは「新しい別のメソッドを作ったんだな」と勘違いし、エラーを出さずに処理を無視してしまいます。<code>@Override</code> を書いておけば、タイポした瞬間にコンパイルエラーとして間違いを教えてくれます。</p>
+
+    <h3>誤解: 引数の名前は必ず req と res にしなければならない？</h3>
+    <p><strong>正しくは:</strong> 変数名は自由です。<code>request</code> や <code>response</code> と書いても全く問題ありません。しかし、変数の「型」である <code>HttpServletRequest</code> と <code>HttpServletResponse</code> は絶対に固定です。この型が少しでも違うと、正しくオーバーライドできません。</p>
+</section>
+
+<section class="concept__next">
+    <h2>つまずいたら</h2>
+    <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch03-inheritance/">章 3 クラスの継承</a></p>
+</section>
