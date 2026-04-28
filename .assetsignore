@@ -1,0 +1,16 @@
+# Cloudflare Workers Builds: ASSETS バインディングから除外するファイル/ディレクトリ。
+# .gitignore と同じグロブ形式。これがないと _worker.js が静的ファイルとして
+# 公開されてしまう (= サーバー側コードが流出)。
+
+# Worker 本体と設定ファイル
+_worker.js
+wrangler.jsonc
+wrangler.toml
+.assetsignore
+
+# 別 Worker としてのフォールバック用に残してあるが、配信はしない
+cloudflare
+
+# 念のため
+node_modules
+.wrangler
