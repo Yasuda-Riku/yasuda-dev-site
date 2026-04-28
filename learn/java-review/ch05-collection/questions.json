@@ -1,0 +1,195 @@
+[
+  {
+    "id": "ch05-1-01",
+    "subtopic": "5-1 ArrayList",
+    "prompt": "String を要素に持つ ArrayList を作る式を完成させてください。",
+    "starter": "ArrayList<String> list = new ArrayList<___>();",
+    "answer": "",
+    "alternatives": ["String"],
+    "regex": "^\\s*(String)?\\s*$",
+    "hint": "Java 7 以降は型推論 (ダイヤモンド演算子) で省略できます。",
+    "explanation": "Java 7 以降は new ArrayList<>() のように型を省略できます。コンパイラが左辺の型から推論します。String と書いても OK ですが省略形が現代的。"
+  },
+  {
+    "id": "ch05-1-02",
+    "subtopic": "5-1 ArrayList",
+    "prompt": "ArrayList<String> list の末尾に文字列 \"a\" を追加するメソッドは？",
+    "starter": "list.___(\"a\");",
+    "answer": "add",
+    "hint": "「追加」の英単語です。",
+    "explanation": "add は List インタフェースの基本メソッド。引数の値を末尾に追加し、内部の長さを 1 増やす。途中に挿入したいなら add(index, value) を使う。"
+  },
+  {
+    "id": "ch05-1-03",
+    "subtopic": "5-1 ArrayList",
+    "prompt": "ArrayList の i 番目 (0 始まり) の要素を取得するメソッドは？",
+    "starter": "String s = list.___(0);",
+    "answer": "get",
+    "hint": "「取得する」の英単語です。",
+    "explanation": "list.get(i) で i 番目を取得。配列と違って [] でアクセスはできず、メソッド呼び出しになる点に注意。インデックス範囲外だと IndexOutOfBoundsException。"
+  },
+  {
+    "id": "ch05-1-04",
+    "subtopic": "5-1 ArrayList",
+    "prompt": "ArrayList の現在のサイズを返すメソッドは？",
+    "starter": "int n = list.___();",
+    "answer": "size",
+    "hint": "配列なら .length ですが、コレクションは別。",
+    "explanation": "コレクションは size() メソッドで要素数を取ります。配列の length (フィールド) と String の length() (メソッド) と List の size() (メソッド) がそれぞれ違うのが Java の罠。"
+  },
+  {
+    "id": "ch05-1-05",
+    "subtopic": "5-1 ArrayList",
+    "prompt": "List<String> 型の変数で受けるのと ArrayList<String> 型で受けるのは、どちらが推奨される設計？",
+    "starter": "// 推奨は ___ 型で受ける",
+    "answer": "List",
+    "alternatives": ["List<String>", "List 型", "interface", "interface 型"],
+    "hint": "「実装ではなく interface に依存」の原則。",
+    "explanation": "List 型で受けるほうが推奨。後から LinkedList などに差し替えても呼び出し側を変更せずに済むため。可能な限り具体クラスではなく interface 型を変数の型に使うのが定石。"
+  },
+
+  {
+    "id": "ch05-2-01",
+    "subtopic": "5-2 拡張 for / 走査",
+    "prompt": "List<String> list の全要素を順に表示する拡張 for を完成させてください。",
+    "starter": "for (String s : ___) {\n    System.out.println(s);\n}",
+    "answer": "list",
+    "hint": ": の右側には反復対象を書きます。",
+    "explanation": "拡張 for は for (型 仮変数 : 反復対象) の形。配列でも List/Set でも (Iterable を実装したものなら何でも) 走査できます。"
+  },
+  {
+    "id": "ch05-2-02",
+    "subtopic": "5-2 拡張 for / 走査",
+    "prompt": "ArrayList を index 付きで走査したい。普通の for で書く方の継続条件を完成させてください。",
+    "starter": "for (int i = 0; ___; i++) {\n    System.out.println(list.get(i));\n}",
+    "answer": "i < list.size()",
+    "alternatives": ["i<list.size()"],
+    "hint": "サイズ未満の間ループ、が定石。",
+    "explanation": "コレクションを index で回すなら i < list.size()。配列の length と違ってメソッドなので () を忘れない。途中で要素を追加削除すると条件が動的に変わる点も注意。"
+  },
+  {
+    "id": "ch05-2-03",
+    "subtopic": "5-2 拡張 for / 走査",
+    "prompt": "List<String> list が空かどうかを調べるメソッドは？",
+    "starter": "if (list.___()) { ... }",
+    "answer": "isEmpty",
+    "hint": "「空である」を意味する英単語です。",
+    "explanation": "list.size() == 0 でも判定できますが、isEmpty() の方が意図が明確で推奨。実装によっては size() より高速な場合もあります。"
+  },
+  {
+    "id": "ch05-2-04",
+    "subtopic": "5-2 拡張 for / 走査",
+    "prompt": "List<String> list に \"x\" が含まれているかを調べるメソッドは？",
+    "starter": "if (list.___(\"x\")) { ... }",
+    "answer": "contains",
+    "hint": "「含む」の英単語です。",
+    "explanation": "contains は List/Set 共通のメソッド。内部で equals を使って比較するので、自作クラスでは equals を正しくオーバーライドしておく必要があります。"
+  },
+  {
+    "id": "ch05-2-05",
+    "subtopic": "5-2 拡張 for / 走査",
+    "prompt": "拡張 for ループの中で list.remove() を呼ぶと何が起きやすい？",
+    "starter": "// 拡張 for 中の remove → ___",
+    "answer": "ConcurrentModificationException",
+    "alternatives": ["例外", "exception"],
+    "hint": "コレクション走査中の変更で起きる例外があります。",
+    "explanation": "拡張 for は内部で Iterator を使っており、走査中にコレクションが変更されると ConcurrentModificationException で落ちる仕様。削除したい場合は Iterator.remove() を使うか、後でまとめて remove する必要があります。"
+  },
+
+  {
+    "id": "ch05-3-01",
+    "subtopic": "5-3 HashMap",
+    "prompt": "String キー → Integer 値の HashMap を作る式を完成させてください。",
+    "starter": "HashMap<___, ___> map = new HashMap<>();",
+    "answer": "String, Integer",
+    "alternatives": ["String,Integer"],
+    "hint": "<キーの型, 値の型> の順番。",
+    "explanation": "Map はジェネリクスが 2 つ。<キーの型, 値の型> の順。基本型 (int) は使えないので Integer などのラッパー型を使います。"
+  },
+  {
+    "id": "ch05-3-02",
+    "subtopic": "5-3 HashMap",
+    "prompt": "Map にキー \"taro\" と値 25 のペアを登録するメソッドは？",
+    "starter": "map.___(\"taro\", 25);",
+    "answer": "put",
+    "hint": "「置く」の英単語です。",
+    "explanation": "put でキーと値のペアを追加。同じキーが既にあれば上書きされ、古い値が戻り値で返ります。"
+  },
+  {
+    "id": "ch05-3-03",
+    "subtopic": "5-3 HashMap",
+    "prompt": "Map からキー \"taro\" の値を取り出すメソッドは？",
+    "starter": "Integer age = map.___(\"taro\");",
+    "answer": "get",
+    "hint": "List と同じ名前のメソッドです。",
+    "explanation": "get で値を取得。キーが無ければ null が返ります (基本型を返す getOrDefault と区別)。null を避けたいなら map.getOrDefault(key, default)  が便利。"
+  },
+  {
+    "id": "ch05-3-04",
+    "subtopic": "5-3 HashMap",
+    "prompt": "Map の全キーを順に取り出す拡張 for を完成させてください。",
+    "starter": "for (String key : map.___()) {\n    ...\n}",
+    "answer": "keySet",
+    "hint": "「キーの集合」を返すメソッドです。",
+    "explanation": "keySet() はマップの全キーを Set で返します。値も同時に欲しいなら map.entrySet() で Map.Entry を回す方が高速 (内部で 2 度引きしない)。"
+  },
+  {
+    "id": "ch05-3-05",
+    "subtopic": "5-3 HashMap",
+    "prompt": "Map のキーと値のペアを 1 つずつ取り出すには Map.___() を使う？",
+    "starter": "for (Map.Entry<String, Integer> e : map.___()) {\n    String k = e.getKey();\n    Integer v = e.getValue();\n}",
+    "answer": "entrySet",
+    "hint": "「エントリー (1 ペア) の集合」を返すメソッドです。",
+    "explanation": "entrySet() は Map.Entry の集合を返します。各エントリは getKey/getValue で取れる。キーと値の両方が欲しいループでは keySet より効率的。"
+  },
+
+  {
+    "id": "ch05-4-01",
+    "subtopic": "5-4 ジェネリクス",
+    "prompt": "List<int> と書いてもコンパイルできない。原因は何？",
+    "starter": "// int は ___ ではないからジェネリクスに使えない",
+    "answer": "参照型",
+    "alternatives": ["object", "オブジェクト", "クラス", "ラッパー型ではない", "プリミティブだから"],
+    "hint": "ジェネリクスはオブジェクトしか入れられません。",
+    "explanation": "ジェネリクスは参照型 (オブジェクト型) だけ。基本型 (int, double など) は直接使えないので、Integer や Double のラッパー型を使います。"
+  },
+  {
+    "id": "ch05-4-02",
+    "subtopic": "5-4 ジェネリクス",
+    "prompt": "Java 7 以降、new ArrayList<String>() は new ArrayList<>() に省略できる。この <> を何と呼ぶ？",
+    "starter": "// <> = ___ 演算子",
+    "answer": "ダイヤモンド",
+    "alternatives": ["diamond"],
+    "hint": "見た目がダイヤモンド型 (◇)。",
+    "explanation": "ダイヤモンド演算子。Java 7 で導入されました。コンパイラが左辺の宣言から型を推論してくれるので、右辺で重複して書く必要が無い。"
+  },
+  {
+    "id": "ch05-4-03",
+    "subtopic": "5-4 ジェネリクス",
+    "prompt": "List<? extends Number> の意味を 1 単語で。「Number またはその ___ 」を要素として持つ List。",
+    "starter": "// List<? extends Number> = Number またはその ___ を要素に持つ List",
+    "answer": "サブクラス",
+    "alternatives": ["子クラス", "派生", "subclass"],
+    "hint": "extends の後の型が「上限」になる書き方です。",
+    "explanation": "ワイルドカード ? extends T は「T またはその子クラス」を表します。読み取り専用に近い扱い (要素を入れる側からは安全じゃない) になり、戻り値の型に使うのが定石。"
+  },
+  {
+    "id": "ch05-4-04",
+    "subtopic": "5-4 ジェネリクス",
+    "prompt": "「型パラメータ T を持つメソッド」のシグネチャを完成させてください。",
+    "starter": "public ___ T first(List<T> list) { return list.get(0); }",
+    "answer": "<T>",
+    "alternatives": ["<T> static", "static <T>"],
+    "hint": "戻り値型の前に <T> を書きます (static の場合は public static <T>)。",
+    "explanation": "メソッドにジェネリクスを持たせるときは戻り値型の直前に <T> を書きます。クラス全体の <T> とは独立に、メソッドだけで型を受け取れます。"
+  },
+  {
+    "id": "ch05-4-05",
+    "subtopic": "5-4 ジェネリクス",
+    "prompt": "List<Object> に Integer や String を入れた場合、要素を取り出すと何型？",
+    "starter": "List<Object> list = ...;\nObject o = list.get(0);   // 取り出すと型は ___",
+    "answer": "Object",
+    "hint": "宣言された要素型がそのまま戻り値型になります。",
+    "explanation": "List<Object> から取り出した値は Object 型。元の型 (Integer / String) として使いたいなら instanceof で確認してダウンキャストする必要があります。型情報が消えるのが Java ジェネリクスの「型消去 (erasure)」。"
+  }
+]

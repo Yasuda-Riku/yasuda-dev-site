@@ -1,0 +1,146 @@
+[
+  {
+    "id": "ch07-1-01",
+    "subtopic": "7-1 package 宣言",
+    "prompt": "クラスをパッケージに所属させるキーワードは？",
+    "starter": "___ com.example.app;\npublic class Foo { ... }",
+    "answer": "package",
+    "hint": "そのままの英単語です。",
+    "explanation": "package 宣言はソースファイルの最初の行 (空行・コメント以外で) に書きます。書かないとクラスは「無名パッケージ」に所属し、他パッケージから import できなくなります。"
+  },
+  {
+    "id": "ch07-1-02",
+    "subtopic": "7-1 package 宣言",
+    "prompt": "package 宣言はソースファイルの何行目に書く？",
+    "starter": "// package 宣言は ___ 行目",
+    "answer": "1",
+    "alternatives": ["一", "最初", "先頭", "1行目"],
+    "hint": "コメント以外で先頭です。",
+    "explanation": "package 宣言は空行とコメントを除いた最初の行に書く必要があります。複数のパッケージを 1 ファイルに書くことはできません。"
+  },
+  {
+    "id": "ch07-1-03",
+    "subtopic": "7-1 package 宣言",
+    "prompt": "パッケージ名 com.example.app に対応するディレクトリ構成は？(空欄に区切り文字 1 つ)",
+    "starter": "src/com___example/app/Foo.java",
+    "answer": "/",
+    "hint": "ファイルシステムのパス区切り。",
+    "explanation": "パッケージ名のドットはディレクトリ階層に対応。com.example.app なら src/com/example/app/ ディレクトリ配下にファイルを置きます。"
+  },
+  {
+    "id": "ch07-1-04",
+    "subtopic": "7-1 package 宣言",
+    "prompt": "パッケージ名はなぜドメインを逆順に書くのが慣習？",
+    "starter": "// 例: com.example.app   ドメインを逆順 = ___ を保証するため",
+    "answer": "一意",
+    "alternatives": ["uniqueness", "ユニーク", "一意性", "一意さ"],
+    "hint": "「世界中で被らない」ようにするため。",
+    "explanation": "ドメインは世界で 1 つしかないので、ドメイン逆順 + 自分の管理パッケージ名 で「世界中で重複しないパッケージ名」が確保できます。Maven Central などで衝突を避けるための慣習。"
+  },
+  {
+    "id": "ch07-1-05",
+    "subtopic": "7-1 package 宣言",
+    "prompt": "Java のクラスを完全に特定する「完全修飾名 (FQN)」とは何の組み合わせ？",
+    "starter": "// FQN = ___名 + . + クラス名",
+    "answer": "パッケージ",
+    "alternatives": ["package"],
+    "hint": "クラス名の前につくものです。",
+    "explanation": "完全修飾名 = パッケージ名 + . + クラス名 (例: java.util.ArrayList)。同じクラス名でもパッケージが違えば別物として識別できる仕組み。"
+  },
+
+  {
+    "id": "ch07-2-01",
+    "subtopic": "7-2 import",
+    "prompt": "別パッケージのクラスを使うときに書くキーワードは？",
+    "starter": "___ java.util.ArrayList;",
+    "answer": "import",
+    "hint": "そのままの英単語です。",
+    "explanation": "import を書くとそのクラスを「短い名前」で使えるようになります。書かなくても完全修飾名 (java.util.ArrayList) で書けばコードは動きます。"
+  },
+  {
+    "id": "ch07-2-02",
+    "subtopic": "7-2 import",
+    "prompt": "java.util の全クラスを一括 import する書き方を完成させてください。",
+    "starter": "import java.util.___;",
+    "answer": "*",
+    "hint": "「全部」を意味するワイルドカードです。",
+    "explanation": "import java.util.* で java.util 直下のクラスを全部 import。ただし IDE が個別 import に展開してくれることが多いので、明示的に 1 つずつ書くスタイルも一般的です。"
+  },
+  {
+    "id": "ch07-2-03",
+    "subtopic": "7-2 import",
+    "prompt": "java.lang パッケージのクラス (String, Integer, System など) は import を書かなくても使える。それは何故？",
+    "starter": "// java.lang は ___ で import される",
+    "answer": "暗黙",
+    "alternatives": ["自動", "デフォルト", "implicit", "auto"],
+    "hint": "明示的な import 文無しで使えてしまう特別扱い。",
+    "explanation": "java.lang は全 Java プログラムで使われる基本クラス置き場で、暗黙で import されます。だから String や Integer はいきなり書ける。"
+  },
+  {
+    "id": "ch07-2-04",
+    "subtopic": "7-2 import",
+    "prompt": "Math.PI のような static フィールドを Math. を省略して使うための import 文を完成させてください。",
+    "starter": "import ___ java.lang.Math.PI;",
+    "answer": "static",
+    "hint": "通常の import に追加するキーワードです。",
+    "explanation": "import static で static メンバーを「クラス名.」を省略して呼べるようになります。例: import static java.lang.Math.* と書けば PI、sqrt、abs などをそのまま使える。"
+  },
+  {
+    "id": "ch07-2-05",
+    "subtopic": "7-2 import",
+    "prompt": "別パッケージに同名クラスが 2 つある (例: java.util.Date と java.sql.Date)。同時に import するとどうなる？",
+    "starter": "// import java.util.Date と import java.sql.Date を両方書く → ___",
+    "answer": "コンパイルエラー",
+    "alternatives": ["エラー", "compile error", "失敗"],
+    "hint": "クラス名が衝突する状態が許されません。",
+    "explanation": "同名クラスを両方 import するとコンパイルエラー。片方は完全修飾名 (java.sql.Date のようにフルパス) で書いて、もう片方だけ import する、という対応が必要です。"
+  },
+
+  {
+    "id": "ch07-3-01",
+    "subtopic": "7-3 アクセス可視性",
+    "prompt": "アクセス修飾子を書かないフィールドは、どこから見える？",
+    "starter": "class Foo { int x; }   // x は ___ パッケージから見える",
+    "answer": "同じ",
+    "alternatives": ["同一", "same", "同じ", "そのパッケージ", "同パッケージ"],
+    "hint": "「自分と同じパッケージから」だけ。",
+    "explanation": "修飾子なし (package-private) は同じパッケージのクラスからのみアクセス可能。別パッケージからは見えません。「内部実装」を同パッケージに閉じる手段。"
+  },
+  {
+    "id": "ch07-3-02",
+    "subtopic": "7-3 アクセス可視性",
+    "prompt": "同じパッケージ + 子クラスからアクセスできるアクセス修飾子は？",
+    "starter": "___ int age;",
+    "answer": "protected",
+    "hint": "private と public の中間です。",
+    "explanation": "protected は「同じパッケージ + 全サブクラス (パッケージ違いも OK)」からアクセス可能。継承前提の親クラスでフィールド/メソッドを子に公開したいときに使います。"
+  },
+  {
+    "id": "ch07-3-03",
+    "subtopic": "7-3 アクセス可視性",
+    "prompt": "アクセス修飾子を「狭い順」に並べた場合、最も狭いのは？",
+    "starter": "// 狭い順 = ___ < (修飾子なし) < protected < public",
+    "answer": "private",
+    "hint": "「個人的」を意味する英単語。",
+    "explanation": "Java のアクセス修飾子は狭い順に: private < (なし=package-private) < protected < public。狭く始めて必要に応じて広げるのが安全な設計。"
+  },
+  {
+    "id": "ch07-3-04",
+    "subtopic": "7-3 アクセス可視性",
+    "prompt": "1 つの .java ファイルに「public クラス」は何個書ける？",
+    "starter": "// public クラスは 1 ファイルに ___ 個まで",
+    "answer": "1",
+    "alternatives": ["一", "1 つ", "1個"],
+    "hint": "ファイル名と一致するクラスだけ public にできる。",
+    "explanation": "1 ファイルに public クラスは 1 個まで。しかも public クラス名 = ファイル名でないとコンパイルできません。public でない (= package-private) クラスは複数書けますが推奨されない。"
+  },
+  {
+    "id": "ch07-3-05",
+    "subtopic": "7-3 アクセス可視性",
+    "prompt": "Java で「カプセル化」を達成するためのもっとも基本的な習慣は？",
+    "starter": "// フィールドは ___ にする",
+    "answer": "private",
+    "hint": "外からの直接書き換えを禁止する修飾子です。",
+    "explanation": "「フィールドは private、必要なら getter/setter で公開」がカプセル化の基本形。これを徹底するだけで、内部状態のバグの大半が予防できます。"
+  }
+]

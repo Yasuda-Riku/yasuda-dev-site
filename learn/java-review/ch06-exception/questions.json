@@ -1,0 +1,196 @@
+[
+  {
+    "id": "ch06-1-01",
+    "subtopic": "6-1 try-catch",
+    "prompt": "例外が起こりうる処理を囲むキーワードは？",
+    "starter": "___ {\n    int x = Integer.parseInt(\"abc\");\n} catch (NumberFormatException e) { ... }",
+    "answer": "try",
+    "hint": "そのままの英単語です。",
+    "explanation": "try は「これから書く処理で例外が起きるかも」と宣言するキーワード。中で起きた例外は対応する catch で受け止めます。"
+  },
+  {
+    "id": "ch06-1-02",
+    "subtopic": "6-1 try-catch",
+    "prompt": "例外を受け取って処理するブロックを始めるキーワードは？",
+    "starter": "try { ... } ___ (Exception e) { ... }",
+    "answer": "catch",
+    "hint": "「捕まえる」を意味する英単語です。",
+    "explanation": "catch (例外型 仮変数) で、その型 (またはサブクラス) の例外を捕まえます。複数の catch を並べて種類別に処理を分けることもできます。"
+  },
+  {
+    "id": "ch06-1-03",
+    "subtopic": "6-1 try-catch",
+    "prompt": "「成功してもしなくても必ず実行したい」処理を書くブロックの名前は？",
+    "starter": "try { ... } catch (Exception e) { ... } ___ { ... }",
+    "answer": "finally",
+    "hint": "「最終的に」を意味する英単語です。",
+    "explanation": "finally は例外が出ても出なくても必ず通る、後始末用のブロック。ファイルを閉じる、リソース解放、ログ出力などに使います。"
+  },
+  {
+    "id": "ch06-1-04",
+    "subtopic": "6-1 try-catch",
+    "prompt": "1 つの try に対して、catch は何個まで書ける？",
+    "starter": "// catch ブロックは ___ 個までかける",
+    "answer": "複数",
+    "alternatives": ["何個でも", "制限なし", "多数", "何個も", "複数個"],
+    "hint": "例外型ごとに分けて並べられます。",
+    "explanation": "catch は何個でも並べられます。上から順に当てはまるものが選ばれるので、Exception のような汎用型は最後に置く。型が同じ親子関係なら子の方を先に書きます。"
+  },
+  {
+    "id": "ch06-1-05",
+    "subtopic": "6-1 try-catch",
+    "prompt": "1 つの catch で 2 種類の例外を受け取りたい。記法を完成させてください。",
+    "starter": "try { ... } catch (IOException ___ SQLException e) { ... }",
+    "answer": "|",
+    "hint": "「または」を意味する記号です。",
+    "explanation": "Java 7 から追加された multi-catch。| で区切って複数の例外型を 1 つの catch にまとめられます。共通処理が書けるが、e は両方の共通の親型として扱われる点に注意。"
+  },
+
+  {
+    "id": "ch06-2-01",
+    "subtopic": "6-2 throws / throw",
+    "prompt": "メソッドが例外を投げる可能性があることを宣言するキーワードは？",
+    "starter": "public void readFile() ___ IOException { ... }",
+    "answer": "throws",
+    "hint": "「投げる」の英単語の三人称単数形です。",
+    "explanation": "throws (s 付き) はメソッドの宣言で「この例外を投げる可能性がある」と契約として書く。呼び出し側はその例外を catch するか、自分も throws するかを選ぶ必要があります。"
+  },
+  {
+    "id": "ch06-2-02",
+    "subtopic": "6-2 throws / throw",
+    "prompt": "実際に例外を投げるキーワードは？(s なし)",
+    "starter": "if (n < 0) ___ new IllegalArgumentException();",
+    "answer": "throw",
+    "hint": "宣言ではなく実行時に投げる方です。",
+    "explanation": "throw (s 無し) は実際に例外を投げる文。new で例外オブジェクトを作って throw します。その瞬間から呼び出しスタックを上に遡って catch を探しに行きます。"
+  },
+  {
+    "id": "ch06-2-03",
+    "subtopic": "6-2 throws / throw",
+    "prompt": "throws 宣言を省略すると IOException がコンパイルエラーになるのはなぜ？",
+    "starter": "// IOException は ___ 例外 (= 宣言が必須)",
+    "answer": "checked",
+    "alternatives": ["チェック", "検査", "検査済み"],
+    "hint": "コンパイラがチェックする方の例外です。",
+    "explanation": "checked 例外 (Exception の直系の子で RuntimeException 以外) は、コンパイラが「絶対に対応しろ」と要求します。throws で宣言するか try-catch するかしないとコンパイル不可。"
+  },
+  {
+    "id": "ch06-2-04",
+    "subtopic": "6-2 throws / throw",
+    "prompt": "自分で「数値が負ならエラー」を伝えたい。Java 標準の適切な例外型は？(空欄に英単語 1 つ)",
+    "starter": "throw new ___ Exception(\"negative not allowed\");",
+    "answer": "IllegalArgument",
+    "alternatives": ["IllegalArgumentException".replace("Exception", "")],
+    "hint": "「不正な引数」を意味する 2 単語の頭文字。",
+    "explanation": "IllegalArgumentException は「メソッド/コンストラクタに渡された引数が不正」のときの定石。RuntimeException 系なので throws 宣言は不要 (unchecked)。"
+  },
+  {
+    "id": "ch06-2-05",
+    "subtopic": "6-2 throws / throw",
+    "prompt": "メソッド内で例外を捕まえて、別の例外として再投げする (例外チェーン) ときの定石は？",
+    "starter": "try { ... } catch (IOException e) {\n    throw new RuntimeException(\"failed\", ___);\n}",
+    "answer": "e",
+    "hint": "元の例外を「原因 cause」として渡します。",
+    "explanation": "RuntimeException(message, cause) のような コンストラクタに元の例外 e を渡すと、原因がスタックトレースに載るので調査が楽。throw new ... と書きつつ「元の e は捨てない」のが定石。"
+  },
+
+  {
+    "id": "ch06-3-01",
+    "subtopic": "6-3 Checked vs Unchecked",
+    "prompt": "RuntimeException とその子クラスは何例外？",
+    "starter": "// RuntimeException 系 = ___ 例外",
+    "answer": "unchecked",
+    "alternatives": ["アンチェック", "非検査", "非チェック"],
+    "hint": "checked の反対側です。",
+    "explanation": "RuntimeException 系は unchecked。コンパイラがチェックしない (= throws / try-catch を強制しない) のでコードが軽くなりますが、見落としやすくもある。NullPointerException, IllegalArgumentException, ArithmeticException などが代表例。"
+  },
+  {
+    "id": "ch06-3-02",
+    "subtopic": "6-3 Checked vs Unchecked",
+    "prompt": "null のオブジェクトに対してメソッド呼び出しをすると発生する例外は？",
+    "starter": "String s = null;\ns.length();  // ___ Exception",
+    "answer": "NullPointer",
+    "alternatives": ["NullPointerException".replace("Exception", "")],
+    "hint": "「null を指している参照」が原因。",
+    "explanation": "NullPointerException (NPE)。null の参照に対して . でメソッドやフィールドにアクセスすると発生。Java の最も典型的なバグ。Optional や事前チェックで予防するのが基本。"
+  },
+  {
+    "id": "ch06-3-03",
+    "subtopic": "6-3 Checked vs Unchecked",
+    "prompt": "配列で範囲外のインデックスにアクセスしたとき発生する例外は？",
+    "starter": "int[] a = new int[3];\nint x = a[10];  // ___ Exception",
+    "answer": "ArrayIndexOutOfBounds",
+    "alternatives": ["IndexOutOfBounds", "ArrayIndexOutOfBoundsException".replace("Exception", "")],
+    "hint": "「インデックスが範囲外」を意味する英語名。",
+    "explanation": "ArrayIndexOutOfBoundsException。List だと IndexOutOfBoundsException。範囲外アクセスはランタイムでしか分からないので unchecked 例外として実行時に投げられます。"
+  },
+  {
+    "id": "ch06-3-04",
+    "subtopic": "6-3 Checked vs Unchecked",
+    "prompt": "全ての例外の共通の親クラスは？",
+    "starter": "// すべての例外の親 = ___",
+    "answer": "Throwable",
+    "alternatives": ["java.lang.Throwable"],
+    "hint": "「投げられるもの」を意味する英単語。",
+    "explanation": "Throwable は Exception と Error の共通の親。catch には書けますが、Error (OutOfMemoryError など重大) を捕まえる意味は通常無いので、普段は Exception や RuntimeException 以下を catch するのが普通。"
+  },
+  {
+    "id": "ch06-3-05",
+    "subtopic": "6-3 Checked vs Unchecked",
+    "prompt": "Error と Exception はどちらも Throwable の子。Error を catch すべき？",
+    "starter": "// Error は通常 ___",
+    "answer": "catch しない",
+    "alternatives": ["捕まえない", "扱わない", "そのまま落とす", "止める"],
+    "hint": "Error は OutOfMemoryError など、回復不能な状況。",
+    "explanation": "Error はメモリ不足やスタックオーバーフローなど、プログラムでは回復不能な状況を表します。基本的には catch せず、そのままアプリを終了させるのが正しい挙動。"
+  },
+
+  {
+    "id": "ch06-4-01",
+    "subtopic": "6-4 finally / try-with-resources",
+    "prompt": "ファイルなどリソースを必ず閉じたい。Java 7 以降の便利な構文の名前は？",
+    "starter": "try (___ reader = new FileReader(...)) { ... }",
+    "answer": "FileReader",
+    "alternatives": ["BufferedReader"],
+    "hint": "try の () 内に「自動 close 対象」を宣言します。",
+    "explanation": "try-with-resources。try の () 内で AutoCloseable な変数を宣言すると、try ブロックを抜けるときに自動で close() が呼ばれます。finally で手動 close するより安全。"
+  },
+  {
+    "id": "ch06-4-02",
+    "subtopic": "6-4 finally / try-with-resources",
+    "prompt": "try-with-resources で扱える型は、どの interface を実装していなければいけない？",
+    "starter": "// () の中の変数の型は ___ を実装している必要がある",
+    "answer": "AutoCloseable",
+    "alternatives": ["Closeable"],
+    "hint": "「自動的に閉じられる」を意味する英単語。",
+    "explanation": "AutoCloseable interface (close() メソッドを 1 つ持つ) を実装した型しか try-with-resources に書けません。InputStream, Reader, Connection など標準 API のリソースは全部対応済み。"
+  },
+  {
+    "id": "ch06-4-03",
+    "subtopic": "6-4 finally / try-with-resources",
+    "prompt": "finally ブロックの中で return を書くとどうなる？",
+    "starter": "try { return 1; } finally { return 2; }   // 戻り値は ___",
+    "answer": "2",
+    "hint": "finally は最後に実行される。",
+    "explanation": "finally の return は try/catch の return をオーバーライドします。実用上は混乱の元なので finally では return しないのが鉄則。"
+  },
+  {
+    "id": "ch06-4-04",
+    "subtopic": "6-4 finally / try-with-resources",
+    "prompt": "checked 例外を投げるメソッドを呼び出す側の対応は 2 通り。1 つは try-catch で受ける。もう 1 つは？",
+    "starter": "// 自分も ___ 宣言で外に投げる",
+    "answer": "throws",
+    "hint": "メソッドの宣言にキーワードを書きます。",
+    "explanation": "throws で外に投げ直す = 「自分は対処しないので呼び出し元で処理してください」と契約を明示。Java の checked 例外はこのリレーが基本。"
+  },
+  {
+    "id": "ch06-4-05",
+    "subtopic": "6-4 finally / try-with-resources",
+    "prompt": "「例外を握り潰す」(catch だけして何もしない) のは何故ダメ？1 単語で。",
+    "starter": "// 例外の ___ が消えるから",
+    "answer": "情報",
+    "alternatives": ["原因", "info", "詳細", "ログ"],
+    "hint": "後で原因を辿るときに重要なものが消える。",
+    "explanation": "catch (Exception e) { } のように何もしないと、何が起きたかが完全に消えてバグ調査が不可能になります。最低でもログ出力 (e.printStackTrace() など) するのが原則。"
+  }
+]

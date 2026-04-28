@@ -1,0 +1,195 @@
+[
+  {
+    "id": "ch04-1-01",
+    "subtopic": "4-1 abstract クラス",
+    "prompt": "「インスタンス化はできないが継承で使う」クラスにつけるキーワードは？",
+    "starter": "public ___ class Shape { ... }",
+    "answer": "abstract",
+    "hint": "「抽象的な」を意味する英単語です。",
+    "explanation": "abstract クラスは new で直接インスタンス化できず、継承して具体クラスから使う前提のクラス。共通実装を持たせつつ、子クラスごとに異なる部分を残しておきたいときに使います。"
+  },
+  {
+    "id": "ch04-1-02",
+    "subtopic": "4-1 abstract クラス",
+    "prompt": "abstract クラスの中で「中身は子クラスで実装してほしい」メソッドにつけるキーワードは？",
+    "starter": "public ___ double area();",
+    "answer": "abstract",
+    "hint": "クラスにつけたのと同じキーワードです。",
+    "explanation": "abstract メソッドは中身 ({} ブロック) を書きません。代わりに子クラスがオーバーライドして実装する義務を負います。abstract メソッドを 1 つでも持つクラスは abstract クラスにする必要あり。"
+  },
+  {
+    "id": "ch04-1-03",
+    "subtopic": "4-1 abstract クラス",
+    "prompt": "abstract クラスを new してインスタンス化しようとするとどうなる？",
+    "starter": "// new Shape() → ___",
+    "answer": "コンパイルエラー",
+    "alternatives": ["エラー", "compile error", "失敗", "禁止"],
+    "hint": "言語仕様で禁止されています。",
+    "explanation": "abstract クラスは具体的に何かを完成させていない型なので、直接 new することは禁止。子クラスを new するか、無名サブクラスとして new するかが必要。"
+  },
+  {
+    "id": "ch04-1-04",
+    "subtopic": "4-1 abstract クラス",
+    "prompt": "abstract クラスは abstract メソッドを必ず持たないとダメ？",
+    "starter": "// abstract メソッドを持たない abstract クラス → ___",
+    "answer": "OK",
+    "alternatives": ["可能", "良い", "ok", "あり", "問題ない"],
+    "hint": "abstract クラスはメソッド全部に実装があってもよい。",
+    "explanation": "abstract クラスは abstract メソッドを持たなくても OK。ただ「直接インスタンス化を禁止」したいだけ、というユースケースもあります (典型的にはテンプレートメソッドの土台)。"
+  },
+  {
+    "id": "ch04-1-05",
+    "subtopic": "4-1 abstract クラス",
+    "prompt": "abstract メソッドを 1 つでも持つクラスは、必ずクラス自体も ___ にする必要がある。",
+    "starter": "// abstract メソッドを 1 つでも持つ → クラスも ___",
+    "answer": "abstract",
+    "hint": "つけ忘れがちですがコンパイラが教えてくれます。",
+    "explanation": "abstract メソッドが 1 つでもあると、そのクラス自体が完成形ではないので abstract 必須。コンパイルエラーで気づけます。"
+  },
+
+  {
+    "id": "ch04-2-01",
+    "subtopic": "4-2 interface の定義",
+    "prompt": "interface を定義するキーワードは？",
+    "starter": "public ___ Drawable { void draw(); }",
+    "answer": "interface",
+    "hint": "そのままの英単語です。",
+    "explanation": "interface は「型としての契約」を定義する仕組み。中身はメソッドのシグネチャだけ並べる (Java 8 以降は default メソッドで実装も書けます)。"
+  },
+  {
+    "id": "ch04-2-02",
+    "subtopic": "4-2 interface の定義",
+    "prompt": "あるクラスが interface を実装することを宣言するキーワードは？",
+    "starter": "public class Circle ___ Drawable { ... }",
+    "answer": "implements",
+    "hint": "「実装する」を意味する英単語です。",
+    "explanation": "implements は「この interface の契約を満たす」を宣言するキーワード。class 宣言で extends の後 (または extends 無しなら直接) に書きます。"
+  },
+  {
+    "id": "ch04-2-03",
+    "subtopic": "4-2 interface の定義",
+    "prompt": "1 つのクラスが複数の interface を implements することはできる？",
+    "starter": "// implements A, B, C のように複数列挙 → ___",
+    "answer": "できる",
+    "alternatives": ["可", "可能", "OK"],
+    "hint": "Java の単一継承の制約は extends だけ。",
+    "explanation": "implements は複数並べて書けます (カンマ区切り)。クラスの単一継承制限を補い、複数の役割を持たせる定石。例: implements Comparable<Foo>, Serializable のように。"
+  },
+  {
+    "id": "ch04-2-04",
+    "subtopic": "4-2 interface の定義",
+    "prompt": "interface の中にメソッドを書くとき、デフォルトで何が暗黙につく？",
+    "starter": "// interface 内のメソッドは暗黙で ___",
+    "answer": "public abstract",
+    "alternatives": ["public", "abstract", "public + abstract"],
+    "hint": "全員に公開され、中身は実装しない、が基本。",
+    "explanation": "interface のメソッドは暗黙で public abstract。書いても省略しても同じ意味。Java 8 以降は default メソッドや static メソッドで実装を書けるようになりました。"
+  },
+  {
+    "id": "ch04-2-05",
+    "subtopic": "4-2 interface の定義",
+    "prompt": "interface に書ける「変数」は暗黙で何になる？",
+    "starter": "interface Config { int MAX = 100; } // MAX は暗黙で ___",
+    "answer": "public static final",
+    "alternatives": ["static final", "public final", "constant"],
+    "hint": "全員に公開・クラス共有・変更不可、の 3 点セット。",
+    "explanation": "interface のフィールドは暗黙で public static final = 定数扱い。書き換えはできず、クラス間で共有される値の置き場として使えます。"
+  },
+
+  {
+    "id": "ch04-3-01",
+    "subtopic": "4-3 interface 越しに呼ぶ",
+    "prompt": "interface 型の変数で、そこに implementation を入れる代入を完成させてください。",
+    "starter": "Drawable d = ___;",
+    "answer": "new Circle()",
+    "alternatives": ["new Circle ()"],
+    "hint": "Drawable を implements している具体クラスを new するだけ。",
+    "explanation": "interface 型の変数で具体クラスのインスタンスを受けると、その interface に書かれているメソッドだけを呼べます。実装の入れ替えがやりやすくなる仕組み。"
+  },
+  {
+    "id": "ch04-3-02",
+    "subtopic": "4-3 interface 越しに呼ぶ",
+    "prompt": "「interface に依存して具体クラスに依存しない」設計を何と呼ぶ？(空欄の英語 1 単語)",
+    "starter": "// Code to ___ programming",
+    "answer": "interface",
+    "hint": "「依存先を interface に揃える」原則の名前です。",
+    "explanation": "「Program to an interface, not an implementation.」(GoF Design Patterns)。具体クラスではなく interface 型を中心に書くと、後から実装を差し替えやすくなり、テストも楽になります。"
+  },
+  {
+    "id": "ch04-3-03",
+    "subtopic": "4-3 interface 越しに呼ぶ",
+    "prompt": "interface 型の List<int[]> moves = new ArrayList<>(); について、左辺の型は List ですが右辺は何の具体クラス？",
+    "starter": "// 具体クラスは ___ Class",
+    "answer": "ArrayList",
+    "hint": "実際にインスタンスを作ったクラス名です。",
+    "explanation": "List は interface、ArrayList は具体実装。「使う側」は List のメソッド (add/get/size) だけ知っていればよく、後から LinkedList に差し替えても呼び出しコードを変えずに済みます。"
+  },
+  {
+    "id": "ch04-3-04",
+    "subtopic": "4-3 interface 越しに呼ぶ",
+    "prompt": "interface に default メソッドを定義したい。空欄に入るキーワードは？",
+    "starter": "interface Greeter {\n    ___ void greet() {\n        System.out.println(\"hello\");\n    }\n}",
+    "answer": "default",
+    "hint": "Java 8 で追加されたキーワードです。",
+    "explanation": "default メソッドは interface に「デフォルト実装」を持たせる仕組み。implements 側で必須 (オーバーライド必須) ではなくなり、後方互換性を保ったまま interface を拡張できます。"
+  },
+  {
+    "id": "ch04-3-05",
+    "subtopic": "4-3 interface 越しに呼ぶ",
+    "prompt": "interface はクラスの「コンストラクタ」を持てる？",
+    "starter": "// interface のコンストラクタ → ___",
+    "answer": "持てない",
+    "alternatives": ["不可", "no", "NG", "持てません", "ない"],
+    "hint": "interface は型の契約だけで、状態を持ちません。",
+    "explanation": "interface はインスタンス化できないのでコンストラクタもありません。状態 (フィールド) を持たないこと、契約だけを定義することが本質。"
+  },
+
+  {
+    "id": "ch04-4-01",
+    "subtopic": "4-4 abstract と interface の比較",
+    "prompt": "extends できる親クラスは 1 つだが、implements できる interface は何個まで？",
+    "starter": "// implements A, B, C, ...   何個まで?",
+    "answer": "複数",
+    "alternatives": ["何個でも", "制限なし", "無制限", "多数", "many", "複数個"],
+    "hint": "Java の制限は extends にだけ。",
+    "explanation": "interface は何個でも implements 可能。クラスの単一継承制限を超えて複数の役割を持たせる手段になります。これが OOP の柔軟性の鍵。"
+  },
+  {
+    "id": "ch04-4-02",
+    "subtopic": "4-4 abstract と interface の比較",
+    "prompt": "abstract クラスと interface、フィールド (状態) を持たせやすいのはどちら？",
+    "starter": "// 状態を持つなら ___",
+    "answer": "abstract",
+    "alternatives": ["abstract クラス", "abstractクラス", "abstract class"],
+    "hint": "interface は本質的に状態を持たない契約。",
+    "explanation": "abstract クラスは普通のフィールドを自由に持てる。interface は public static final な定数しか持てない。共通の状態 + 共通の処理を提供したいなら abstract クラスの出番。"
+  },
+  {
+    "id": "ch04-4-03",
+    "subtopic": "4-4 abstract と interface の比較",
+    "prompt": "「IS-A の関係に縛られず、機能の有無だけを表したい」とき、どちらが向く？",
+    "starter": "// 機能ベースの抽象化 → ___",
+    "answer": "interface",
+    "hint": "Comparable, Iterable, Runnable のような「○○できる」を表す型。",
+    "explanation": "Comparable, Runnable のような「比較できる」「実行できる」のような能力 (capability) は interface で表すのが定石。継承ツリーに関係なく付与できるのが強み。"
+  },
+  {
+    "id": "ch04-4-04",
+    "subtopic": "4-4 abstract と interface の比較",
+    "prompt": "Comparable interface は何を返す compareTo メソッドを契約として要求する？",
+    "starter": "public int compareTo(T o);   // 戻り値型は ___",
+    "answer": "int",
+    "hint": "「比較結果を負/0/正で返す」のが Java の慣習。",
+    "explanation": "compareTo は int を返し、負なら自分が小さい、0 なら等しい、正なら自分が大きい、という慣習。Collections.sort などはこれを使って並べ替えます。"
+  },
+  {
+    "id": "ch04-4-05",
+    "subtopic": "4-4 abstract と interface の比較",
+    "prompt": "interface のメソッドだけど Java 8 から static メソッドも書けるようになった。このメソッドは誰から呼ぶ？",
+    "starter": "// インターフェース名.staticMethod() の形 → ___ 経由で呼ぶ",
+    "answer": "interface",
+    "alternatives": ["インターフェース", "interface 名", "型名", "interface 自体"],
+    "hint": "呼び出しはインスタンス経由ではなく、クラス側から。",
+    "explanation": "interface の static メソッドは「インターフェース名.メソッド()」の形で呼びます。例: List.of(1, 2, 3) のような工場メソッド。Java 9 ではさらに private static メソッドも書けるように。"
+  }
+]
