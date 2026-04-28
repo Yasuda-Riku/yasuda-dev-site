@@ -1,0 +1,10 @@
+name = "yasuda-dev-explain"
+main = "src/index.js"
+compatibility_date = "2025-04-22"
+
+# Secrets (do NOT put values here):
+#   wrangler secret put GEMINI_API_KEY
+#
+# レート制限は Cloudflare Dashboard の Security → WAF → Rate Limiting で
+# 「同一 IP から 60 req/min」程度のルールを yasuda-dev-explain ルートに
+# 適用するのを推奨。コードに含めると Worker のメモリだけでは正確に効かない。

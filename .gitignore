@@ -46,3 +46,11 @@ learn/tetris/**/*.jar.b64
 
 # Local Lighthouse reports
 lighthouse-report*.json
+
+# Cloudflare Worker (explain-worker): wrangler のローカル secret/状態
+cloudflare/**/.dev.vars
+cloudflare/**/.wrangler/
+cloudflare/**/node_modules/
+
+# Java 復習アプリの参考用 PDF (社内資料、コミット禁止)
+Javaプログラミング基礎_PDF/
