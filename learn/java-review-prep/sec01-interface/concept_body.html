@@ -21,20 +21,20 @@ classDiagram
         +getConnection() Connection
     }
     class Connection {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
         +prepareStatement() PreparedStatement
     }
     class PreparedStatement {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
         +executeQuery() ResultSet
     }
     class ResultSet {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
     }
     
-    DriverManager ..&gt; Connection : 戻り値として渡す
-    Connection ..&gt; PreparedStatement : 戻り値として渡す
-    PreparedStatement ..&gt; ResultSet : 戻り値として渡す
+    DriverManager ..> Connection : 戻り値として渡す
+    Connection ..> PreparedStatement : 戻り値として渡す
+    PreparedStatement ..> ResultSet : 戻り値として渡す
 </pre>
     <p>案内係（DriverManager）から始まり、次々と interface の戻り値を受け取ってバトンリレーのように処理を進めていくのが JDBC の基本構造です。</p>
 </section>

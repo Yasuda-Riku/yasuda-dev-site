@@ -81,7 +81,7 @@ classDiagram
         +doGet(req, res)
         +doPost(req, res)
     }
-    HttpServlet &lt;|-- MyServlet
+    HttpServlet <|-- MyServlet
     
     class HttpServletRequest {
         +getParameter(name)
@@ -89,8 +89,8 @@ classDiagram
     class HttpServletResponse {
         +getWriter()
     }
-    MyServlet ..&gt; HttpServletRequest : 注文を受け取る
-    MyServlet ..&gt; HttpServletResponse : 返事を書き込む
+    MyServlet ..> HttpServletRequest : 注文を受け取る
+    MyServlet ..> HttpServletResponse : 返事を書き込む
     </pre>
     <p><code>HttpServlet</code> を継承（矢印）することで、Webサーバーとやり取りする複雑な仕組みをそのまま引き継ぎます。私たちは <code>doGet</code> や <code>doPost</code> の中身を上書きするだけで済みます。</p>
 </section>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAFAF7">
   <title>解説 · interface を使いこなす — 応用準備</title>
-  <meta name="description" content="JDBC で必須の interface 変数の使い方を、銀行窓口の例えと図解で未経験者向けに解説。">
+  <meta name="description" content="JDBC で「いきなり要求される」interface 変数の感覚を、身近な例えと図で押さえます。読み終わったら問題に挑戦してください。">
   <link rel="canonical" href="https://yasuda-dev.com/learn/java-review-prep/sec01-interface/concept.html">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -77,20 +77,20 @@ classDiagram
         +getConnection() Connection
     }
     class Connection {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
         +prepareStatement() PreparedStatement
     }
     class PreparedStatement {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
         +executeQuery() ResultSet
     }
     class ResultSet {
-        &lt;&lt;interface&gt;&gt;
+        <<interface>>
     }
     
-    DriverManager ..&gt; Connection : 戻り値として渡す
-    Connection ..&gt; PreparedStatement : 戻り値として渡す
-    PreparedStatement ..&gt; ResultSet : 戻り値として渡す
+    DriverManager ..> Connection : 戻り値として渡す
+    Connection ..> PreparedStatement : 戻り値として渡す
+    PreparedStatement ..> ResultSet : 戻り値として渡す
 </pre>
     <p>案内係（DriverManager）から始まり、次々と interface の戻り値を受け取ってバトンリレーのように処理を進めていくのが JDBC の基本構造です。</p>
 </section>

@@ -72,10 +72,10 @@
   <h2>図で見ると</h2>
   <pre class="mermaid">
 flowchart LR
-    DB[(データベース)] &lt;--&gt; DAO[DAO]
-    DAO -- DTOを渡す --&gt; Servlet[Servlet]
-    Servlet -- DTOを渡す --&gt; JSP[JSP]
-    JSP -. 画面表示 .-&gt; User((ユーザー))
+    DB[(データベース)] <--> DAO[DAO]
+    DAO -- DTOを渡す --> Servlet[Servlet]
+    Servlet -- DTOを渡す --> JSP[JSP]
+    JSP -. 画面表示 .-> User((ユーザー))
     
     style DAO fill:#f9f,stroke:#333,stroke-width:2px
     style Servlet fill:#bbf,stroke:#333,stroke-width:2px

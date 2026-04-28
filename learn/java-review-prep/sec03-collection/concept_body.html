@@ -18,16 +18,16 @@
 <pre class="mermaid">
 flowchart LR
     subgraph データベースからデータを運ぶ
-        DB[(データベース)] --&gt;|1件ずつ| rs[while rs.next]
-        rs --&gt;|DTOを作成| DTO[Employee]
-        DTO --&gt;|list.add| List[List&lt;Employee&gt;]
+        DB[(データベース)] -->|1件ずつ| rs[while rs.next]
+        rs -->|DTOを作成| DTO[Employee]
+        DTO -->|list.add| List["List<Employee>"]
     end
     
     subgraph ブラウザからデータを受け取る
-        Browser[ブラウザ] --&gt;|送信| Servlet[Servlet]
-        Servlet --&gt;|getParameterMap| Map[Map&lt;String, String[]&gt;]
-        Map --&gt; Key1[キー: name / 値: 配列 '田中']
-        Map --&gt; Key2[キー: hobby / 値: 配列 '読書', '映画']
+        Browser[ブラウザ] -->|送信| Servlet[Servlet]
+        Servlet -->|getParameterMap| Map["Map<String, String[]>"]
+        Map --> Key1[キー: name / 値: 配列 '田中']
+        Map --> Key2[キー: hobby / 値: 配列 '読書', '映画']
     end
 </pre>
   <p>データベースから取得した結果は <code>List</code> に詰めてアプリケーション内で持ち回り、ブラウザからのリクエストは <code>Map</code> で受け取って処理をします。</p>

@@ -75,8 +75,8 @@ flowchart TD
     A[メソッド実行] --> B{例外発生?}
     B -- No --> C[正常終了]
     B -- Yes: SQLException --> D[catchで捕まえる]
-    D --> E[新しい例外に原因を含めて投げる<br>例外チェーン]
-    C --> F[自動クローズ<br>try-with-resources]
+    D --> E["新しい例外に原因を含めて投げる<br>例外チェーン"]
+    C --> F["自動クローズ<br>try-with-resources"]
     E --> F
     F --> G[呼び出し元へ]
   </pre>
