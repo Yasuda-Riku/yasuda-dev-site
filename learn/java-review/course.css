@@ -515,3 +515,105 @@
 .concept__next a:active {
   transform: translateY(1px);
 }
+
+/* 「使い方」3 ステップ */
+.how-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 800px) {
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+}
+.how-step {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #FFFFFF;
+  padding: 20px 22px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.how-step__num {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.how-step__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.how-step__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  margin: 2px 0 6px;
+  color: var(--fg);
+}
+.how-step__body p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.how-step__body strong {
+  font-weight: 500;
+  color: var(--fg);
+  background: linear-gradient(transparent 70%, rgba(255, 90, 31, 0.22) 70%);
+  padding: 0 2px;
+}
+
+.how-note {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: #F4F2EE;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  align-items: start;
+}
+.how-note__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 2px;
+  white-space: nowrap;
+}
+.how-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.how-note code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--fg);
+}
+@media (max-width: 600px) {
+  .how-note {
+    grid-template-columns: 1fr;
+  }
+}

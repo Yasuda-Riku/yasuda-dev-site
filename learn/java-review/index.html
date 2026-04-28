@@ -257,19 +257,40 @@
       <div class="course-section__inner">
         <header class="section-head">
           <p class="eyebrow">使い方</p>
-          <h2 id="how-heading" class="section-title">3 ステップ。</h2>
+          <h2 id="how-heading" class="section-title">3 ステップで進める。</h2>
         </header>
-        <div class="course-prose">
+
+        <ol class="how-steps" aria-label="使い方の手順">
+          <li class="how-step">
+            <span class="how-step__num" aria-hidden="true">1</span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">解いてみる</h3>
+              <p>セクションを開いて、空欄に答えを入力し <strong>「解答」</strong> を押します。</p>
+            </div>
+          </li>
+          <li class="how-step">
+            <span class="how-step__num" aria-hidden="true">2</span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">詰まったら頼る</h3>
+              <p>まずは <strong>「ヒントを見る」</strong>。それでも分からなければ <strong>「AI に解説してもらう」</strong> で個別解説が出ます。</p>
+            </div>
+          </li>
+          <li class="how-step">
+            <span class="how-step__num" aria-hidden="true">3</span>
+            <div class="how-step__body">
+              <h3 class="how-step__title">後日もう一度</h3>
+              <p>間違えた問題は明日以降、<strong>「間違えた問題」</strong> セクションに自動でまとまります。空になるまでやれば一通り押さえたことに。</p>
+            </div>
+          </li>
+        </ol>
+
+        <aside class="how-note" role="note" aria-label="保存場所について">
+          <span class="how-note__label">保存場所</span>
           <p>
-            1. セクションを開いて、空欄に答えを入力 →「解答」を押す。<br>
-            2. 正解なら次へ。間違いなら「ヒントを見る」、それでもわからなければ「<strong>AI に解説してもらう</strong>」。<br>
-            3. 間違えた問題は明日以降「復習対象」として戻ってきます。
+            進捗はこのブラウザの <code>localStorage</code> にだけ保存されます。サーバには送信されません。
+            そのため、別の端末・別のブラウザで開くと別の進捗として扱われます。
           </p>
-          <p>
-            進捗はブラウザの localStorage に保存されます。サーバには送られません。
-            別の端末や別のブラウザでは別の進捗として扱われます。
-          </p>
-        </div>
+        </aside>
       </div>
     </section>
 
