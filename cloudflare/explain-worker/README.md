@@ -5,13 +5,18 @@
 
 ## デプロイ手順
 
-### 1. 依存セットアップ (初回のみ)
+### 1. ログイン (初回のみ)
+
+`wrangler` は `npx` 経由で起動できるので、グローバルインストールは不要。
+Node.js が入っていれば動く。
 
 ```bash
 cd cloudflare/explain-worker
-npm install -g wrangler   # 既に入っていればスキップ
-wrangler login            # ブラウザで Cloudflare アカウント認証
+npx wrangler login            # ブラウザで Cloudflare アカウント認証
 ```
+
+初回起動時に wrangler 本体がダウンロードされて `Ok to proceed?` と
+聞かれるので `y` で進める。
 
 ### 2. API key を Secret として登録
 
@@ -19,14 +24,14 @@ Worker のコードや Git リポジトリに API key を**絶対に書かない
 Wrangler の Secret として登録する:
 
 ```bash
-wrangler secret put GEMINI_API_KEY
+npx wrangler secret put GEMINI_API_KEY
 # プロンプトが出るので、Google AI Studio で発行したキーを貼り付ける
 ```
 
 ### 3. デプロイ
 
 ```bash
-wrangler deploy
+npx wrangler deploy
 ```
 
 成功すると `https://yasuda-dev-explain.<your-subdomain>.workers.dev` のような
