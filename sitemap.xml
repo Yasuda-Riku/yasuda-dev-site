@@ -307,16 +307,16 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://yasuda-dev.com/learn/java-review-prep/</loc>
-    <lastmod>2026-04-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://yasuda-dev.com/learn/java-review-prep/sec01-interface/</loc>
     <lastmod>2026-04-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://yasuda-dev.com/learn/java-review-prep/sec01-interface/concept.html</loc>
+    <lastmod>2026-04-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://yasuda-dev.com/learn/java-review-prep/sec02-exception/</loc>

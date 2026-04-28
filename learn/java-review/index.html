@@ -81,14 +81,6 @@
         </header>
 
         <div class="review-sections">
-          <a class="review-section-card" href="/learn/java-review-prep/">
-            <span class="review-section-card__no">姉妹コース · 応用準備</span>
-            <span class="review-section-card__title">応用に向けた基礎の濃縮復習</span>
-            <span class="review-section-card__meta">
-              JDBC / Servlet / MVC で必要な基礎を、応用の文脈で 7 セクション約 40 問
-            </span>
-          </a>
-
           <a class="review-section-card" href="./review/" data-section="review-wrong" id="card-review-wrong">
             <span class="review-section-card__no">復習</span>
             <span class="review-section-card__title">間違えた問題</span>
@@ -172,6 +164,87 @@
             <span class="review-section-card__title">パッケージ</span>
             <span class="review-section-card__meta">
               package · import · 可視性
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+        </div>
+
+        <header class="section-head" style="margin-top: 56px;">
+          <p class="eyebrow">応用準備 (JDBC / Servlet / MVC 向け)</p>
+          <h2 class="section-title">応用前にここだけ。</h2>
+          <p class="course-prose" style="max-width:680px;">
+            応用講義 (JDBC / Servlet / MVC) で「いきなり要求される」基礎を、応用そのままの文脈で復習する 7 セクション。
+            概念解説ページが付いているセクションは、問題の前に読むと理解が早いです。
+          </p>
+        </header>
+
+        <div class="review-sections">
+          <a class="review-section-card" href="/learn/java-review-prep/sec01-interface/" data-section="prep-sec01-interface">
+            <span class="review-section-card__no">セクション 1 · 7 問</span>
+            <span class="review-section-card__title">interface を使いこなす</span>
+            <span class="review-section-card__meta">
+              JDBC で必須 — Connection / PreparedStatement / ResultSet
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec02-exception/" data-section="prep-sec02-exception">
+            <span class="review-section-card__no">セクション 2 · 7 問</span>
+            <span class="review-section-card__title">例外処理 (応用版)</span>
+            <span class="review-section-card__meta">
+              SQLException · try-with-resources · throws リレー
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec03-collection/" data-section="prep-sec03-collection">
+            <span class="review-section-card__no">セクション 3 · 5 問</span>
+            <span class="review-section-card__title">List/Map で結果を持ち回る</span>
+            <span class="review-section-card__meta">
+              List&lt;Employee&gt; · Map&lt;String, String[]&gt; · 拡張 for
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec04-servlet-extends/" data-section="prep-sec04-servlet-extends">
+            <span class="review-section-card__no">セクション 4 · 6 問</span>
+            <span class="review-section-card__title">HttpServlet を継承する</span>
+            <span class="review-section-card__meta">
+              extends · @Override · doGet/doPost · req.getParameter
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec05-annotation/" data-section="prep-sec05-annotation">
+            <span class="review-section-card__no">セクション 5 · 4 問</span>
+            <span class="review-section-card__title">アノテーション基礎</span>
+            <span class="review-section-card__meta">
+              @WebServlet · @Override · メタ情報
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec06-bean/" data-section="prep-sec06-bean">
+            <span class="review-section-card__no">セクション 6 · 5 問</span>
+            <span class="review-section-card__title">DTO / Bean 規約</span>
+            <span class="review-section-card__meta">
+              private + getter/setter · 引数なしコンストラクタ
+            </span>
+            <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
+            <span class="review-section-card__done-mark" hidden>✓</span>
+          </a>
+
+          <a class="review-section-card" href="/learn/java-review-prep/sec07-session-cast/" data-section="prep-sec07-session-cast">
+            <span class="review-section-card__no">セクション 7 · 5 問</span>
+            <span class="review-section-card__title">セッションとキャスト</span>
+            <span class="review-section-card__meta">
+              HttpSession · getAttribute → ダウンキャスト
             </span>
             <div class="review-section-card__progress"><div class="review-section-card__progress-bar"></div></div>
             <span class="review-section-card__done-mark" hidden>✓</span>
