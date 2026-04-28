@@ -13,6 +13,8 @@ const DEFAULT_STATE = {
   questions: {},
   // 解いたセクション (warmup / chXX) ごとの完了状況。
   sections: {},
+  // セクション途中まで進めた位置 ({ sectionId: { index, total, updatedAt } })
+  sectionProgress: {},
   // 連続学習日数
   streak: { count: 0, lastDate: null },
   // 間隔反復: 次にもう一度出すべき問題 ID と、出すべき日付
@@ -61,13 +63,16 @@ export function recordAnswer(questionId, correct) {
   return state;
 }
 
-/** セクションを完了したときに呼ぶ。 */
+/** セクションを完了したときに呼ぶ。途中再開用の進捗もクリアする。 */
 export function recordSectionComplete(sectionId, total) {
   const state = loadState();
   state.sections[sectionId] = {
     completedAt: Date.now(),
     total,
   };
+  if (state.sectionProgress?.[sectionId]) {
+    delete state.sectionProgress[sectionId];
+  }
   bumpStreak(state);
   saveState(state);
   return state;
@@ -89,6 +94,33 @@ function todayString(offsetDays = 0) {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
+}
+
+/** セクションの現在位置 (途中まで進めた問題インデックス) を保存。 */
+export function setSectionProgress(sectionId, index, total) {
+  const state = loadState();
+  state.sectionProgress = state.sectionProgress || {};
+  state.sectionProgress[sectionId] = {
+    index,
+    total,
+    updatedAt: Date.now(),
+  };
+  saveState(state);
+}
+
+/** 保存済みの現在位置を取得。なければ null。 */
+export function getSectionProgress(sectionId) {
+  const state = loadState();
+  return state.sectionProgress?.[sectionId] || null;
+}
+
+/** セクションの現在位置を破棄 (完了時 / 「最初から」選択時)。 */
+export function clearSectionProgress(sectionId) {
+  const state = loadState();
+  if (state.sectionProgress?.[sectionId]) {
+    delete state.sectionProgress[sectionId];
+    saveState(state);
+  }
 }
 
 /** 復習キューのうち、今日以前に期限が来ているものを返す。 */

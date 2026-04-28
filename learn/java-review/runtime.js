@@ -17,6 +17,9 @@ import {
   loadState,
   recordAnswer,
   recordSectionComplete,
+  getSectionProgress,
+  setSectionProgress,
+  clearSectionProgress,
 } from "./storage.js";
 
 const API_ENDPOINT = "/api/explain";
@@ -44,7 +47,40 @@ async function start(rootEl) {
     index: 0,
     state: loadState(),
   };
-  renderQuestion(ctx);
+
+  // 前回の途中位置があれば、再開するか最初からかを尋ねる
+  const saved = getSectionProgress(sectionId);
+  if (saved && saved.index > 0 && saved.index < questions.length) {
+    showResumePrompt(ctx, saved.index);
+  } else {
+    renderQuestion(ctx);
+  }
+}
+
+function showResumePrompt(ctx, savedIndex) {
+  // 再開選択中は前後ナビを誤押下できないよう無効化
+  const prev = ctx.rootEl.querySelector("[data-prev]");
+  const next = ctx.rootEl.querySelector("[data-next]");
+  if (prev) prev.disabled = true;
+  if (next) next.disabled = true;
+  const card = ctx.rootEl.querySelector("[data-card]");
+  card.innerHTML = `
+    <div class="quiz__subtopic">前回の続きから再開できます</div>
+    <h2 class="quiz__prompt">前回は ${savedIndex + 1} 問目まで進めました。</h2>
+    <div class="quiz__feedback-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button type="button" class="quiz__submit" data-resume>続きから (${savedIndex + 1} / ${ctx.questions.length})</button>
+      <button type="button" class="quiz__nav-btn" data-restart>最初からやり直す</button>
+    </div>
+  `;
+  card.querySelector("[data-resume]").onclick = () => {
+    ctx.index = savedIndex;
+    renderQuestion(ctx);
+  };
+  card.querySelector("[data-restart]").onclick = () => {
+    ctx.index = 0;
+    clearSectionProgress(ctx.sectionId);
+    renderQuestion(ctx);
+  };
 }
 
 function renderShell(rootEl, total) {
@@ -65,6 +101,9 @@ function renderQuestion(ctx) {
   const q = ctx.questions[ctx.index];
   const card = ctx.rootEl.querySelector("[data-card]");
   const total = ctx.questions.length;
+
+  // 現在位置を保存。途中で離脱しても次回はここから再開できる
+  setSectionProgress(ctx.sectionId, ctx.index, total);
 
   // progress
   ctx.rootEl.querySelector(".quiz__progress-label").textContent = `${ctx.index + 1} / ${total}`;
