@@ -75,16 +75,17 @@
     "id": "warmup-c-01",
     "type": "choice",
     "subtopic": "択一 · 比較演算子",
-    "prompt": "x == 5 と書きたいところで誤って x = 5 と書いた。何が起きる？",
+    "prompt": "次のコードはどう動く？(== と = の書き間違いに注目)",
+    "code": "boolean flag = false;\nif (flag = true) {\n    System.out.println(\"yes\");\n}\nSystem.out.println(flag);",
     "choices": [
       "コンパイルエラーで気付ける",
-      "x に 5 が代入され、if (5) のように扱われてエラーになる",
-      "条件式として常に true になる (boolean なら別)",
+      "flag は false のままで \"yes\" は出ない",
+      "flag が true に書き換わり、\"yes\" と true が出力される",
       "実行時に NullPointerException で落ちる"
     ],
     "answerIndex": 2,
-    "hint": "Java の if 文は boolean しか受け取らないが…",
-    "explanation": "x が int の場合、x = 5 は代入式として 5 を返し、if (5) は型エラーでコンパイル不可。ただし x が boolean なら if (x = true) のように代入式が boolean を返すので通ってしまう。教訓: boolean フィールドへの == 比較ミスは見逃されやすい。"
+    "hint": "= は代入演算子。代入式は「代入した値」を返す。flag = true は true を返す。",
+    "explanation": "代入式 flag = true は副作用として flag を true に書き換え、式自体も true を返す。だから if 文として通り、yes が出力される。さらに flag も true になっている。flag が int 型なら if (x = 5) は型エラーで救われるが、boolean 同士だとすり抜けるのが落とし穴。"
   },
   {
     "id": "warmup-07",
