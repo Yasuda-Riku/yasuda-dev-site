@@ -1,0 +1,51 @@
+[
+  {
+    "id": "prep-sec06-01",
+    "subtopic": "Bean 規約",
+    "prompt": "Employee クラスのフィールドはどんなアクセス修飾子にする？",
+    "starter": "public class Employee {\n    ___ String name;\n    ___ int age;\n}",
+    "answer": "private",
+    "hint": "外からの直接アクセスを禁止する修飾子。",
+    "explanation": "JavaBeans 規約ではフィールドは private、getter/setter 経由で公開、が原則。フィールドを直接 public にすると後から検証や変換を入れられなくなり、カプセル化が崩れます。"
+  },
+  {
+    "id": "prep-sec06-02",
+    "subtopic": "Bean 規約",
+    "prompt": "private String name; に対する getter メソッドの名前を書いてください (Bean 規約に従う)。",
+    "starter": "public String ___() {\n    return name;\n}",
+    "answer": "getName",
+    "hint": "get + フィールド名の頭大文字。",
+    "explanation": "Bean 規約: 型 X のフィールド foo の getter は X getFoo()、setter は void setFoo(X)。boolean の場合だけ isFoo() を使うのも慣習。JSP の EL ${employee.name} はこの規約に従って getName() を自動的に呼びます。"
+  },
+  {
+    "id": "prep-sec06-03",
+    "subtopic": "Bean 規約",
+    "prompt": "boolean active フィールドの getter は、慣習として何という名前にする？",
+    "starter": "public boolean ___() {\n    return active;\n}",
+    "answer": "isActive",
+    "alternatives": ["IsActive"],
+    "hint": "boolean は get ではなく別の接頭辞。",
+    "explanation": "boolean の getter は慣習で is + フィールド名 (頭大文字)。「if (employee.isActive())」のように読み下しが自然になる。多くの IDE やフレームワークがこの慣習に従ってマッピングします。"
+  },
+  {
+    "id": "prep-sec06-04",
+    "subtopic": "引数なしコンストラクタ",
+    "prompt": "Bean は基本的に「___ コンストラクタ」を持つ必要がある。空欄に 1 単語。",
+    "starter": "// Bean には ___ コンストラクタが必須 (省略すれば自動生成される)",
+    "answer": "引数なし",
+    "alternatives": ["デフォルト", "default", "no-arg", "no-args", "0引数", "ゼロ引数", "引数のない"],
+    "hint": "JSP の useBean / リフレクションが new XXX() で作るので、引数が必要だと困ります。",
+    "explanation": "Bean は引数なしコンストラクタが前提。JSP の <jsp:useBean> や Servlet コンテナが Class.newInstance() で作るので、引数が必要だと困ります。引数付きコンストラクタを書いたら、引数なしも併記しておくのが安全。"
+  },
+  {
+    "id": "prep-sec06-05",
+    "subtopic": "DTO の役割",
+    "prompt": "DTO とは何の略？4 単語の頭文字から来ています。",
+    "starter": "// DTO = ___",
+    "answer": "Data Transfer Object",
+    "alternatives": ["data transfer object"],
+    "regex": "^\\s*[Dd]ata\\s+[Tt]ransfer\\s+[Oo]bject\\s*$",
+    "hint": "「データの受け渡しのためのオブジェクト」をそのまま英訳した呼び名。",
+    "explanation": "DTO = Data Transfer Object。レイヤー間 (DAO ↔ Servlet ↔ JSP) で値だけを運ぶための単純なオブジェクト。private フィールド + getter/setter のみ持ち、ロジックは持たないのが定石。"
+  }
+]

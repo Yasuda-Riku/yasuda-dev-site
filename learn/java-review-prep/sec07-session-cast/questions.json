@@ -1,0 +1,48 @@
+[
+  {
+    "id": "prep-sec07-01",
+    "subtopic": "セッション取得",
+    "prompt": "現在のリクエストに紐付くセッションを取得するメソッドを書いてください。",
+    "starter": "HttpSession session = req.___();",
+    "answer": "getSession",
+    "hint": "「セッションを取得する」をそのまま get + Session で。",
+    "explanation": "req.getSession() は現在のセッションを取得 (なければ作成)。getSession(false) と書くと「無ければ null を返す」になる。ユーザーの状態をリクエストをまたいで保持するための仕組み。"
+  },
+  {
+    "id": "prep-sec07-02",
+    "subtopic": "セッションへの保存",
+    "prompt": "セッションに User オブジェクトを「user」という名前で保存するコードを書いてください。",
+    "starter": "session.___(\"user\", user);",
+    "answer": "setAttribute",
+    "hint": "「属性をセット」を意味する set + Attribute。",
+    "explanation": "setAttribute(key, value) で名前付きで Object を保存。値は Object 型なので、後で取り出すときは元の型にキャストが必要になります。"
+  },
+  {
+    "id": "prep-sec07-03",
+    "subtopic": "セッションからの取り出し",
+    "prompt": "セッションに保存した User を取り出して User 型変数で受けたい。空欄に入る型を書いてください。",
+    "starter": "User u = (___) session.getAttribute(\"user\");",
+    "answer": "User",
+    "hint": "ダウンキャストの ( 型 ) の中身。",
+    "explanation": "getAttribute の戻り値型は Object。元の型として使うにはキャストが必要。Java のセッション API はジェネリクスを使っていない古い設計なのでこの形になります。"
+  },
+  {
+    "id": "prep-sec07-04",
+    "subtopic": "キャスト失敗",
+    "prompt": "(User) session.getAttribute(\"user\"); で、もし保存されているのが Admin オブジェクトだったら何が起きる？",
+    "starter": "// 結果: ___ Exception",
+    "answer": "ClassCast",
+    "alternatives": ["ClassCastException".replace("Exception", "")],
+    "hint": "「クラスのキャスト」が失敗するの意味の例外名。",
+    "explanation": "ClassCastException。実体の型がキャスト先の型 (またはそのサブクラス) でないとき発生。事前に instanceof で確認してからキャストすると安全。"
+  },
+  {
+    "id": "prep-sec07-05",
+    "subtopic": "session の終了",
+    "prompt": "ログアウト時にセッション自体を破棄するメソッドを書いてください。",
+    "starter": "session.___();",
+    "answer": "invalidate",
+    "hint": "「無効にする」を意味する英単語。",
+    "explanation": "session.invalidate() は現在のセッションを破棄。ログアウト処理の定石。これ以降そのセッションオブジェクトにアクセスすると IllegalStateException が出るので、呼び出し後は触らない。"
+  }
+]

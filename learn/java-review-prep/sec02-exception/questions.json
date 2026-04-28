@@ -1,0 +1,68 @@
+[
+  {
+    "id": "prep-sec02-01",
+    "subtopic": "checked 例外の宣言",
+    "prompt": "DAO メソッドが SQLException を呼び出し元に投げる契約にしたい。空欄に入るキーワードは？",
+    "starter": "public List<Employee> findAll() ___ SQLException { ... }",
+    "answer": "throws",
+    "hint": "メソッド宣言で「投げる可能性がある」と契約するキーワード (s 付き)。",
+    "explanation": "SQLException は checked 例外なので、メソッド側で try-catch するか、throws で呼び出し元に伝搬させるかの 2 択。後者にすれば例外処理を呼び出し側に委ねられます。"
+  },
+  {
+    "id": "prep-sec02-02",
+    "subtopic": "try-with-resources",
+    "prompt": "JDBC の Connection を必ず閉じたい。Java 7 以降の便利な構文を使った宣言を完成させてください。",
+    "starter": "___ (Connection conn = DriverManager.getConnection(URL)) {\n    // SQL を実行\n}",
+    "answer": "try",
+    "hint": "従来の try に () をつけてリソース宣言する形。",
+    "explanation": "try-with-resources は () の中で AutoCloseable な変数を宣言すると、ブロックを抜けるときに自動で close() が呼ばれます。finally で手動 close するより漏れにくく、例外時も確実。"
+  },
+  {
+    "id": "prep-sec02-03",
+    "subtopic": "try-with-resources",
+    "prompt": "try-with-resources で扱える型は、どの interface を実装している必要がある？",
+    "starter": "// () の中の型は ___ を実装している",
+    "answer": "AutoCloseable",
+    "alternatives": ["Closeable"],
+    "hint": "「自動的に閉じられる」を意味する英単語。",
+    "explanation": "AutoCloseable interface (close() メソッド 1 つ持つ) を実装した型のみ。Connection / Statement / ResultSet・InputStream などはすべて実装済み。"
+  },
+  {
+    "id": "prep-sec02-04",
+    "subtopic": "catch ブロックの順序",
+    "prompt": "ClassNotFoundException と SQLException の両方を 1 つの try で受けたい。どちらの catch を先に書くべき？",
+    "starter": "// 親クラスは Exception。書く順は ___ → 共通の親、の順",
+    "answer": "個別",
+    "alternatives": ["子クラス", "具体", "specific", "サブクラス", "より具体的"],
+    "hint": "Exception (親) を上に書くと、それより下の catch には届かなくなる。",
+    "explanation": "catch は上から順に当てはまるものが選ばれるので、具体クラスを先に、共通の親 (Exception) を後に書きます。逆だと「以降の catch は到達不能」とコンパイラに怒られます。"
+  },
+  {
+    "id": "prep-sec02-05",
+    "subtopic": "finally",
+    "prompt": "try-with-resources を使わずに Connection を閉じる場合、close は何ブロックに書く？",
+    "starter": "try { ... } catch (...) { ... } ___ {\n    if (conn != null) conn.close();\n}",
+    "answer": "finally",
+    "hint": "「最終的に必ず実行」を意味する英単語。",
+    "explanation": "finally は例外が出ても出なくても必ず通る、後始末専用のブロック。try-with-resources が使えない場合の標準的な置き方。close() 自体が SQLException を投げうるので入れ子の try-catch も必要になる点が面倒。"
+  },
+  {
+    "id": "prep-sec02-06",
+    "subtopic": "例外チェーン",
+    "prompt": "DAO で SQLException を捕まえて、業務例外として投げ直したい。元の例外を「原因」として渡す書き方を完成させてください。",
+    "starter": "} catch (SQLException e) {\n    throw new RuntimeException(\"DB error\", ___);\n}",
+    "answer": "e",
+    "hint": "捕まえた例外オブジェクトの変数名をそのまま渡します。",
+    "explanation": "RuntimeException(message, cause) のコンストラクタに元の例外 e を渡すと、原因の SQLException がスタックトレースに「Caused by」として残るので、調査が楽。元の e を捨てない (= ログに出して終わらせない) のが定石。"
+  },
+  {
+    "id": "prep-sec02-07",
+    "subtopic": "checked vs unchecked",
+    "prompt": "RuntimeException 系 (NullPointerException, IllegalArgumentException など) は、メソッド宣言で throws を書く必要がある？",
+    "starter": "// 必要 / 不要 の二択 → ___",
+    "answer": "不要",
+    "alternatives": ["なし", "no", "必要なし", "書かなくてよい"],
+    "hint": "コンパイラがチェックしないグループ (unchecked)。",
+    "explanation": "RuntimeException 系は unchecked なので throws 宣言は不要。プログラマのミスで起きる例外 (引数不正・null 参照など) を実行時にだけ気にすればよい設計。"
+  }
+]

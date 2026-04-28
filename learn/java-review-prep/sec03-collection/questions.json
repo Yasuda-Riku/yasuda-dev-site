@@ -1,0 +1,50 @@
+[
+  {
+    "id": "prep-sec03-01",
+    "subtopic": "List<T> 戻り値",
+    "prompt": "DAO の findAll メソッドで、検索結果を Employee の List で返す宣言を完成させてください。",
+    "starter": "public ___ findAll() throws SQLException { ... }",
+    "answer": "List<Employee>",
+    "alternatives": ["List <Employee>"],
+    "hint": "List のジェネリック型に Employee を入れます。",
+    "explanation": "DAO の findAll は List<Employee> を返すのが定石。具体クラス ArrayList<Employee> ではなく interface 型 List<Employee> で受けると、内部で別実装に差し替えても呼び出し側に影響しない。"
+  },
+  {
+    "id": "prep-sec03-02",
+    "subtopic": "ArrayList の生成",
+    "prompt": "DAO 内で結果を詰めるための空の ArrayList を作る式を完成させてください。",
+    "starter": "List<Employee> result = new ___;",
+    "answer": "ArrayList<>()",
+    "alternatives": ["ArrayList<Employee>()"],
+    "hint": "ダイヤモンド演算子 <> を使うと型を省略できます。",
+    "explanation": "Java 7 以降は new ArrayList<>() で型推論。左辺の List<Employee> から自動で <Employee> と推論されます。型を 2 度書く必要なし。"
+  },
+  {
+    "id": "prep-sec03-03",
+    "subtopic": "ResultSet → List 詰め替え",
+    "prompt": "ResultSet から取り出した Employee を List に追加するメソッドを書いてください。",
+    "starter": "while (rs.next()) {\n    Employee e = ...;\n    result.___(e);\n}",
+    "answer": "add",
+    "hint": "List の末尾に追加する基本メソッド。",
+    "explanation": "List.add(要素) で末尾に追加。while で ResultSet を回しながら DTO に詰め直し、List に蓄積するのが DAO の典型パターン。"
+  },
+  {
+    "id": "prep-sec03-04",
+    "subtopic": "拡張 for で走査",
+    "prompt": "List<Employee> employees の全要素を走査して名前を表示する拡張 for を完成させてください。",
+    "starter": "for (___ emp : employees) {\n    System.out.println(emp.getName());\n}",
+    "answer": "Employee",
+    "hint": "List のジェネリック型と一致させます。",
+    "explanation": "拡張 for の左側は要素の型。List<Employee> の要素は Employee なのでそれを書く。古いコードだと型に Object と書くと毎回キャストが必要になり面倒。"
+  },
+  {
+    "id": "prep-sec03-05",
+    "subtopic": "Map<K,V>",
+    "prompt": "リクエストパラメータをまとめて受け取りたい。HttpServletRequest.getParameterMap() の戻り値型は？",
+    "starter": "// 戻り値型: ___",
+    "answer": "Map<String, String[]>",
+    "alternatives": ["Map<String,String[]>"],
+    "hint": "キーはパラメータ名、値は同名で複数送られた可能性がある文字列の配列。",
+    "explanation": "getParameterMap() は Map<String, String[]>。キーがパラメータ名、値が String の配列なのは、チェックボックスなど同名で複数値が送られるケースに対応するため。普通の単一値は配列の最初の要素を取り出す。"
+  }
+]

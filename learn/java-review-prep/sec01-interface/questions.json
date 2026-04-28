@@ -1,0 +1,68 @@
+[
+  {
+    "id": "prep-sec01-01",
+    "subtopic": "JDBC オブジェクトの型",
+    "prompt": "DB に接続して取得したオブジェクトを変数で受けたい。型に何を書く？ JDBC ではこれが interface です。",
+    "starter": "___ conn = DriverManager.getConnection(URL, USER, PASSWORD);",
+    "answer": "Connection",
+    "hint": "「接続」を意味する英単語の名詞形。java.sql パッケージにあります。",
+    "explanation": "Connection は java.sql の interface。DriverManager.getConnection(...) は実装クラスのインスタンスを返しますが、利用者は interface 越しに使うので DB 製品が変わっても同じコードで動きます。"
+  },
+  {
+    "id": "prep-sec01-02",
+    "subtopic": "JDBC オブジェクトの型",
+    "prompt": "プレースホルダ付きの SQL を実行する準備をした結果を受け取る型を書いてください。",
+    "starter": "___ pstmt = conn.prepareStatement(\"SELECT * FROM employee WHERE id = ?\");",
+    "answer": "PreparedStatement",
+    "hint": "「準備済みの命令文」を意味する 2 語の英単語をくっつけた名前です。",
+    "explanation": "PreparedStatement も interface。? のプレースホルダを持つ SQL を「準備された命令文」として扱い、setInt / setString で値を後埋めします。SQL インジェクション対策として標準の選択肢。"
+  },
+  {
+    "id": "prep-sec01-03",
+    "subtopic": "JDBC オブジェクトの型",
+    "prompt": "executeQuery() の戻り値を受け取る変数の型を書いてください。検索結果を行単位で取り出すための interface です。",
+    "starter": "___ rs = pstmt.executeQuery();",
+    "answer": "ResultSet",
+    "hint": "「結果の集合」を意味する 2 語のキャメルケースです。",
+    "explanation": "ResultSet も interface。next() でカーソルを進めて、各行から getInt / getString で列値を取り出します。「現在行の状態」を持つ点が普通の List と違うところ。"
+  },
+  {
+    "id": "prep-sec01-04",
+    "subtopic": "interface の利点",
+    "prompt": "Connection は interface なので、左辺の型を Connection にしておくと、PostgreSQL からほかの DB に切り替えても呼び出し側のコードは ___ で済む。",
+    "starter": "// 呼び出し側のコードの変更は ___",
+    "answer": "不要",
+    "alternatives": ["なし", "ゼロ", "変更不要", "そのまま"],
+    "hint": "interface 越しに使えば、具体実装が変わってもメソッド呼び出し方は同じ。",
+    "explanation": "interface 型で受けると、内部の実装クラス (PgConnection / OracleConnection など) が変わっても利用者のコードは変わりません。これが「実装ではなく interface に依存する」設計の利点。"
+  },
+  {
+    "id": "prep-sec01-05",
+    "subtopic": "interface のメソッド呼び出し",
+    "prompt": "Connection オブジェクトから PreparedStatement を作るメソッド名を書いてください。",
+    "starter": "PreparedStatement pstmt = conn.___(\"SELECT * FROM employee\");",
+    "answer": "prepareStatement",
+    "hint": "「準備する」を意味する英単語 + Statement。最初の e は小文字。",
+    "explanation": "Connection が持つメソッド。SQL 文字列を渡して PreparedStatement (準備済み命令) を返します。createStatement() (引数なし、? なしの古い API) と区別。"
+  },
+  {
+    "id": "prep-sec01-06",
+    "subtopic": "ファクトリパターン",
+    "prompt": "DriverManager は new で作らずに静的メソッドから Connection を取り出す。この呼び出し方を 1 単語で何と呼ぶ？",
+    "starter": "// クラス名.静的メソッド() で呼ぶ → ___ メソッド",
+    "answer": "static",
+    "alternatives": ["ファクトリ", "factory"],
+    "hint": "Math.max(...) のようなクラス名から直接呼ぶメソッドの種類。",
+    "explanation": "DriverManager.getConnection は static メソッド (= ファクトリメソッドとも呼ばれる)。インスタンスを作らずクラス名から呼べる。Connection の実装オブジェクトはここで生成され、interface 越しに渡されます。"
+  },
+  {
+    "id": "prep-sec01-07",
+    "subtopic": "interface vs クラス",
+    "prompt": "「Connection は interface なので new できない」が正しい？",
+    "starter": "// new Connection() は ___",
+    "answer": "コンパイルエラー",
+    "alternatives": ["エラー", "できない", "不可"],
+    "hint": "interface はインスタンス化できないルール。",
+    "explanation": "interface は「契約」だけで実装を持たないので new できません。実装クラスのインスタンスを取得するには DriverManager のような工場メソッドを通します。"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "prep-sec04-01",
+    "subtopic": "HttpServlet を継承",
+    "prompt": "Servlet を作るには、どの親クラスを継承する？",
+    "starter": "public class FooServlet extends ___ { ... }",
+    "answer": "HttpServlet",
+    "hint": "javax.servlet.http (または jakarta.servlet.http) パッケージのクラスです。",
+    "explanation": "HttpServlet は HTTP リクエストを処理するための抽象クラス。これを extends することで、doGet / doPost などをオーバーライドして自前のリクエスト処理を書けるようになります。"
+  },
+  {
+    "id": "prep-sec04-02",
+    "subtopic": "doGet / doPost",
+    "prompt": "GET リクエストに対応するメソッド名を書いてください。",
+    "starter": "@Override\npublic void ___(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException { ... }",
+    "answer": "doGet",
+    "hint": "GET の頭に do を付けた形です。",
+    "explanation": "doGet は GET リクエストが来たとき、コンテナが自動的に呼ぶメソッド。doPost (POST 用) も同じシグネチャ。HttpServlet は doGet/doPost をデフォルト実装で 405 を返すようにしているので、必要なものだけオーバーライドします。"
+  },
+  {
+    "id": "prep-sec04-03",
+    "subtopic": "オーバーライドの注釈",
+    "prompt": "doGet をオーバーライドしていることをコンパイラに明示する注釈を書いてください。",
+    "starter": "___\npublic void doGet(HttpServletRequest req, HttpServletResponse res) ...",
+    "answer": "@Override",
+    "hint": "@ から始まるアノテーションで、override の意味のもの。",
+    "explanation": "@Override は親クラスに同じシグネチャのメソッドが無いとコンパイルエラーになる安全装置。doGet のスペルや引数の型を間違えても気づける。Servlet ではほぼ必須。"
+  },
+  {
+    "id": "prep-sec04-04",
+    "subtopic": "メソッドシグネチャ",
+    "prompt": "doGet が宣言する例外型 2 つを書いてください (順不同、カンマ区切り)。",
+    "starter": "public void doGet(HttpServletRequest req, HttpServletResponse res) throws ___ { ... }",
+    "answer": "ServletException, IOException",
+    "alternatives": ["IOException, ServletException"],
+    "regex": "^\\s*(ServletException\\s*,\\s*IOException|IOException\\s*,\\s*ServletException)\\s*$",
+    "hint": "どちらも checked 例外。Servlet API 由来と入出力由来です。",
+    "explanation": "doGet の親シグネチャは throws ServletException, IOException 固定。オーバーライドする側は同じか、より少ない例外しか宣言できません (LSP の制約)。"
+  },
+  {
+    "id": "prep-sec04-05",
+    "subtopic": "リクエストパラメータ取得",
+    "prompt": "?name=taro という URL のパラメータを Servlet で取り出すメソッドを書いてください。",
+    "starter": "String name = req.___(\"name\");",
+    "answer": "getParameter",
+    "hint": "「パラメータを取得する」を意味する get + Parameter。",
+    "explanation": "req.getParameter(キー) はリクエストパラメータを 1 つ取り出す。値は String 型。同じ名前で複数送られる場合は getParameterValues (配列を返す) を使い分ける。"
+  },
+  {
+    "id": "prep-sec04-06",
+    "subtopic": "レスポンス出力",
+    "prompt": "HTML を出力するための PrintWriter を取り出すメソッドを書いてください。",
+    "starter": "PrintWriter out = res.___();",
+    "answer": "getWriter",
+    "hint": "「Writer を取得する」。",
+    "explanation": "res.getWriter() は文字データ用の PrintWriter を返す。out.println(\"<html>...\") で HTML を書き出せる。バイナリは getOutputStream() を使う。"
+  }
+]
