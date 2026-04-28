@@ -182,12 +182,7 @@
   border-radius: 3px;
   font-weight: 700;
 }
-/* 出力予測タイプ — code 部分の背景を IDE 風に */
-.quiz__starter--predict {
-  background: #1A1A1A;
-  color: #F4F2EE;
-  border-color: #1A1A1A;
-}
+/* 出力予測タイプの「↓ 出力を入力」ガイド (暗背景化は :has() で処理) */
 .quiz__predict-label {
   font-size: 12px;
   color: var(--muted);
@@ -496,42 +491,56 @@
   font-size: inherit;
 }
 
-/* Prism.js — VSCode Dark+ 風 Java ハイライト */
-.concept section pre code[class*="language-"] .token.comment,
-.concept section pre code[class*="language-"] .token.prolog,
-.concept section pre code[class*="language-"] .token.doctype,
-.concept section pre code[class*="language-"] .token.cdata {
+/* Prism.js — VSCode Dark+ 風 Java ハイライト (サイト全体に適用) */
+pre code[class*="language-"] .token.comment,
+pre code[class*="language-"] .token.prolog,
+pre code[class*="language-"] .token.doctype,
+pre code[class*="language-"] .token.cdata {
   color: #6A9955;
   font-style: italic;
 }
-.concept section pre code[class*="language-"] .token.keyword {
+pre code[class*="language-"] .token.keyword {
   color: #569CD6;
 }
-.concept section pre code[class*="language-"] .token.string,
-.concept section pre code[class*="language-"] .token.char {
+pre code[class*="language-"] .token.string,
+pre code[class*="language-"] .token.char {
   color: #CE9178;
 }
-.concept section pre code[class*="language-"] .token.number,
-.concept section pre code[class*="language-"] .token.boolean {
+pre code[class*="language-"] .token.number,
+pre code[class*="language-"] .token.boolean {
   color: #B5CEA8;
 }
-.concept section pre code[class*="language-"] .token.class-name,
-.concept section pre code[class*="language-"] .token.builtin {
+pre code[class*="language-"] .token.class-name,
+pre code[class*="language-"] .token.builtin {
   color: #4EC9B0;
 }
-.concept section pre code[class*="language-"] .token.function {
+pre code[class*="language-"] .token.function {
   color: #DCDCAA;
 }
-.concept section pre code[class*="language-"] .token.annotation {
+pre code[class*="language-"] .token.annotation {
   color: #DCDCAA;
 }
-.concept section pre code[class*="language-"] .token.operator,
-.concept section pre code[class*="language-"] .token.punctuation {
+pre code[class*="language-"] .token.operator,
+pre code[class*="language-"] .token.punctuation {
   color: #D4D4D4;
 }
-.concept section pre code[class*="language-"] .token.generics,
-.concept section pre code[class*="language-"] .token.generics .token.punctuation {
+pre code[class*="language-"] .token.generics,
+pre code[class*="language-"] .token.generics .token.punctuation {
   color: #D4D4D4;
+}
+
+/* code[class*="language-"] を含む quiz__starter は暗背景に切り替え */
+.quiz__starter:has(> code[class*="language-"]) {
+  background: #1A1A1A;
+  color: #F4F2EE;
+  border-color: #1A1A1A;
+}
+.quiz__starter > code[class*="language-"] {
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
 }
 
 .concept .concept__diagram pre.mermaid {

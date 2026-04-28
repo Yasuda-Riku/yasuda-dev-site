@@ -25,6 +25,33 @@ import {
 
 const API_ENDPOINT = "/api/explain";
 
+// Prism.js を CDN から遅延ロード (predict/choice の code ハイライト用)。
+// 失敗してもクイズ自体は動くので reject せずに resolve する。
+const prismReady = new Promise((resolve) => {
+  if (typeof window === "undefined") return resolve();
+  if (window.Prism && window.Prism.languages?.java) return resolve();
+  const s1 = document.createElement("script");
+  s1.src = "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js";
+  s1.onload = () => {
+    const s2 = document.createElement("script");
+    s2.src = "https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-java.min.js";
+    s2.onload = () => resolve();
+    s2.onerror = () => resolve();
+    document.head.appendChild(s2);
+  };
+  s1.onerror = () => resolve();
+  document.head.appendChild(s1);
+});
+
+function highlightWithin(card) {
+  prismReady.then(() => {
+    if (!window.Prism) return;
+    card.querySelectorAll('pre code[class*="language-"]').forEach((el) => {
+      window.Prism.highlightElement(el);
+    });
+  });
+}
+
 // review-wrong モードで全章を集めるためのファイル一覧。
 // ★ start(root) を呼ぶ前に初期化する必要がある (TDZ 対策)。
 const ALL_QUESTION_FILES = [
@@ -168,6 +195,7 @@ function renderQuestion(ctx) {
   `;
 
   handler.afterRender(card);
+  highlightWithin(card);
 
   const submit = card.querySelector("[data-submit]");
   const next   = ctx.rootEl.querySelector("[data-next]");
@@ -389,7 +417,7 @@ const TYPES = {
   predict: {
     renderBody(q) {
       return `
-        <pre class="quiz__starter quiz__starter--predict">${escapeHtml(q.code || "")}</pre>
+        <pre class="quiz__starter"><code class="language-java">${escapeHtml(q.code || "")}</code></pre>
         <div class="quiz__predict-label">↓ このコードを実行したときの出力をそのまま入力</div>
         <div class="quiz__answer-row">
           <input type="text" class="quiz__answer" data-answer
@@ -421,7 +449,7 @@ const TYPES = {
   choice: {
     renderBody(q) {
       const codeBlock = q.code
-        ? `<pre class="quiz__starter">${escapeHtml(q.code)}</pre>`
+        ? `<pre class="quiz__starter"><code class="language-java">${escapeHtml(q.code)}</code></pre>`
         : "";
       const choices = (q.choices || []).map((c, i) => `
         <label class="quiz__choice">
