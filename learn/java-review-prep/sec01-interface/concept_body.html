@@ -1,0 +1,100 @@
+<section class="concept__intro">
+    <h2>身近に置き換えると</h2>
+    <p>データベース操作を<strong>「銀行の窓口」</strong>でのやり取りに置き換えてみましょう。あなたが銀行で振り込みをしたいとき、まずは「総合案内」に行き、要件を伝えて「担当窓口」に案内してもらいます。次に、担当窓口で「振込用紙」をもらい、そこに記入して提出すると、最後に「明細書」を受け取ります。</p>
+    <p>A銀行に行っても、B銀行に行っても、この「案内→窓口→用紙→明細」という手順（ルール）は同じです。Javaのデータベース接続（JDBC）もこれと全く同じで、データベースの種類が変わっても、共通のルール（interface）に沿って操作を進めていきます。</p>
+</section>
+
+<section class="concept__summary">
+    <h2>3 行でまとめると</h2>
+    <ul>
+        <li>interface は <code>new</code> できないため、専用の案内係（<code>DriverManager</code>）から実体を受け取る。</li>
+        <li>戻り値はすべて interface 型（<code>Connection</code>, <code>PreparedStatement</code>, <code>ResultSet</code>）の変数で順番に受け取っていく。</li>
+        <li>interface 越しに操作するため、裏のデータベース（実装）が変わっても Java の呼び出しコードは変わらない。</li>
+    </ul>
+</section>
+
+<section class="concept__diagram">
+    <h2>図で見ると</h2>
+<pre class="mermaid">
+classDiagram
+    class DriverManager {
+        +getConnection() Connection
+    }
+    class Connection {
+        &lt;&lt;interface&gt;&gt;
+        +prepareStatement() PreparedStatement
+    }
+    class PreparedStatement {
+        &lt;&lt;interface&gt;&gt;
+        +executeQuery() ResultSet
+    }
+    class ResultSet {
+        &lt;&lt;interface&gt;&gt;
+    }
+    
+    DriverManager ..&gt; Connection : 戻り値として渡す
+    Connection ..&gt; PreparedStatement : 戻り値として渡す
+    PreparedStatement ..&gt; ResultSet : 戻り値として渡す
+</pre>
+    <p>案内係（DriverManager）から始まり、次々と interface の戻り値を受け取ってバトンリレーのように処理を進めていくのが JDBC の基本構造です。</p>
+</section>
+
+<section class="concept__steps">
+    <h2>順を追って理解する</h2>
+    
+    <h3>1. interface は new できない</h3>
+    <p>Javaのルールとして、interface はあくまで「操作の約束事」であり、実体がないため <code>new Connection()</code> のように直接生み出すことはできません。実体を作るには、代わりに作ってくれる別の仕組みが必要です。</p>
+    
+    <h3>2. 案内係（ファクトリ）から実体をもらう</h3>
+    <p>そこで登場するのが <code>DriverManager</code> クラスです。このクラスの <code>getConnection()</code> は <strong>static メソッド</strong>（クラスに直接お願いできる案内係）になっており、これを呼び出すことで <code>Connection</code>（担当窓口）の実体をもらいます。受け取る左辺の変数は、interface 型である <code>Connection</code> 型で宣言します。</p>
+    
+    <h3>3. 窓口から用紙をもらう（prepareStatement の位置づけ）</h3>
+    <p>担当窓口（<code>Connection</code>）につながったら、次は「こんなSQLを実行したい」と伝えて準備をします。<code>Connection</code> の <code>prepareStatement()</code> メソッドを呼び出すと、SQLの準備用紙である <code>PreparedStatement</code> 型の戻り値がもらえます。これも interface 型の変数で受け取ります。</p>
+    
+    <h3>4. 実行して結果をもらう</h3>
+    <p>準備用紙（<code>PreparedStatement</code>）に条件などを書き込んだら、<code>executeQuery()</code> メソッドで実行します。すると、データベースから検索結果が <code>ResultSet</code> 型（明細書）として返ってきます。これもやはり interface です。</p>
+    
+    <h3>5. なぜすべて interface なのか？（実装の差し替え）</h3>
+    <p>MySQL、PostgreSQL、Oracleなど、データベースによって裏側の通信の仕組み（実装）はバラバラです。しかし、Java側がすべて <code>Connection</code> や <code>PreparedStatement</code> といった共通の interface 越しに操作するようにしておけば、接続先のデータベースを変えても、Javaのコードを一切書き換える必要がなくなります。これを<strong>「実装の差し替え」</strong>と呼びます。</p>
+</section>
+
+<section class="concept__code">
+    <h2>応用ではこう書く</h2>
+<pre><code class="language-java">// 1. 案内係 (DriverManager) から 担当窓口 (Connection) をもらう
+// ※ getConnection は static メソッドなので、クラス名から直接呼び出します
+Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/mydb", "user", "pass");
+
+// 2. 窓口 (Connection) から 準備用紙 (PreparedStatement) をもらう
+// ※ ここで実行したいSQLの骨組みを渡します
+PreparedStatement pstmt = conn.prepareStatement("SELECT name FROM users WHERE id = ?");
+
+// 3. 準備用紙に具体的な値を書き込む
+pstmt.setInt(1, 100);
+
+// 4. 実行して、結果の明細 (ResultSet) をもらう
+ResultSet rs = pstmt.executeQuery();
+
+// 5. 明細 (ResultSet) からデータを読み取る
+while (rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+
+// ※ 左辺の型 (Connection, PreparedStatement, ResultSet) はすべて interface です。
+</code></pre>
+    <p>このように、自分で <code>new</code> をするのではなく、メソッドの戻り値として interface を受け取り、その interface のメソッドを呼んでさらに次の interface を受け取る、という流れでコードを書きます。</p>
+</section>
+
+<section class="concept__pitfall">
+    <h2>よくある誤解</h2>
+    
+    <h3>誤解: Connection conn = new Connection(); と書いてしまう</h3>
+    <p><strong>正しくは:</strong> <code>Connection</code> は interface なので <code>new</code> できません。必ず <code>DriverManager.getConnection(...)</code> のように、実体を作って返してくれるメソッド（ファクトリ）の戻り値として受け取ります。</p>
+    
+    <h3>誤解: データベースの種類（MySQLやOracleなど）ごとに、Javaのメソッドの呼び方を変えなければならない</h3>
+    <p><strong>正しくは:</strong> 変えなくて大丈夫です。左辺の変数をすべて共通の interface（<code>Connection</code> など）で宣言しているため、最初の <code>getConnection()</code> で渡す接続先URLを変えるだけで、その後の <code>prepareStatement</code> や <code>executeQuery</code> といった呼び出しコードは全く同じまま動きます。</p>
+</section>
+
+<section class="concept__next">
+    <h2>つまずいたら</h2>
+    <p>このトピックで詰まったら基礎復習へ: <a href="/learn/java-review/ch04-interface/">章 4 インターフェース</a></p>
+</section>
