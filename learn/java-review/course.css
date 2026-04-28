@@ -401,6 +401,45 @@
   padding: 0;
   font-size: inherit;
 }
+
+/* Prism.js — VSCode Dark+ 風 Java ハイライト */
+.concept section pre code[class*="language-"] .token.comment,
+.concept section pre code[class*="language-"] .token.prolog,
+.concept section pre code[class*="language-"] .token.doctype,
+.concept section pre code[class*="language-"] .token.cdata {
+  color: #6A9955;
+  font-style: italic;
+}
+.concept section pre code[class*="language-"] .token.keyword {
+  color: #569CD6;
+}
+.concept section pre code[class*="language-"] .token.string,
+.concept section pre code[class*="language-"] .token.char {
+  color: #CE9178;
+}
+.concept section pre code[class*="language-"] .token.number,
+.concept section pre code[class*="language-"] .token.boolean {
+  color: #B5CEA8;
+}
+.concept section pre code[class*="language-"] .token.class-name,
+.concept section pre code[class*="language-"] .token.builtin {
+  color: #4EC9B0;
+}
+.concept section pre code[class*="language-"] .token.function {
+  color: #DCDCAA;
+}
+.concept section pre code[class*="language-"] .token.annotation {
+  color: #DCDCAA;
+}
+.concept section pre code[class*="language-"] .token.operator,
+.concept section pre code[class*="language-"] .token.punctuation {
+  color: #D4D4D4;
+}
+.concept section pre code[class*="language-"] .token.generics,
+.concept section pre code[class*="language-"] .token.generics .token.punctuation {
+  color: #D4D4D4;
+}
+
 .concept .concept__diagram pre.mermaid {
   background: #FFFFFF;
   border: 1px solid var(--border);
