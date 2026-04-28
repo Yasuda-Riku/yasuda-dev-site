@@ -1,0 +1,21 @@
+{
+  // yasuda-dev.com の Cloudflare Workers Builds 設定。
+  //
+  // これまで Cloudflare 側の auto-detect で「ルート = 静的アセット」を
+  // 配信していたものを明示化し、追加で /api/explain のみ Worker で処理
+  // する構成にした。
+  //
+  // - 静的アセットは ASSETS バインディングから配信
+  // - Worker のロジックは _worker.js
+  // - シークレット (GEMINI_API_KEY) は Cloudflare Dashboard 側で
+  //   yasuda-dev-site Worker に encrypted variable として登録
+  "name": "yasuda-dev-site",
+  "main": "_worker.js",
+  "compatibility_date": "2025-04-22",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

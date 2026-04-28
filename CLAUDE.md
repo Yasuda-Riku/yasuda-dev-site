@@ -18,6 +18,11 @@ There is no build command, no linter, no test suite. The entire site is hand-aut
 
 Push to `main` → Cloudflare auto-deploys. Output directory is repo root. No build command configured.
 
+`wrangler.jsonc` + `_worker.js` をリポジトリルートに置いてあるので、Cloudflare Workers Builds はこれを使ってデプロイする:
+- 静的アセットは `ASSETS` バインディング経由で配信 (これまでと同じ動作)
+- `/api/explain` だけ `_worker.js` 内のロジックで処理 (Gemini への中継)
+- `GEMINI_API_KEY` は Cloudflare Dashboard 側で `yasuda-dev-site` Worker の Secret として登録する。コードや wrangler.jsonc に書かない
+
 ## Architecture
 
 ### Design system
