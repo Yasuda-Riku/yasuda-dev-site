@@ -468,3 +468,50 @@
   font-size: 13px;
   white-space: nowrap;
 }
+
+/* 「つまずいたら」セクションのリンクをタップ可能なチップとして見せる */
+.concept__next {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #F4F2EE;
+  padding: 14px 18px;
+}
+.concept__next h2 {
+  margin-top: 0;
+}
+.concept__next p {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.concept__next a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.concept__next a::after {
+  content: "→";
+  font-size: 14px;
+}
+.concept__next a:hover,
+.concept__next a:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  text-decoration: none;
+}
+.concept__next a:active {
+  transform: translateY(1px);
+}
