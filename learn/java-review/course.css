@@ -1,7 +1,9 @@
 /* /learn/java-review/ 共通スタイル.
-   tetris/othello の course.css をベースに、復習アプリ用に最小限を追加。 */
+   tetris/othello の course.css と step.css を継承し、復習アプリ専用
+   スタイルを追加。.step-hero / .step-hero__inner などは step.css 側。 */
 
 @import url("/learn/tetris/course.css");
+@import url("/learn/tetris/step.css");
 
 :root {
   --review-correct: #2E7D32;
