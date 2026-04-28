@@ -191,5 +191,37 @@
     "answer": "Object",
     "hint": "宣言された要素型がそのまま戻り値型になります。",
     "explanation": "List<Object> から取り出した値は Object 型。元の型 (Integer / String) として使いたいなら instanceof で確認してダウンキャストする必要があります。型情報が消えるのが Java ジェネリクスの「型消去 (erasure)」。"
+  },
+
+  {
+    "id": "ch05-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · for ループ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "for (int i = 0; i < 3; i++) {\n    System.out.print(i);\n}",
+    "answer": "012",
+    "alternatives": ["0 1 2"],
+    "hint": "i は 0 から始まり、i < 3 が true の間だけ実行されます。print は改行を入れません。",
+    "explanation": "i = 0, 1, 2 の 3 回ループ。println でなく print なので改行も区切り文字も入らず、つながって \"012\"。"
+  },
+  {
+    "id": "ch05-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · List のサイズ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "List<String> xs = new ArrayList<>();\nxs.add(\"a\");\nxs.add(\"b\");\nxs.add(\"a\");\nSystem.out.println(xs.size());",
+    "answer": "3",
+    "hint": "List は重複を許します。add した回数だけ要素が増えます。",
+    "explanation": "List は順序を保ち重複も許す。\"a\" が 2 回入っても size() は 3。重複を許さないのは Set 系 (HashSet など)。"
+  },
+  {
+    "id": "ch05-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · 拡張 for",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "int[] a = {2, 4, 6};\nint sum = 0;\nfor (int x : a) {\n    sum += x;\n}\nSystem.out.println(sum);",
+    "answer": "12",
+    "hint": "x には a の要素が順に入ります。0 + 2 + 4 + 6 = ?",
+    "explanation": "拡張 for ループ (for-each) は配列やコレクションの要素を順に取り出して処理します。2 + 4 + 6 = 12。"
   }
 ]

@@ -182,6 +182,90 @@
   border-radius: 3px;
   font-weight: 700;
 }
+/* 出力予測タイプ — code 部分の背景を IDE 風に */
+.quiz__starter--predict {
+  background: #1A1A1A;
+  color: #F4F2EE;
+  border-color: #1A1A1A;
+}
+.quiz__predict-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin: -8px 0 12px;
+  letter-spacing: 0.02em;
+}
+
+/* 択一タイプ — radio をカード状の選択肢に */
+.quiz__choices {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.quiz__choice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+.quiz__choice:hover {
+  border-color: var(--accent);
+  background: #FFF8F4;
+}
+.quiz__choice input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.quiz__choice input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 0.1s ease;
+}
+.quiz__choice input[type="radio"]:checked {
+  border-color: var(--accent);
+}
+.quiz__choice input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+.quiz__choice:has(input:checked) {
+  border-color: var(--accent);
+  background: #FFF8F4;
+}
+.quiz__choice-key {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 18px;
+}
+.quiz__choice-text {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--fg);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.quiz__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .quiz__answer-row {
   display: flex;

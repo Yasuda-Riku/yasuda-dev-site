@@ -80,7 +80,7 @@
     "prompt": "自分で「数値が負ならエラー」を伝えたい。Java 標準の適切な例外型は？(空欄に英単語 1 つ)",
     "starter": "throw new ___ Exception(\"negative not allowed\");",
     "answer": "IllegalArgument",
-    "alternatives": ["IllegalArgumentException".replace("Exception", "")],
+    "alternatives": ["IllegalArgumentException"],
     "hint": "「不正な引数」を意味する 2 単語の頭文字。",
     "explanation": "IllegalArgumentException は「メソッド/コンストラクタに渡された引数が不正」のときの定石。RuntimeException 系なので throws 宣言は不要 (unchecked)。"
   },
@@ -110,7 +110,7 @@
     "prompt": "null のオブジェクトに対してメソッド呼び出しをすると発生する例外は？",
     "starter": "String s = null;\ns.length();  // ___ Exception",
     "answer": "NullPointer",
-    "alternatives": ["NullPointerException".replace("Exception", "")],
+    "alternatives": ["NullPointerException"],
     "hint": "「null を指している参照」が原因。",
     "explanation": "NullPointerException (NPE)。null の参照に対して . でメソッドやフィールドにアクセスすると発生。Java の最も典型的なバグ。Optional や事前チェックで予防するのが基本。"
   },
@@ -120,7 +120,7 @@
     "prompt": "配列で範囲外のインデックスにアクセスしたとき発生する例外は？",
     "starter": "int[] a = new int[3];\nint x = a[10];  // ___ Exception",
     "answer": "ArrayIndexOutOfBounds",
-    "alternatives": ["IndexOutOfBounds", "ArrayIndexOutOfBoundsException".replace("Exception", "")],
+    "alternatives": ["IndexOutOfBounds", "ArrayIndexOutOfBoundsException"],
     "hint": "「インデックスが範囲外」を意味する英語名。",
     "explanation": "ArrayIndexOutOfBoundsException。List だと IndexOutOfBoundsException。範囲外アクセスはランタイムでしか分からないので unchecked 例外として実行時に投げられます。"
   },
@@ -192,5 +192,53 @@
     "alternatives": ["原因", "info", "詳細", "ログ"],
     "hint": "後で原因を辿るときに重要なものが消える。",
     "explanation": "catch (Exception e) { } のように何もしないと、何が起きたかが完全に消えてバグ調査が不可能になります。最低でもログ出力 (e.printStackTrace() など) するのが原則。"
+  },
+
+  {
+    "id": "ch06-c-01",
+    "type": "choice",
+    "subtopic": "択一 · checked vs unchecked",
+    "prompt": "次のうち、コンパイル時に try-catch または throws を強制される (checked) 例外はどれ？",
+    "choices": [
+      "NullPointerException",
+      "ArrayIndexOutOfBoundsException",
+      "IOException",
+      "IllegalArgumentException"
+    ],
+    "answerIndex": 2,
+    "hint": "RuntimeException の子は unchecked。それ以外の Exception は checked。",
+    "explanation": "IOException は Exception の直系の子で RuntimeException 系ではないので checked。残り 3 つは RuntimeException の子なので unchecked で、宣言しなくてもコンパイルが通る (= 油断するとランタイムで落ちる)。"
+  },
+  {
+    "id": "ch06-c-02",
+    "type": "choice",
+    "subtopic": "択一 · catch の順序",
+    "prompt": "下のコードはコンパイルエラーになります。原因として正しいのはどれ？",
+    "code": "try {\n    // ...\n} catch (Exception e) {\n    // 1\n} catch (IOException e) {\n    // 2\n}",
+    "choices": [
+      "catch は 1 つの try に対して 1 つしか書けないから",
+      "上の catch (Exception e) が下の IOException も先に拾ってしまい、2 つ目が到達不能になるから",
+      "IOException は checked 例外なので throws 宣言が必要だから",
+      "Exception は親クラスなので catch できないから"
+    ],
+    "answerIndex": 1,
+    "hint": "catch は上から順に試されます。親型を先に書くと…",
+    "explanation": "Exception は IOException の親なので、最初の catch がすべての Exception を拾ってしまい、2 つ目の catch (IOException e) には絶対に到達しません。Java はこれを「unreachable catch」としてコンパイルエラーにします。子の例外型を先に書くのが鉄則。"
+  },
+  {
+    "id": "ch06-c-03",
+    "type": "choice",
+    "subtopic": "択一 · finally の挙動",
+    "prompt": "次のコードを実行したとき、コンソールに出る出力として正しいのはどれ？",
+    "code": "try {\n    System.out.println(\"A\");\n    throw new RuntimeException();\n} catch (RuntimeException e) {\n    System.out.println(\"B\");\n} finally {\n    System.out.println(\"C\");\n}",
+    "choices": [
+      "A だけ",
+      "A と B",
+      "A と C",
+      "A と B と C"
+    ],
+    "answerIndex": 3,
+    "hint": "finally は例外が出ても出なくても必ず通ります。catch で受け止めた後は通常実行が続きます。",
+    "explanation": "A を出力 → 例外発生 → catch が拾って B を出力 → finally で C を出力。catch で例外を握り終えていれば、その後の finally まで実行されます。"
   }
 ]

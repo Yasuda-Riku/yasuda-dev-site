@@ -150,16 +150,13 @@ function renderQuestion(ctx) {
   ctx.rootEl.querySelector(".quiz__progress-bar-fill").style.width =
     `${Math.round((ctx.index / total) * 100)}%`;
 
+  const type = q.type || "blank";
+  const handler = TYPES[type] || TYPES.blank;
+
   card.innerHTML = `
     <div class="quiz__subtopic">${escapeHtml(q.subtopic || "")}</div>
     <h2 class="quiz__prompt">${escapeHtml(q.prompt)}</h2>
-    <pre class="quiz__starter">${renderStarter(q)}</pre>
-    <div class="quiz__answer-row">
-      <input type="text" class="quiz__answer" data-answer
-             placeholder="ここに答えを入力" autocomplete="off"
-             autocorrect="off" autocapitalize="off" spellcheck="false">
-      <button type="button" class="quiz__submit" data-submit>解答</button>
-    </div>
+    ${handler.renderBody(q)}
     <div class="quiz__feedback" data-feedback hidden></div>
     <div class="quiz__hint" data-hint hidden>
       <span class="quiz__hint-label">ヒント</span><span data-hint-text></span>
@@ -170,16 +167,17 @@ function renderQuestion(ctx) {
     </div>
   `;
 
-  const input  = card.querySelector("[data-answer]");
+  handler.afterRender(card);
+
   const submit = card.querySelector("[data-submit]");
   const next   = ctx.rootEl.querySelector("[data-next]");
   const prev   = ctx.rootEl.querySelector("[data-prev]");
 
-  input.focus();
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submit.click();
+  submit.addEventListener("click", () => {
+    const value = handler.readUserAnswer(card);
+    if (handler.isEmpty(value)) return;
+    grade(ctx, q, handler, value, attempt);
   });
-  submit.addEventListener("click", () => grade(ctx, q, input.value, attempt));
 
   prev.disabled = ctx.index === 0;
   prev.onclick = () => { ctx.index = Math.max(0, ctx.index - 1); renderQuestion(ctx); };
@@ -188,7 +186,7 @@ function renderQuestion(ctx) {
   next.onclick = () => goNext(ctx);
 }
 
-function grade(ctx, q, raw, attempt) {
+function grade(ctx, q, handler, value, attempt) {
   const card = ctx.rootEl.querySelector("[data-card]");
   const feedback = card.querySelector("[data-feedback]");
   const hintBox  = card.querySelector("[data-hint]");
@@ -196,7 +194,7 @@ function grade(ctx, q, raw, attempt) {
   feedback.hidden = false;
   aiBox.hidden = true;
 
-  const ok = matches(q, raw);
+  const ok = handler.judge(q, value);
   recordAnswer(q.id, ok, { assisted: attempt.assisted });
 
   if (ok) {
@@ -234,13 +232,13 @@ function grade(ctx, q, raw, attempt) {
     feedback.querySelector("[data-ask-ai]").onclick = (e) => {
       attempt.assisted = true;
       markAssisted(q.id);
-      askAi(ctx, q, raw, e.target);
+      askAi(ctx, q, handler, value, e.target);
     };
     feedback.querySelector("[data-skip]").onclick = () => goNext(ctx);
   }
 }
 
-async function askAi(ctx, q, userAnswer, btn) {
+async function askAi(ctx, q, handler, userAnswer, btn) {
   const aiBox = ctx.rootEl.querySelector("[data-ai]");
   const aiText = aiBox.querySelector("[data-ai-text]");
   aiBox.hidden = false;
@@ -251,11 +249,12 @@ async function askAi(ctx, q, userAnswer, btn) {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
+        type: q.type || "blank",
         topic: q.subtopic || ctx.sectionId,
         level: q.level || 1,
-        prompt: q.prompt,
-        expected: q.answer,
-        userAnswer,
+        prompt: handler.enrichPrompt(q),
+        expected: handler.presentExpected(q),
+        userAnswer: handler.presentUser(q, userAnswer),
       }),
     });
     const data = await res.json();
@@ -336,6 +335,136 @@ function matches(q, raw) {
   }
   return false;
 }
+
+/**
+ * 問題タイプごとのハンドラ。
+ *   blank   : 既存の穴埋め (q.starter / q.answer)
+ *   predict : コードの出力予測 (q.code / q.answer) — 文字列比較
+ *   choice  : 択一 (q.code? / q.choices[] / q.answerIndex) — index 比較
+ *
+ * 各ハンドラは:
+ *   renderBody(q)              -> innerHTML 文字列 (中央領域)
+ *   afterRender(card)          -> イベント配線 + フォーカス
+ *   readUserAnswer(card)       -> ユーザの解答 (string | number | null)
+ *   isEmpty(value)             -> 空判定
+ *   judge(q, value)            -> 正誤
+ *   presentExpected(q)         -> AI に渡す「期待される回答」テキスト
+ *   presentUser(q, value)      -> AI に渡す「生徒の回答」テキスト
+ *   enrichPrompt(q)            -> AI に渡す問題本文 (選択肢やコードを含む)
+ */
+const LETTERS = ["A", "B", "C", "D", "E", "F"];
+
+const TYPES = {
+  blank: {
+    renderBody(q) {
+      return `
+        <pre class="quiz__starter">${renderStarter(q)}</pre>
+        <div class="quiz__answer-row">
+          <input type="text" class="quiz__answer" data-answer
+                 placeholder="ここに答えを入力" autocomplete="off"
+                 autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button type="button" class="quiz__submit" data-submit>解答</button>
+        </div>
+      `;
+    },
+    afterRender(card) {
+      const input = card.querySelector("[data-answer]");
+      input.focus();
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") card.querySelector("[data-submit]").click();
+      });
+    },
+    readUserAnswer(card) {
+      return card.querySelector("[data-answer]").value;
+    },
+    isEmpty(v) { return !String(v || "").trim(); },
+    judge(q, v) { return matches(q, v); },
+    presentExpected(q) { return q.answer; },
+    presentUser(_q, v) { return v; },
+    enrichPrompt(q) {
+      return q.starter ? `${q.prompt}\n\n--- コード (___ が空欄) ---\n${q.starter}` : q.prompt;
+    },
+  },
+
+  predict: {
+    renderBody(q) {
+      return `
+        <pre class="quiz__starter quiz__starter--predict">${escapeHtml(q.code || "")}</pre>
+        <div class="quiz__predict-label">↓ このコードを実行したときの出力をそのまま入力</div>
+        <div class="quiz__answer-row">
+          <input type="text" class="quiz__answer" data-answer
+                 placeholder="例: 012  /  Hello world" autocomplete="off"
+                 autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button type="button" class="quiz__submit" data-submit>解答</button>
+        </div>
+      `;
+    },
+    afterRender(card) {
+      const input = card.querySelector("[data-answer]");
+      input.focus();
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") card.querySelector("[data-submit]").click();
+      });
+    },
+    readUserAnswer(card) {
+      return card.querySelector("[data-answer]").value;
+    },
+    isEmpty(v) { return !String(v || "").trim(); },
+    judge(q, v) { return matches(q, v); },
+    presentExpected(q) { return q.answer; },
+    presentUser(_q, v) { return v; },
+    enrichPrompt(q) {
+      return `${q.prompt}\n\n--- コード ---\n${q.code || ""}`;
+    },
+  },
+
+  choice: {
+    renderBody(q) {
+      const codeBlock = q.code
+        ? `<pre class="quiz__starter">${escapeHtml(q.code)}</pre>`
+        : "";
+      const choices = (q.choices || []).map((c, i) => `
+        <label class="quiz__choice">
+          <input type="radio" name="quiz-choice-${q.id}" value="${i}" data-choice>
+          <span class="quiz__choice-key">${LETTERS[i]}</span>
+          <span class="quiz__choice-text">${escapeHtml(c)}</span>
+        </label>
+      `).join("");
+      return `
+        ${codeBlock}
+        <div class="quiz__choices" role="radiogroup">${choices}</div>
+        <div class="quiz__answer-row">
+          <button type="button" class="quiz__submit" data-submit disabled>解答</button>
+        </div>
+      `;
+    },
+    afterRender(card) {
+      const submit = card.querySelector("[data-submit]");
+      card.querySelectorAll("[data-choice]").forEach((r) => {
+        r.addEventListener("change", () => { submit.disabled = false; });
+      });
+    },
+    readUserAnswer(card) {
+      const checked = card.querySelector("[data-choice]:checked");
+      return checked ? Number(checked.value) : null;
+    },
+    isEmpty(v) { return v === null || v === undefined; },
+    judge(q, v) { return Number.isInteger(v) && v === q.answerIndex; },
+    presentExpected(q) {
+      const i = q.answerIndex;
+      return `${LETTERS[i]}. ${q.choices?.[i] ?? ""}`;
+    },
+    presentUser(q, v) {
+      if (v === null || v === undefined) return "(未選択)";
+      return `${LETTERS[v]}. ${q.choices?.[v] ?? ""}`;
+    },
+    enrichPrompt(q) {
+      const list = (q.choices || []).map((c, i) => `${LETTERS[i]}. ${c}`).join("\n");
+      const codePart = q.code ? `\n\n--- コード ---\n${q.code}` : "";
+      return `${q.prompt}\n\n--- 選択肢 ---\n${list}${codePart}`;
+    },
+  },
+};
 
 function normalize(s) {
   return String(s).replace(/\s+/g, "").replace(/;$/, "").toLowerCase();

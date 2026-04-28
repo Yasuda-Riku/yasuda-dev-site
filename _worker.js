@@ -114,18 +114,44 @@ async function handleExplain(request, env) {
   return json({ explanation, model }, 200, corsHeaders);
 }
 
-function buildUserPrompt({ topic, level, prompt, expected, userAnswer, errors }) {
+const TYPE_LABELS = {
+  blank:   "穴埋め",
+  predict: "コードの出力予測",
+  choice:  "択一",
+};
+
+function buildUserPrompt({ type, topic, level, prompt, expected, userAnswer, errors }) {
   const parts = [];
   if (topic) parts.push(`【トピック】${topic}`);
-  if (typeof level === "number") parts.push(`【難易度】${level === 1 ? "穴埋め" : "数行記述"}`);
+  const typeLabel = TYPE_LABELS[type];
+  if (typeLabel) {
+    parts.push(`【問題形式】${typeLabel}`);
+  } else if (typeof level === "number") {
+    parts.push(`【難易度】${level === 1 ? "穴埋め" : "数行記述"}`);
+  }
   if (prompt) parts.push(`【問題】\n${prompt}`);
   if (expected) parts.push(`【期待される回答 (生徒には見せない)】\n${expected}`);
   if (userAnswer) parts.push(`【生徒の回答】\n${userAnswer}`);
   if (errors && errors.length) parts.push(`【コンパイラ/実行エラー】\n${errors.join("\n")}`);
-  parts.push(
-    "上の情報を踏まえ、生徒の誤りを 200 字以内で解説してください。" +
-      "正解そのものは書かず、次に確認すべき点をヒントとして示すこと。",
-  );
+
+  // 問題形式に応じた追加指示
+  if (type === "predict") {
+    parts.push(
+      "出力予測の問題です。コードを 1 行ずつ実行した結果を脳内で追って、" +
+        "生徒が見落としている動作 (ループ条件、初期値、副作用、改行の有無、出力フォーマット等) を 1 点だけ示してください。" +
+        "正解の出力そのものは書かないこと。",
+    );
+  } else if (type === "choice") {
+    parts.push(
+      "択一の問題です。生徒が選んだ選択肢が間違いである理由を端的に説明し、" +
+        "正解の選択肢に向かうための着眼点をヒントとして示してください。正解の選択肢の記号や本文をそのまま書かないこと。",
+    );
+  } else {
+    parts.push(
+      "上の情報を踏まえ、生徒の誤りを 200 字以内で解説してください。" +
+        "正解そのものは書かず、次に確認すべき点をヒントとして示すこと。",
+    );
+  }
   return parts.join("\n\n");
 }
 

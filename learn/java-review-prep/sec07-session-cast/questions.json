@@ -32,7 +32,7 @@
     "prompt": "(User) session.getAttribute(\"user\"); で、もし保存されているのが Admin オブジェクトだったら何が起きる？",
     "starter": "// 結果: ___ Exception",
     "answer": "ClassCast",
-    "alternatives": ["ClassCastException".replace("Exception", "")],
+    "alternatives": ["ClassCastException"],
     "hint": "「クラスのキャスト」が失敗するの意味の例外名。",
     "explanation": "ClassCastException。実体の型がキャスト先の型 (またはそのサブクラス) でないとき発生。事前に instanceof で確認してからキャストすると安全。"
   },

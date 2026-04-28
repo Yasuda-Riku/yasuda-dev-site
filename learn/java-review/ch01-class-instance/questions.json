@@ -188,5 +188,36 @@
     "answer": "this",
     "hint": "そのまま this を返します。",
     "explanation": "this を返すと、p.rename(\"taro\").rename(\"jiro\") のようにメソッドチェーンが書けます。Builder パターンの基本形。"
+  },
+
+  {
+    "id": "ch01-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · インスタンス",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Counter {\n    int n;\n    void up() { n++; }\n}\nCounter c = new Counter();\nc.up();\nc.up();\nc.up();\nSystem.out.println(c.n);",
+    "answer": "3",
+    "hint": "n はフィールドなので 0 から始まり、up() を呼ぶたびに 1 増えます。",
+    "explanation": "int 型フィールドの初期値は 0。up() を 3 回呼ぶと n は 3 になります。println は最後に改行を入れますが「出力された値」としては 3。"
+  },
+  {
+    "id": "ch01-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · 参照渡し",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Box { int v; }\nBox a = new Box();\na.v = 10;\nBox b = a;\nb.v = 99;\nSystem.out.println(a.v);",
+    "answer": "99",
+    "hint": "Box b = a; は値のコピーではなく「同じ箱を指す参照のコピー」です。",
+    "explanation": "オブジェクトを変数に代入してもオブジェクトは複製されず、参照 (アドレス) だけが共有されます。b.v を書き換えると、同じ Box を指している a.v も 99 になります。"
+  },
+  {
+    "id": "ch01-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · String の不変性",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "String s = \"abc\";\ns.toUpperCase();\nSystem.out.println(s);",
+    "answer": "abc",
+    "hint": "String のメソッドは元の文字列を書き換えるのではなく、新しい文字列を返します。",
+    "explanation": "String は不変 (immutable)。toUpperCase() は \"ABC\" という新しい String を返すだけで、s 自身は変わりません。s = s.toUpperCase(); と代入し直す必要があります。"
   }
 ]
