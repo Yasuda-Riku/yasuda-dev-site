@@ -23,7 +23,12 @@
     "prompt": "abstract クラスを new してインスタンス化しようとするとどうなる？",
     "starter": "// new Shape() → ___",
     "answer": "コンパイルエラー",
-    "alternatives": ["エラー", "compile error", "失敗", "禁止"],
+    "alternatives": [
+      "エラー",
+      "compile error",
+      "失敗",
+      "禁止"
+    ],
     "hint": "言語仕様で禁止されています。",
     "explanation": "abstract クラスは具体的に何かを完成させていない型なので、直接 new することは禁止。子クラスを new するか、無名サブクラスとして new するかが必要。"
   },
@@ -33,7 +38,13 @@
     "prompt": "abstract クラスは abstract メソッドを必ず持たないとダメ？",
     "starter": "// abstract メソッドを持たない abstract クラス → ___",
     "answer": "OK",
-    "alternatives": ["可能", "良い", "ok", "あり", "問題ない"],
+    "alternatives": [
+      "可能",
+      "良い",
+      "ok",
+      "あり",
+      "問題ない"
+    ],
     "hint": "abstract クラスはメソッド全部に実装があってもよい。",
     "explanation": "abstract クラスは abstract メソッドを持たなくても OK。ただ「直接インスタンス化を禁止」したいだけ、というユースケースもあります (典型的にはテンプレートメソッドの土台)。"
   },
@@ -46,7 +57,21 @@
     "hint": "つけ忘れがちですがコンパイラが教えてくれます。",
     "explanation": "abstract メソッドが 1 つでもあると、そのクラス自体が完成形ではないので abstract 必須。コンパイルエラーで気づけます。"
   },
-
+  {
+    "id": "ch04-c-01",
+    "type": "choice",
+    "subtopic": "択一 · abstract と new",
+    "prompt": "abstract class Shape { ... } について、コンパイルが通る書き方は？",
+    "choices": [
+      "Shape s = new Shape();",
+      "Shape s;  // 宣言だけ (代入なし)",
+      "Shape s = (Shape) null;",
+      "上のすべて"
+    ],
+    "answerIndex": 3,
+    "hint": "abstract クラスでも変数の宣言・null 代入・キャストはできる。new だけが NG。",
+    "explanation": "abstract クラスは new で直接インスタンス化はできないが、変数宣言・null 代入・他の参照の代入は可能。要するに「型としては使える」。問題のうち new Shape() だけが NG で、他は通る。"
+  },
   {
     "id": "ch04-2-01",
     "subtopic": "4-2 interface の定義",
@@ -71,7 +96,11 @@
     "prompt": "1 つのクラスが複数の interface を implements することはできる？",
     "starter": "// implements A, B, C のように複数列挙 → ___",
     "answer": "できる",
-    "alternatives": ["可", "可能", "OK"],
+    "alternatives": [
+      "可",
+      "可能",
+      "OK"
+    ],
     "hint": "Java の単一継承の制約は extends だけ。",
     "explanation": "implements は複数並べて書けます (カンマ区切り)。クラスの単一継承制限を補い、複数の役割を持たせる定石。例: implements Comparable<Foo>, Serializable のように。"
   },
@@ -81,7 +110,11 @@
     "prompt": "interface の中にメソッドを書くとき、デフォルトで何が暗黙につく？",
     "starter": "// interface 内のメソッドは暗黙で ___",
     "answer": "public abstract",
-    "alternatives": ["public", "abstract", "public + abstract"],
+    "alternatives": [
+      "public",
+      "abstract",
+      "public + abstract"
+    ],
     "hint": "全員に公開され、中身は実装しない、が基本。",
     "explanation": "interface のメソッドは暗黙で public abstract。書いても省略しても同じ意味。Java 8 以降は default メソッドや static メソッドで実装を書けるようになりました。"
   },
@@ -91,18 +124,33 @@
     "prompt": "interface に書ける「変数」は暗黙で何になる？",
     "starter": "interface Config { int MAX = 100; } // MAX は暗黙で ___",
     "answer": "public static final",
-    "alternatives": ["static final", "public final", "constant"],
+    "alternatives": [
+      "static final",
+      "public final",
+      "constant"
+    ],
     "hint": "全員に公開・クラス共有・変更不可、の 3 点セット。",
     "explanation": "interface のフィールドは暗黙で public static final = 定数扱い。書き換えはできず、クラス間で共有される値の置き場として使えます。"
   },
-
+  {
+    "id": "ch04-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · interface のフィールド",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "interface Config {\n    int MAX = 100;\n}\nclass App implements Config { }\nSystem.out.println(App.MAX);",
+    "answer": "100",
+    "hint": "interface のフィールドは暗黙で public static final。",
+    "explanation": "interface 内の変数は public static final = 定数。implements した側のクラスからもクラス名経由で App.MAX として参照できる。書き換えは不可。"
+  },
   {
     "id": "ch04-3-01",
     "subtopic": "4-3 interface 越しに呼ぶ",
     "prompt": "interface 型の変数で、そこに implementation を入れる代入を完成させてください。",
     "starter": "Drawable d = ___;",
     "answer": "new Circle()",
-    "alternatives": ["new Circle ()"],
+    "alternatives": [
+      "new Circle ()"
+    ],
     "hint": "Drawable を implements している具体クラスを new するだけ。",
     "explanation": "interface 型の変数で具体クラスのインスタンスを受けると、その interface に書かれているメソッドだけを呼べます。実装の入れ替えがやりやすくなる仕組み。"
   },
@@ -139,18 +187,55 @@
     "prompt": "interface はクラスの「コンストラクタ」を持てる？",
     "starter": "// interface のコンストラクタ → ___",
     "answer": "持てない",
-    "alternatives": ["不可", "no", "NG", "持てません", "ない"],
+    "alternatives": [
+      "不可",
+      "no",
+      "NG",
+      "持てません",
+      "ない"
+    ],
     "hint": "interface は型の契約だけで、状態を持ちません。",
     "explanation": "interface はインスタンス化できないのでコンストラクタもありません。状態 (フィールド) を持たないこと、契約だけを定義することが本質。"
   },
-
+  {
+    "id": "ch04-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · interface 越しの呼び出し",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "interface Greeter {\n    void greet();\n}\nclass JP implements Greeter {\n    public void greet() { System.out.println(\"konnichiwa\"); }\n}\nGreeter g = new JP();\ng.greet();",
+    "answer": "konnichiwa",
+    "hint": "interface 型変数でも、実体側の実装が呼ばれる。",
+    "explanation": "Greeter は interface だが、実体は JP クラス。g.greet() は実体である JP の実装を呼ぶ。interface は「呼び方の契約」だけを決め、実装は具体クラス側が持つ。"
+  },
+  {
+    "id": "ch04-c-02",
+    "type": "choice",
+    "subtopic": "択一 · interface とコンストラクタ",
+    "prompt": "interface Drawable について、できないものはどれ？",
+    "choices": [
+      "メソッドのシグネチャを並べる",
+      "default メソッドで実装を持たせる (Java 8 以降)",
+      "コンストラクタを定義する",
+      "static メソッドを定義する (Java 8 以降)"
+    ],
+    "answerIndex": 2,
+    "hint": "状態を持たないものに必要ないものは何？",
+    "explanation": "interface は状態 (フィールド) を持たないため、初期化のためのコンストラクタも持てない。Java 8 以降は default メソッドや static メソッドは書けるようになったが、コンストラクタは依然として禁止。"
+  },
   {
     "id": "ch04-4-01",
     "subtopic": "4-4 abstract と interface の比較",
     "prompt": "extends できる親クラスは 1 つだが、implements できる interface は何個まで？",
     "starter": "// implements A, B, C, ...   何個まで?",
     "answer": "複数",
-    "alternatives": ["何個でも", "制限なし", "無制限", "多数", "many", "複数個"],
+    "alternatives": [
+      "何個でも",
+      "制限なし",
+      "無制限",
+      "多数",
+      "many",
+      "複数個"
+    ],
     "hint": "Java の制限は extends にだけ。",
     "explanation": "interface は何個でも implements 可能。クラスの単一継承制限を超えて複数の役割を持たせる手段になります。これが OOP の柔軟性の鍵。"
   },
@@ -160,7 +245,11 @@
     "prompt": "abstract クラスと interface、フィールド (状態) を持たせやすいのはどちら？",
     "starter": "// 状態を持つなら ___",
     "answer": "abstract",
-    "alternatives": ["abstract クラス", "abstractクラス", "abstract class"],
+    "alternatives": [
+      "abstract クラス",
+      "abstractクラス",
+      "abstract class"
+    ],
     "hint": "interface は本質的に状態を持たない契約。",
     "explanation": "abstract クラスは普通のフィールドを自由に持てる。interface は public static final な定数しか持てない。共通の状態 + 共通の処理を提供したいなら abstract クラスの出番。"
   },
@@ -188,8 +277,28 @@
     "prompt": "interface のメソッドだけど Java 8 から static メソッドも書けるようになった。このメソッドは誰から呼ぶ？",
     "starter": "// インターフェース名.staticMethod() の形 → ___ 経由で呼ぶ",
     "answer": "interface",
-    "alternatives": ["インターフェース", "interface 名", "型名", "interface 自体"],
+    "alternatives": [
+      "インターフェース",
+      "interface 名",
+      "型名",
+      "interface 自体"
+    ],
     "hint": "呼び出しはインスタンス経由ではなく、クラス側から。",
     "explanation": "interface の static メソッドは「インターフェース名.メソッド()」の形で呼びます。例: List.of(1, 2, 3) のような工場メソッド。Java 9 ではさらに private static メソッドも書けるように。"
+  },
+  {
+    "id": "ch04-c-03",
+    "type": "choice",
+    "subtopic": "択一 · abstract vs interface",
+    "prompt": "「common な状態 (フィールド) を子で共有させたい + 一部は子が必ず実装する」設計に最も向くのはどちら？",
+    "choices": [
+      "interface だけで実現する",
+      "abstract class で field を持たせ、abstract メソッドで実装を強制する",
+      "全部 final class にする",
+      "static メソッドだけで構成する (クラス自体は使わない)"
+    ],
+    "answerIndex": 1,
+    "hint": "状態を持てるのは abstract クラス側だけ。",
+    "explanation": "interface はフィールド (状態) を持てない。共通の状態 + 共通の処理 + 一部だけ子が実装する、というパターンには abstract クラスが向く。Template Method パターンの土台になる。"
   }
 ]

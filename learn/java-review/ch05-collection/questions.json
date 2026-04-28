@@ -5,7 +5,9 @@
     "prompt": "String を要素に持つ ArrayList を作る式を完成させてください。",
     "starter": "ArrayList<String> list = new ArrayList<___>();",
     "answer": "",
-    "alternatives": ["String"],
+    "alternatives": [
+      "String"
+    ],
     "regex": "^\\s*(String)?\\s*$",
     "hint": "Java 7 以降は型推論 (ダイヤモンド演算子) で省略できます。",
     "explanation": "Java 7 以降は new ArrayList<>() のように型を省略できます。コンパイラが左辺の型から推論します。String と書いても OK ですが省略形が現代的。"
@@ -43,11 +45,40 @@
     "prompt": "List<String> 型の変数で受けるのと ArrayList<String> 型で受けるのは、どちらが推奨される設計？",
     "starter": "// 推奨は ___ 型で受ける",
     "answer": "List",
-    "alternatives": ["List<String>", "List 型", "interface", "interface 型"],
+    "alternatives": [
+      "List<String>",
+      "List 型",
+      "interface",
+      "interface 型"
+    ],
     "hint": "「実装ではなく interface に依存」の原則。",
     "explanation": "List 型で受けるほうが推奨。後から LinkedList などに差し替えても呼び出し側を変更せずに済むため。可能な限り具体クラスではなく interface 型を変数の型に使うのが定石。"
   },
-
+  {
+    "id": "ch05-c-01",
+    "type": "choice",
+    "subtopic": "択一 · List vs ArrayList",
+    "prompt": "List<String> list = new ArrayList<>(); と書く理由として最も適切なのは？",
+    "choices": [
+      "List の方がメモリを使わないから",
+      "後で LinkedList などに差し替えても呼び出し側を変更せずに済むから",
+      "ArrayList<String> list = ... と書くとコンパイルエラーになるから",
+      "List の方が古い書き方で互換性が高いから"
+    ],
+    "answerIndex": 1,
+    "hint": "「interface に依存して具体実装に依存しない」原則。",
+    "explanation": "宣言型は interface (List)、実装は具体クラス (ArrayList) — というのが推奨。後から実装を差し替えやすく、テスト時にモックも入れやすい。性能上の差はほぼない。"
+  },
+  {
+    "id": "ch05-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · List のサイズ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "List<String> xs = new ArrayList<>();\nxs.add(\"a\");\nxs.add(\"b\");\nxs.add(\"a\");\nSystem.out.println(xs.size());",
+    "answer": "3",
+    "hint": "List は重複を許します。add した回数だけ要素が増えます。",
+    "explanation": "List は順序を保ち重複も許す。\"a\" が 2 回入っても size() は 3。重複を許さないのは Set 系 (HashSet など)。"
+  },
   {
     "id": "ch05-2-01",
     "subtopic": "5-2 拡張 for / 走査",
@@ -63,7 +94,9 @@
     "prompt": "ArrayList を index 付きで走査したい。普通の for で書く方の継続条件を完成させてください。",
     "starter": "for (int i = 0; ___; i++) {\n    System.out.println(list.get(i));\n}",
     "answer": "i < list.size()",
-    "alternatives": ["i<list.size()"],
+    "alternatives": [
+      "i<list.size()"
+    ],
     "hint": "サイズ未満の間ループ、が定石。",
     "explanation": "コレクションを index で回すなら i < list.size()。配列の length と違ってメソッドなので () を忘れない。途中で要素を追加削除すると条件が動的に変わる点も注意。"
   },
@@ -91,18 +124,45 @@
     "prompt": "拡張 for ループの中で list.remove() を呼ぶと何が起きやすい？",
     "starter": "// 拡張 for 中の remove → ___",
     "answer": "ConcurrentModificationException",
-    "alternatives": ["例外", "exception"],
+    "alternatives": [
+      "例外",
+      "exception"
+    ],
     "hint": "コレクション走査中の変更で起きる例外があります。",
     "explanation": "拡張 for は内部で Iterator を使っており、走査中にコレクションが変更されると ConcurrentModificationException で落ちる仕様。削除したい場合は Iterator.remove() を使うか、後でまとめて remove する必要があります。"
   },
-
+  {
+    "id": "ch05-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · for ループ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "for (int i = 0; i < 3; i++) {\n    System.out.print(i);\n}",
+    "answer": "012",
+    "alternatives": [
+      "0 1 2"
+    ],
+    "hint": "i は 0 から始まり、i < 3 が true の間だけ実行されます。print は改行を入れません。",
+    "explanation": "i = 0, 1, 2 の 3 回ループ。println でなく print なので改行も区切り文字も入らず、つながって \"012\"。"
+  },
+  {
+    "id": "ch05-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · 拡張 for",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "int[] a = {2, 4, 6};\nint sum = 0;\nfor (int x : a) {\n    sum += x;\n}\nSystem.out.println(sum);",
+    "answer": "12",
+    "hint": "x には a の要素が順に入ります。0 + 2 + 4 + 6 = ?",
+    "explanation": "拡張 for ループ (for-each) は配列やコレクションの要素を順に取り出して処理します。2 + 4 + 6 = 12。"
+  },
   {
     "id": "ch05-3-01",
     "subtopic": "5-3 HashMap",
     "prompt": "String キー → Integer 値の HashMap を作る式を完成させてください。",
     "starter": "HashMap<___, ___> map = new HashMap<>();",
     "answer": "String, Integer",
-    "alternatives": ["String,Integer"],
+    "alternatives": [
+      "String,Integer"
+    ],
     "hint": "<キーの型, 値の型> の順番。",
     "explanation": "Map はジェネリクスが 2 つ。<キーの型, 値の型> の順。基本型 (int) は使えないので Integer などのラッパー型を使います。"
   },
@@ -142,14 +202,29 @@
     "hint": "「エントリー (1 ペア) の集合」を返すメソッドです。",
     "explanation": "entrySet() は Map.Entry の集合を返します。各エントリは getKey/getValue で取れる。キーと値の両方が欲しいループでは keySet より効率的。"
   },
-
+  {
+    "id": "ch05-p-04",
+    "type": "predict",
+    "subtopic": "出力予測 · HashMap の上書き",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "Map<String, Integer> m = new HashMap<>();\nm.put(\"a\", 1);\nm.put(\"b\", 2);\nm.put(\"a\", 3);\nSystem.out.println(m.get(\"a\") + \" / \" + m.size());",
+    "answer": "3 / 2",
+    "hint": "同じキーに put すると値が上書きされる。",
+    "explanation": "Map は同じキーへの put で値が上書きされる (同じキーが 2 つ並ぶことはない)。最後の put(\"a\", 3) で値が 3 に。サイズは a と b の 2。"
+  },
   {
     "id": "ch05-4-01",
     "subtopic": "5-4 ジェネリクス",
     "prompt": "List<int> と書いてもコンパイルできない。原因は何？",
     "starter": "// int は ___ ではないからジェネリクスに使えない",
     "answer": "参照型",
-    "alternatives": ["object", "オブジェクト", "クラス", "ラッパー型ではない", "プリミティブだから"],
+    "alternatives": [
+      "object",
+      "オブジェクト",
+      "クラス",
+      "ラッパー型ではない",
+      "プリミティブだから"
+    ],
     "hint": "ジェネリクスはオブジェクトしか入れられません。",
     "explanation": "ジェネリクスは参照型 (オブジェクト型) だけ。基本型 (int, double など) は直接使えないので、Integer や Double のラッパー型を使います。"
   },
@@ -159,7 +234,9 @@
     "prompt": "Java 7 以降、new ArrayList<String>() は new ArrayList<>() に省略できる。この <> を何と呼ぶ？",
     "starter": "// <> = ___ 演算子",
     "answer": "ダイヤモンド",
-    "alternatives": ["diamond"],
+    "alternatives": [
+      "diamond"
+    ],
     "hint": "見た目がダイヤモンド型 (◇)。",
     "explanation": "ダイヤモンド演算子。Java 7 で導入されました。コンパイラが左辺の宣言から型を推論してくれるので、右辺で重複して書く必要が無い。"
   },
@@ -169,7 +246,11 @@
     "prompt": "List<? extends Number> の意味を 1 単語で。「Number またはその ___ 」を要素として持つ List。",
     "starter": "// List<? extends Number> = Number またはその ___ を要素に持つ List",
     "answer": "サブクラス",
-    "alternatives": ["子クラス", "派生", "subclass"],
+    "alternatives": [
+      "子クラス",
+      "派生",
+      "subclass"
+    ],
     "hint": "extends の後の型が「上限」になる書き方です。",
     "explanation": "ワイルドカード ? extends T は「T またはその子クラス」を表します。読み取り専用に近い扱い (要素を入れる側からは安全じゃない) になり、戻り値の型に使うのが定石。"
   },
@@ -179,7 +260,10 @@
     "prompt": "「型パラメータ T を持つメソッド」のシグネチャを完成させてください。",
     "starter": "public ___ T first(List<T> list) { return list.get(0); }",
     "answer": "<T>",
-    "alternatives": ["<T> static", "static <T>"],
+    "alternatives": [
+      "<T> static",
+      "static <T>"
+    ],
     "hint": "戻り値型の前に <T> を書きます (static の場合は public static <T>)。",
     "explanation": "メソッドにジェネリクスを持たせるときは戻り値型の直前に <T> を書きます。クラス全体の <T> とは独立に、メソッドだけで型を受け取れます。"
   },
@@ -192,36 +276,19 @@
     "hint": "宣言された要素型がそのまま戻り値型になります。",
     "explanation": "List<Object> から取り出した値は Object 型。元の型 (Integer / String) として使いたいなら instanceof で確認してダウンキャストする必要があります。型情報が消えるのが Java ジェネリクスの「型消去 (erasure)」。"
   },
-
   {
-    "id": "ch05-p-01",
-    "type": "predict",
-    "subtopic": "出力予測 · for ループ",
-    "prompt": "次のコードを実行したときの出力は？",
-    "code": "for (int i = 0; i < 3; i++) {\n    System.out.print(i);\n}",
-    "answer": "012",
-    "alternatives": ["0 1 2"],
-    "hint": "i は 0 から始まり、i < 3 が true の間だけ実行されます。print は改行を入れません。",
-    "explanation": "i = 0, 1, 2 の 3 回ループ。println でなく print なので改行も区切り文字も入らず、つながって \"012\"。"
-  },
-  {
-    "id": "ch05-p-02",
-    "type": "predict",
-    "subtopic": "出力予測 · List のサイズ",
-    "prompt": "次のコードを実行したときの出力は？",
-    "code": "List<String> xs = new ArrayList<>();\nxs.add(\"a\");\nxs.add(\"b\");\nxs.add(\"a\");\nSystem.out.println(xs.size());",
-    "answer": "3",
-    "hint": "List は重複を許します。add した回数だけ要素が増えます。",
-    "explanation": "List は順序を保ち重複も許す。\"a\" が 2 回入っても size() は 3。重複を許さないのは Set 系 (HashSet など)。"
-  },
-  {
-    "id": "ch05-p-03",
-    "type": "predict",
-    "subtopic": "出力予測 · 拡張 for",
-    "prompt": "次のコードを実行したときの出力は？",
-    "code": "int[] a = {2, 4, 6};\nint sum = 0;\nfor (int x : a) {\n    sum += x;\n}\nSystem.out.println(sum);",
-    "answer": "12",
-    "hint": "x には a の要素が順に入ります。0 + 2 + 4 + 6 = ?",
-    "explanation": "拡張 for ループ (for-each) は配列やコレクションの要素を順に取り出して処理します。2 + 4 + 6 = 12。"
+    "id": "ch05-c-02",
+    "type": "choice",
+    "subtopic": "択一 · ジェネリクスとプリミティブ",
+    "prompt": "List<int> という宣言ができない理由として正しいのは？",
+    "choices": [
+      "int という型が存在しないから",
+      "ジェネリクスは参照型 (オブジェクト型) しか取れず、int はプリミティブ型だから",
+      "List は要素を持てないから",
+      "<int> は予約語だから"
+    ],
+    "answerIndex": 1,
+    "hint": "ラッパー型 Integer なら使える。",
+    "explanation": "Java のジェネリクスは型消去で実装されており、参照型 (オブジェクト) のみ受け付ける。int などのプリミティブ型は使えず、Integer などのラッパー型を使う必要がある。書きたい場合は List<Integer>。"
   }
 ]

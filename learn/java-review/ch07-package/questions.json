@@ -14,7 +14,12 @@
     "prompt": "package 宣言はソースファイルの何行目に書く？",
     "starter": "// package 宣言は ___ 行目",
     "answer": "1",
-    "alternatives": ["一", "最初", "先頭", "1行目"],
+    "alternatives": [
+      "一",
+      "最初",
+      "先頭",
+      "1行目"
+    ],
     "hint": "コメント以外で先頭です。",
     "explanation": "package 宣言は空行とコメントを除いた最初の行に書く必要があります。複数のパッケージを 1 ファイルに書くことはできません。"
   },
@@ -33,7 +38,12 @@
     "prompt": "パッケージ名はなぜドメインを逆順に書くのが慣習？",
     "starter": "// 例: com.example.app   ドメインを逆順 = ___ を保証するため",
     "answer": "一意",
-    "alternatives": ["uniqueness", "ユニーク", "一意性", "一意さ"],
+    "alternatives": [
+      "uniqueness",
+      "ユニーク",
+      "一意性",
+      "一意さ"
+    ],
     "hint": "「世界中で被らない」ようにするため。",
     "explanation": "ドメインは世界で 1 つしかないので、ドメイン逆順 + 自分の管理パッケージ名 で「世界中で重複しないパッケージ名」が確保できます。Maven Central などで衝突を避けるための慣習。"
   },
@@ -43,11 +53,22 @@
     "prompt": "Java のクラスを完全に特定する「完全修飾名 (FQN)」とは何の組み合わせ？",
     "starter": "// FQN = ___名 + . + クラス名",
     "answer": "パッケージ",
-    "alternatives": ["package"],
+    "alternatives": [
+      "package"
+    ],
     "hint": "クラス名の前につくものです。",
     "explanation": "完全修飾名 = パッケージ名 + . + クラス名 (例: java.util.ArrayList)。同じクラス名でもパッケージが違えば別物として識別できる仕組み。"
   },
-
+  {
+    "id": "ch07-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · クラス完全修飾名",
+    "prompt": "次のコードを実行したときの出力は？(import 無しで動く)",
+    "code": "java.util.List<String> list = new java.util.ArrayList<>();\nlist.add(\"x\");\nSystem.out.println(list.get(0));",
+    "answer": "x",
+    "hint": "import の代わりに完全修飾名 (パッケージ名.クラス名) で書ける。",
+    "explanation": "import を書かなくても完全修飾名 (java.util.List, java.util.ArrayList) を直接書けば動く。import は単なる「短い名前で書ける糖衣」。実装は同じ。"
+  },
   {
     "id": "ch07-2-01",
     "subtopic": "7-2 import",
@@ -72,7 +93,12 @@
     "prompt": "java.lang パッケージのクラス (String, Integer, System など) は import を書かなくても使える。それは何故？",
     "starter": "// java.lang は ___ で import される",
     "answer": "暗黙",
-    "alternatives": ["自動", "デフォルト", "implicit", "auto"],
+    "alternatives": [
+      "自動",
+      "デフォルト",
+      "implicit",
+      "auto"
+    ],
     "hint": "明示的な import 文無しで使えてしまう特別扱い。",
     "explanation": "java.lang は全 Java プログラムで使われる基本クラス置き場で、暗黙で import されます。だから String や Integer はいきなり書ける。"
   },
@@ -91,18 +117,52 @@
     "prompt": "別パッケージに同名クラスが 2 つある (例: java.util.Date と java.sql.Date)。同時に import するとどうなる？",
     "starter": "// import java.util.Date と import java.sql.Date を両方書く → ___",
     "answer": "コンパイルエラー",
-    "alternatives": ["エラー", "compile error", "失敗"],
+    "alternatives": [
+      "エラー",
+      "compile error",
+      "失敗"
+    ],
     "hint": "クラス名が衝突する状態が許されません。",
     "explanation": "同名クラスを両方 import するとコンパイルエラー。片方は完全修飾名 (java.sql.Date のようにフルパス) で書いて、もう片方だけ import する、という対応が必要です。"
   },
-
+  {
+    "id": "ch07-c-01",
+    "type": "choice",
+    "subtopic": "択一 · 同名クラスの import 衝突",
+    "prompt": "java.util.Date と java.sql.Date を 1 つのクラス内で両方使いたい。最も適切な対応は？",
+    "choices": [
+      "両方を import 文に書く",
+      "片方だけ import し、もう片方は完全修飾名 (java.sql.Date のように) で参照する",
+      "両方を import static で書く",
+      "片方を別ファイルに移して別クラスから呼ぶ"
+    ],
+    "answerIndex": 1,
+    "hint": "両方 import するとクラス名が衝突してエラーになる。",
+    "explanation": "同名クラスを両方 import するとコンパイルエラー (どちらの Date を指すか曖昧)。よく使う方を import し、もう片方は java.sql.Date のように完全修飾名で書くのが一般的。"
+  },
+  {
+    "id": "ch07-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · import static",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "import static java.lang.Math.PI;\nimport static java.lang.Math.max;\n\nSystem.out.println(max(2, 3) + \" / \" + (int) PI);",
+    "answer": "3 / 3",
+    "hint": "Math. を省略して呼べる。Math.PI は 3.14159...",
+    "explanation": "import static で Math.max → max、Math.PI → PI と省略形で呼べる。max(2, 3) は 3、PI は 3.14...、(int) でキャストすると 3。連結して \"3 / 3\"。"
+  },
   {
     "id": "ch07-3-01",
     "subtopic": "7-3 アクセス可視性",
     "prompt": "アクセス修飾子を書かないフィールドは、どこから見える？",
     "starter": "class Foo { int x; }   // x は ___ パッケージから見える",
     "answer": "同じ",
-    "alternatives": ["同一", "same", "同じ", "そのパッケージ", "同パッケージ"],
+    "alternatives": [
+      "同一",
+      "same",
+      "同じ",
+      "そのパッケージ",
+      "同パッケージ"
+    ],
     "hint": "「自分と同じパッケージから」だけ。",
     "explanation": "修飾子なし (package-private) は同じパッケージのクラスからのみアクセス可能。別パッケージからは見えません。「内部実装」を同パッケージに閉じる手段。"
   },
@@ -130,7 +190,11 @@
     "prompt": "1 つの .java ファイルに「public クラス」は何個書ける？",
     "starter": "// public クラスは 1 ファイルに ___ 個まで",
     "answer": "1",
-    "alternatives": ["一", "1 つ", "1個"],
+    "alternatives": [
+      "一",
+      "1 つ",
+      "1個"
+    ],
     "hint": "ファイル名と一致するクラスだけ public にできる。",
     "explanation": "1 ファイルに public クラスは 1 個まで。しかも public クラス名 = ファイル名でないとコンパイルできません。public でない (= package-private) クラスは複数書けますが推奨されない。"
   },
@@ -142,5 +206,20 @@
     "answer": "private",
     "hint": "外からの直接書き換えを禁止する修飾子です。",
     "explanation": "「フィールドは private、必要なら getter/setter で公開」がカプセル化の基本形。これを徹底するだけで、内部状態のバグの大半が予防できます。"
+  },
+  {
+    "id": "ch07-c-02",
+    "type": "choice",
+    "subtopic": "択一 · 可視範囲と継承",
+    "prompt": "親クラスの protected フィールドについて、正しい記述はどれ？",
+    "choices": [
+      "親クラスと同じパッケージのクラスからしかアクセスできない",
+      "サブクラスからアクセスでき、サブクラスが別パッケージにあっても OK",
+      "private と同じく、親クラス内からしかアクセスできない",
+      "public と同じく、誰からでもアクセスできる"
+    ],
+    "answerIndex": 1,
+    "hint": "「同じパッケージ + サブクラス」が protected の範囲。",
+    "explanation": "protected は「同じパッケージ + 全サブクラス (パッケージ違いも OK)」からアクセス可能。継承関係でフィールド/メソッドを子に公開したいときに使う。private より広く、public より狭い「中間」の修飾子。"
   }
 ]

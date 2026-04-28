@@ -23,9 +23,21 @@
     "prompt": "String 型の変数 name に文字列 \"Java\" を代入してください。空欄に入る式を答えてください。",
     "starter": "String name = ___;",
     "answer": "\"Java\"",
-    "alternatives": ["\"Java\""],
+    "alternatives": [
+      "\"Java\""
+    ],
     "hint": "文字列リテラルはダブルクォートで囲みます。",
     "explanation": "Java の文字列リテラルは \" で囲みます。シングルクォートは char 用。"
+  },
+  {
+    "id": "warmup-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · 整数演算",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "int a = 7;\nint b = 2;\nSystem.out.println(a / b);",
+    "answer": "3",
+    "hint": "int 同士の / は小数点以下を切り捨てます。",
+    "explanation": "int / int の結果は int (小数切り捨て)。7 / 2 = 3.5 ではなく 3。double にしたいなら片方を double にするか (double) でキャスト。"
   },
   {
     "id": "warmup-04",
@@ -51,10 +63,28 @@
     "prompt": "x が 10 以上 \"かつ\" 20 未満であるかを調べる条件式を空欄に書いてください。",
     "starter": "if (___) { ... }",
     "answer": "x >= 10 && x < 20",
-    "alternatives": ["10 <= x && x < 20", "x >= 10 && 20 > x"],
+    "alternatives": [
+      "10 <= x && x < 20",
+      "x >= 10 && 20 > x"
+    ],
     "regex": "^\\s*(\\(?\\s*x\\s*>=\\s*10\\s*\\)?|\\(?\\s*10\\s*<=\\s*x\\s*\\)?)\\s*&&\\s*(\\(?\\s*x\\s*<\\s*20\\s*\\)?|\\(?\\s*20\\s*>\\s*x\\s*\\)?)\\s*$",
     "hint": "「かつ」は && で 2 つの条件をつなぎます。",
     "explanation": "&& は論理積。両方が true のときだけ全体も true。"
+  },
+  {
+    "id": "warmup-c-01",
+    "type": "choice",
+    "subtopic": "択一 · 比較演算子",
+    "prompt": "x == 5 と書きたいところで誤って x = 5 と書いた。何が起きる？",
+    "choices": [
+      "コンパイルエラーで気付ける",
+      "x に 5 が代入され、if (5) のように扱われてエラーになる",
+      "条件式として常に true になる (boolean なら別)",
+      "実行時に NullPointerException で落ちる"
+    ],
+    "answerIndex": 2,
+    "hint": "Java の if 文は boolean しか受け取らないが…",
+    "explanation": "x が int の場合、x = 5 は代入式として 5 を返し、if (5) は型エラーでコンパイル不可。ただし x が boolean なら if (x = true) のように代入式が boolean を返すので通ってしまう。教訓: boolean フィールドへの == 比較ミスは見逃されやすい。"
   },
   {
     "id": "warmup-07",
@@ -62,7 +92,9 @@
     "prompt": "if 文で「score が 60 以上なら『合格』を表示」する処理を完成させてください。",
     "starter": "if (___) {\n    System.out.println(\"合格\");\n}",
     "answer": "score >= 60",
-    "alternatives": ["60 <= score"],
+    "alternatives": [
+      "60 <= score"
+    ],
     "hint": "「以上」は >= で表します。",
     "explanation": ">= は左が右より大きい、または等しい、で true。"
   },
@@ -94,12 +126,41 @@
     "explanation": "三項演算子は条件 ? A : B の形。短い分岐をひとつの式にまとめられます。"
   },
   {
+    "id": "warmup-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · 三項演算子",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "int n = 7;\nString r = (n % 2 == 0) ? \"even\" : \"odd\";\nSystem.out.println(r);",
+    "answer": "odd",
+    "hint": "7 % 2 = 1 なので n % 2 == 0 は false。",
+    "explanation": "三項演算子 cond ? A : B は cond が true なら A、false なら B を返す。7 は奇数なので false の枝、\"odd\" が選ばれる。"
+  },
+  {
+    "id": "warmup-c-02",
+    "type": "choice",
+    "subtopic": "択一 · switch の落とし穴",
+    "prompt": "次のコードで n = 1 のとき出力されるのはどれ？",
+    "code": "int n = 1;\nswitch (n) {\n    case 1:\n        System.out.println(\"one\");\n    case 2:\n        System.out.println(\"two\");\n    default:\n        System.out.println(\"other\");\n}",
+    "choices": [
+      "one",
+      "one\\ntwo",
+      "one\\ntwo\\nother",
+      "コンパイルエラー"
+    ],
+    "answerIndex": 2,
+    "hint": "break が無いと次の case にどうなるか思い出して。",
+    "explanation": "case 1 にマッチしたあと break が無いので、そのまま下の case 2 と default にも fall through する。one → two → other の 3 行が出る。case の最後に break を書くのが鉄則。"
+  },
+  {
     "id": "warmup-11",
     "subtopic": "繰り返し",
     "prompt": "for 文で 0 から 9 まで順に表示するための継続条件を空欄に書いてください。",
     "starter": "for (int i = 0; ___; i++) {\n    System.out.println(i);\n}",
     "answer": "i < 10",
-    "alternatives": ["i <= 9", "10 > i"],
+    "alternatives": [
+      "i <= 9",
+      "10 > i"
+    ],
     "hint": "9 まで含むので「10 未満」と書くのが普通。",
     "explanation": "i < 10 とすると i = 0, 1, ..., 9 で 10 回まわります。i <= 9 でも同じ結果ですが慣習として < N の形が多いです。"
   },
@@ -109,7 +170,9 @@
     "prompt": "while ループで n が 0 より大きい間、繰り返したい。継続条件を答えてください。",
     "starter": "while (___) {\n    n--;\n}",
     "answer": "n > 0",
-    "alternatives": ["0 < n"],
+    "alternatives": [
+      "0 < n"
+    ],
     "hint": "「〜の間」は while の括弧内に書く真偽式です。",
     "explanation": "while (条件) は条件が true のあいだ本体を繰り返す。0 になったら終了。"
   },
@@ -130,6 +193,16 @@
     "answer": "continue",
     "hint": "「続ける」を意味する英単語です。",
     "explanation": "continue は本体の残りをスキップしてループの先頭に戻ります。break との対比で覚える。"
+  },
+  {
+    "id": "warmup-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · while ループ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "int n = 5;\nint sum = 0;\nwhile (n > 0) {\n    sum += n;\n    n--;\n}\nSystem.out.println(sum);",
+    "answer": "15",
+    "hint": "5 + 4 + 3 + 2 + 1 = ?",
+    "explanation": "n が 5,4,3,2,1 と減っていく間、sum に加算される。1 になった次のループで 0 になるが、その時 n > 0 が false なので終了。合計 15。"
   },
   {
     "id": "warmup-15",
@@ -155,9 +228,28 @@
     "prompt": "int 型 3 要素の配列 a を初期化リストで作る宣言を完成させてください。値は 1, 2, 3。",
     "starter": "int[] a = ___;",
     "answer": "{1, 2, 3}",
-    "alternatives": ["{1,2,3}", "new int[]{1, 2, 3}", "new int[]{1,2,3}"],
+    "alternatives": [
+      "{1,2,3}",
+      "new int[]{1, 2, 3}",
+      "new int[]{1,2,3}"
+    ],
     "hint": "波括弧 { } で要素を並べる書き方が手軽です。",
     "explanation": "宣言と同時に初期化リストを書く場合は { ... } 形式が許されます。あとから代入する場合は new int[] { ... } が必要。"
+  },
+  {
+    "id": "warmup-c-03",
+    "type": "choice",
+    "subtopic": "択一 · 配列の長さ取得",
+    "prompt": "配列・String・List で「要素数」を取る書き方はそれぞれ違う。組み合わせとして正しいのは？",
+    "choices": [
+      "arr.length() / s.length / list.size",
+      "arr.length / s.length() / list.size()",
+      "arr.size() / s.size() / list.size()",
+      "arr.length / s.length / list.length"
+    ],
+    "answerIndex": 1,
+    "hint": "配列だけがフィールド。それ以外はメソッド。",
+    "explanation": "配列は length (フィールド、() 無し)、String は length() (メソッド)、List は size() (メソッド)。3 通りバラバラなのが Java の罠で、何度も間違える定番ポイント。"
   },
   {
     "id": "warmup-18",
@@ -174,7 +266,9 @@
     "prompt": "int 2 つを受け取って合計を返すメソッド add の戻り値の式を答えてください。",
     "starter": "public static int add(int a, int b) {\n    return ___;\n}",
     "answer": "a + b",
-    "alternatives": ["b + a"],
+    "alternatives": [
+      "b + a"
+    ],
     "hint": "受け取った 2 つの値を + でつなぐだけ。",
     "explanation": "return に続く式の値が呼び出し元へ返ります。型は宣言された戻り値型 int と一致する必要があります。"
   },
@@ -184,8 +278,20 @@
     "prompt": "メソッドを呼び出して戻り値を変数に受け取る代入式を完成させてください。",
     "starter": "int sum = ___;",
     "answer": "add(2, 3)",
-    "alternatives": ["add(2,3)"],
+    "alternatives": [
+      "add(2,3)"
+    ],
     "hint": "メソッド名と引数を () で渡します。",
     "explanation": "メソッド呼び出しは メソッド名(引数...) の形。戻り値が宣言の型 (int) に代入できれば OK。"
+  },
+  {
+    "id": "warmup-p-04",
+    "type": "predict",
+    "subtopic": "出力予測 · メソッド戻り値",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "static int twice(int x) { return x * 2; }\nstatic int plus(int x) { return x + 10; }\n\nSystem.out.println(twice(plus(3)));",
+    "answer": "26",
+    "hint": "内側から評価。plus(3) の結果を twice に渡す。",
+    "explanation": "メソッド呼び出しは内側から: plus(3) = 13、twice(13) = 26。複数のメソッドをネストさせる典型的な書き方。"
   }
 ]

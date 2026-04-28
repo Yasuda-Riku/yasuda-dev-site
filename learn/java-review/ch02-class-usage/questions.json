@@ -14,7 +14,12 @@
     "prompt": "コンストラクタの戻り値型は何を書く？",
     "starter": "// 戻り値型は ___ を書く",
     "answer": "書かない",
-    "alternatives": ["なし", "void でもなく省略", "省略", "書きません"],
+    "alternatives": [
+      "なし",
+      "void でもなく省略",
+      "省略",
+      "書きません"
+    ],
     "hint": "void すら書かない、特別な存在です。",
     "explanation": "コンストラクタは戻り値型を書きません。void と書くとそれは普通のメソッド扱いになってしまい、new で呼べなくなります。"
   },
@@ -24,7 +29,12 @@
     "prompt": "コンストラクタを 1 つも書かないと、Java は何を自動で用意してくれる？",
     "starter": "// 引数 ___ のデフォルトコンストラクタが自動生成される",
     "answer": "なし",
-    "alternatives": ["無し", "0個", "ゼロ", "ない"],
+    "alternatives": [
+      "無し",
+      "0個",
+      "ゼロ",
+      "ない"
+    ],
     "hint": "引数を取らないシンプルなものです。",
     "explanation": "コンストラクタを 1 つも書かない場合、引数なしのデフォルトコンストラクタがコンパイラに自動生成されます。1 つでも自分で書くと自動生成されなくなる点に注意。"
   },
@@ -43,11 +53,40 @@
     "prompt": "Person p = new Person(\"taro\"); のように呼ぶときに渡す \"taro\" を、コンストラクタは何として受け取る？",
     "starter": "// メソッドの ___ として受け取る",
     "answer": "引数",
-    "alternatives": ["パラメータ", "argument", "parameter"],
+    "alternatives": [
+      "パラメータ",
+      "argument",
+      "parameter"
+    ],
     "hint": "メソッド呼び出し時に渡す値の総称です。",
     "explanation": "new XXX(...) で渡した値はコンストラクタの引数 (パラメータ) になります。フィールドに保存しておくのが典型的な使い方。"
   },
-
+  {
+    "id": "ch02-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · コンストラクタ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Person {\n    String name;\n    Person() { this(\"taro\"); }\n    Person(String n) { name = n; }\n}\nPerson p = new Person();\nSystem.out.println(p.name);",
+    "answer": "taro",
+    "hint": "this(\"taro\") は同じクラスの別コンストラクタを呼ぶ。",
+    "explanation": "new Person() → 引数なしコンストラクタ → this(\"taro\") で Person(String) を呼び出す → name に \"taro\" を代入。連鎖の結果、name は \"taro\"。"
+  },
+  {
+    "id": "ch02-c-01",
+    "type": "choice",
+    "subtopic": "択一 · デフォルトコンストラクタ",
+    "prompt": "次のコードがコンパイルエラーになる理由は？",
+    "code": "class Person {\n    Person(String n) { /* ... */ }\n}\nPerson p = new Person();",
+    "choices": [
+      "Person クラスに main メソッドが無いから",
+      "Person(String) を 1 つでも書いた時点で、引数なしのデフォルトコンストラクタは自動生成されないから",
+      "Person はクラス名なので変数として使えないから",
+      "new で生成するには必ず public 修飾子が必要だから"
+    ],
+    "answerIndex": 1,
+    "hint": "コンストラクタを 1 つでも自分で書くと…",
+    "explanation": "コンストラクタを 1 つも書かないクラスにだけ、コンパイラが引数なしのデフォルトコンストラクタを足す。ひとつでも自分で書くと自動生成は止まる。引数なしで生成したいなら自分で Person() { } も書く必要がある。"
+  },
   {
     "id": "ch02-2-01",
     "subtopic": "2-2 アクセス修飾子",
@@ -72,7 +111,12 @@
     "prompt": "アクセス修飾子を全く書かないと何相当になる？",
     "starter": "class Person { ... }   // クラスは ___ アクセス",
     "answer": "package-private",
-    "alternatives": ["パッケージプライベート", "package private", "デフォルト", "default"],
+    "alternatives": [
+      "パッケージプライベート",
+      "package private",
+      "デフォルト",
+      "default"
+    ],
     "hint": "「同じパッケージ内からだけ」公開するレベルです。",
     "explanation": "修飾子を書かないと package-private (デフォルトアクセス)。同じパッケージのクラスからのみアクセス可能。public でも private でもありません。"
   },
@@ -82,7 +126,10 @@
     "prompt": "なぜフィールドを private にするのが推奨される？1 単語で答えてください。",
     "starter": "// フィールドを private にする目的: ___",
     "answer": "カプセル化",
-    "alternatives": ["encapsulation", "情報隠蔽"],
+    "alternatives": [
+      "encapsulation",
+      "情報隠蔽"
+    ],
     "hint": "「データを内側に閉じ込める」設計原則の名前です。",
     "explanation": "カプセル化 (encapsulation) はオブジェクトの内部状態を外から直接いじれないようにする設計原則。getter/setter 経由でアクセスさせると、後から検証や変換ロジックを足せます。"
   },
@@ -92,18 +139,39 @@
     "prompt": "private フィールドを継承先のサブクラスから直接アクセスできる？",
     "starter": "// サブクラスから super.privateField  → ___",
     "answer": "できない",
-    "alternatives": ["不可", "アクセス不可", "no", "NG"],
+    "alternatives": [
+      "不可",
+      "アクセス不可",
+      "no",
+      "NG"
+    ],
     "hint": "private は「クラス内」だけ。継承先も外と同じ扱い。",
     "explanation": "private はそのクラス内に閉じています。継承先からアクセスしたいなら protected を使うのが正解。protected は同パッケージ + サブクラスからアクセス可能。"
   },
-
+  {
+    "id": "ch02-c-02",
+    "type": "choice",
+    "subtopic": "択一 · アクセス可視範囲",
+    "prompt": "private と protected と (修飾子なし) と public の可視範囲を「狭い → 広い」に並べたとき、正しいのは？",
+    "choices": [
+      "public < protected < (なし) < private",
+      "private < (なし) < protected < public",
+      "private < protected < (なし) < public",
+      "(なし) < private < protected < public"
+    ],
+    "answerIndex": 1,
+    "hint": "private は自分のクラス内だけ。public は誰でも。",
+    "explanation": "Java の可視範囲は狭い順に: private < (なし=package-private) < protected < public。protected は「同パッケージ + サブクラス」なのでパッケージ越しの子からも見える分、(なし) より広い。"
+  },
   {
     "id": "ch02-3-01",
     "subtopic": "2-3 getter / setter",
     "prompt": "private フィールド age の値を返す getter メソッドの中身は？",
     "starter": "public int getAge() {\n    ___;\n}",
     "answer": "return age",
-    "alternatives": ["return this.age"],
+    "alternatives": [
+      "return this.age"
+    ],
     "hint": "戻り値としてフィールドの値を返すだけ。",
     "explanation": "getter は private フィールドを外に公開する読み取り専用メソッド。慣習的に get + フィールド名 (頭大文字) という命名が一般的。"
   },
@@ -122,7 +190,9 @@
     "prompt": "boolean 型フィールド active の getter は、慣習として何という名前にする？",
     "starter": "public boolean ___() {\n    return active;\n}",
     "answer": "isActive",
-    "alternatives": ["IsActive"],
+    "alternatives": [
+      "IsActive"
+    ],
     "hint": "boolean の場合は get ではなく別の接頭辞を使います。",
     "explanation": "boolean フィールドの getter は慣習的に is + フィールド名 (頭大文字)。読み下しが自然になります (例: if (person.isActive())。"
   },
@@ -132,7 +202,9 @@
     "prompt": "setter で値の正当性を検証 (validation) したい。負の年齢を拒否するコードを完成させてください。",
     "starter": "public void setAge(int age) {\n    if (___) {\n        throw new IllegalArgumentException();\n    }\n    this.age = age;\n}",
     "answer": "age < 0",
-    "alternatives": ["0 > age"],
+    "alternatives": [
+      "0 > age"
+    ],
     "hint": "「負の値」をブロックする条件を書きます。",
     "explanation": "setter にバリデーションを入れられるのが、フィールドを直接公開しない最大のメリット。不正値が入る前に弾けます。"
   },
@@ -142,11 +214,25 @@
     "prompt": "「getter は書くけど setter は書かない」と何を実現できる？",
     "starter": "// getter のみで setter を提供しない → ___ オブジェクト",
     "answer": "不変",
-    "alternatives": ["イミュータブル", "immutable", "読み取り専用", "リードオンリー"],
+    "alternatives": [
+      "イミュータブル",
+      "immutable",
+      "読み取り専用",
+      "リードオンリー"
+    ],
     "hint": "後から書き換えられないオブジェクトの呼び方です。",
     "explanation": "setter を提供せず、フィールドも final にすると、生成後に状態が変わらない不変 (immutable) オブジェクトになります。スレッド安全性や予測可能性が大幅に上がる定石。"
   },
-
+  {
+    "id": "ch02-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · setter のバリデーション",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Age {\n    private int v;\n    void set(int x) {\n        if (x < 0) return;\n        v = x;\n    }\n    int get() { return v; }\n}\nAge a = new Age();\na.set(20);\na.set(-5);\nSystem.out.println(a.get());",
+    "answer": "20",
+    "hint": "set(-5) は最初の if で return される。",
+    "explanation": "set(20) で v が 20 に。set(-5) は x < 0 が true で early return、v は更新されない。最終的に get() は 20 を返す。setter にバリデーションを置く典型例。"
+  },
   {
     "id": "ch02-4-01",
     "subtopic": "2-4 static",
@@ -162,7 +248,10 @@
     "prompt": "static メソッドの呼び出しは「インスタンス名」「クラス名」のどちらを通す?",
     "starter": "// Math.max(...) のような呼び出し → ___ 名から",
     "answer": "クラス",
-    "alternatives": ["クラス名", "class"],
+    "alternatives": [
+      "クラス名",
+      "class"
+    ],
     "hint": "Math.max のような呼び方を思い出して。",
     "explanation": "static メソッドはインスタンスを作らずにクラス名から呼び出します (例: Math.max, Integer.parseInt)。インスタンス変数は使えず、static フィールドだけ参照可能。"
   },
@@ -172,7 +261,10 @@
     "prompt": "main メソッドが static でなければならない理由を 1 行で。空欄に入るキーワードは？",
     "starter": "// main は ___ を作る前に呼ばれるから",
     "answer": "インスタンス",
-    "alternatives": ["オブジェクト", "instance"],
+    "alternatives": [
+      "オブジェクト",
+      "instance"
+    ],
     "hint": "main 開始時点ではまだ何も new されていません。",
     "explanation": "プログラム開始時点ではどのインスタンスも存在しないため、JVM はインスタンスを作らずに呼べる main を必要とする。だから main は public static void main(String[] args) という決まった形になります。"
   },
@@ -182,7 +274,9 @@
     "prompt": "定数を定義したい。値は変更不可、クラスで 1 つだけ。空欄に入るキーワード 2 つを答えてください。",
     "starter": "public ___ ___ int MAX = 100;",
     "answer": "static final",
-    "alternatives": ["final static"],
+    "alternatives": [
+      "final static"
+    ],
     "hint": "static と「変更不可」のキーワードを並べる。",
     "explanation": "static final は「クラスに 1 つだけ + 変更不可」 = 定数の定石。慣習として変数名は大文字スネークケース (MAX_SIZE のように)。"
   },
@@ -192,8 +286,38 @@
     "prompt": "static メソッドの中から、インスタンスフィールド (非 static フィールド) を直接参照できる?",
     "starter": "// static メソッドから this.name → ___",
     "answer": "できない",
-    "alternatives": ["不可", "NG", "無理", "アクセス不可"],
+    "alternatives": [
+      "不可",
+      "NG",
+      "無理",
+      "アクセス不可"
+    ],
     "hint": "this が無いので、それに紐付くものは見えません。",
     "explanation": "static メソッドはインスタンスに紐付かないので、this や this 経由のフィールドにアクセスできません。インスタンスを引数で受け取って (instance.name のように) 使う必要があります。"
+  },
+  {
+    "id": "ch02-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · static フィールドの共有",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Counter {\n    static int total = 0;\n    int n = 0;\n    void inc() { total++; n++; }\n}\nCounter a = new Counter();\nCounter b = new Counter();\na.inc(); a.inc(); a.inc();\nb.inc();\nSystem.out.println(a.n + \" / \" + b.n + \" / \" + Counter.total);",
+    "answer": "3 / 1 / 4",
+    "hint": "static は全インスタンスで共有、インスタンスフィールドは独立。",
+    "explanation": "n は各インスタンスごとに別 (a:3, b:1)、total は全体で共有 (合計 4 回呼ばれた)。だから 3 / 1 / 4。static は「クラスに 1 つだけの値」と覚える。"
+  },
+  {
+    "id": "ch02-c-03",
+    "type": "choice",
+    "subtopic": "択一 · main がなぜ static",
+    "prompt": "main メソッドが static でなければならない理由として最も適切なのは？",
+    "choices": [
+      "速度を上げるため",
+      "プログラム開始時点ではまだインスタンスが存在せず、JVM がインスタンス無しで呼べる必要があるから",
+      "Java の言語仕様で「main」という名前のメソッドはすべて static でなければならないから",
+      "static の方がメモリ消費が少ないから"
+    ],
+    "answerIndex": 1,
+    "hint": "プログラムの一番最初に呼ばれるメソッドであることがヒント。",
+    "explanation": "JVM はプログラムを起動した瞬間 main を呼ぶが、その時点では誰も new していないのでインスタンスは無い。インスタンス無しで呼べる = static である必要がある。逆に main 以外のメソッド名で static でなくても問題ない。"
   }
 ]

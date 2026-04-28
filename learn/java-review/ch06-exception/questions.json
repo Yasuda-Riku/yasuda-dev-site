@@ -32,7 +32,13 @@
     "prompt": "1 つの try に対して、catch は何個まで書ける？",
     "starter": "// catch ブロックは ___ 個までかける",
     "answer": "複数",
-    "alternatives": ["何個でも", "制限なし", "多数", "何個も", "複数個"],
+    "alternatives": [
+      "何個でも",
+      "制限なし",
+      "多数",
+      "何個も",
+      "複数個"
+    ],
     "hint": "例外型ごとに分けて並べられます。",
     "explanation": "catch は何個でも並べられます。上から順に当てはまるものが選ばれるので、Exception のような汎用型は最後に置く。型が同じ親子関係なら子の方を先に書きます。"
   },
@@ -45,7 +51,36 @@
     "hint": "「または」を意味する記号です。",
     "explanation": "Java 7 から追加された multi-catch。| で区切って複数の例外型を 1 つの catch にまとめられます。共通処理が書けるが、e は両方の共通の親型として扱われる点に注意。"
   },
-
+  {
+    "id": "ch06-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · try-catch の流れ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "try {\n    System.out.print(\"A \");\n    Integer.parseInt(\"abc\");\n    System.out.print(\"B \");\n} catch (NumberFormatException e) {\n    System.out.print(\"C \");\n}\nSystem.out.print(\"D\");",
+    "answer": "A C D",
+    "alternatives": [
+      "A C D ",
+      "A C D\n"
+    ],
+    "hint": "parseInt(\"abc\") の時点で例外が飛ぶ。",
+    "explanation": "A 出力 → parseInt が NumberFormatException を投げる → B はスキップ → catch で C 出力 → try-catch を抜けて D 出力。だから A C D。例外を catch すれば try-catch の後の処理は普通に続く。"
+  },
+  {
+    "id": "ch06-c-02",
+    "type": "choice",
+    "subtopic": "択一 · catch の順序",
+    "prompt": "下のコードはコンパイルエラーになります。原因として正しいのはどれ？",
+    "code": "try {\n    // ...\n} catch (Exception e) {\n    // 1\n} catch (IOException e) {\n    // 2\n}",
+    "choices": [
+      "catch は 1 つの try に対して 1 つしか書けないから",
+      "上の catch (Exception e) が下の IOException も先に拾ってしまい、2 つ目が到達不能になるから",
+      "IOException は checked 例外なので throws 宣言が必要だから",
+      "Exception は親クラスなので catch できないから"
+    ],
+    "answerIndex": 1,
+    "hint": "catch は上から順に試されます。親型を先に書くと…",
+    "explanation": "Exception は IOException の親なので、最初の catch がすべての Exception を拾ってしまい、2 つ目の catch (IOException e) には絶対に到達しません。Java はこれを「unreachable catch」としてコンパイルエラーにします。子の例外型を先に書くのが鉄則。"
+  },
   {
     "id": "ch06-2-01",
     "subtopic": "6-2 throws / throw",
@@ -70,7 +105,11 @@
     "prompt": "throws 宣言を省略すると IOException がコンパイルエラーになるのはなぜ？",
     "starter": "// IOException は ___ 例外 (= 宣言が必須)",
     "answer": "checked",
-    "alternatives": ["チェック", "検査", "検査済み"],
+    "alternatives": [
+      "チェック",
+      "検査",
+      "検査済み"
+    ],
     "hint": "コンパイラがチェックする方の例外です。",
     "explanation": "checked 例外 (Exception の直系の子で RuntimeException 以外) は、コンパイラが「絶対に対応しろ」と要求します。throws で宣言するか try-catch するかしないとコンパイル不可。"
   },
@@ -80,7 +119,9 @@
     "prompt": "自分で「数値が負ならエラー」を伝えたい。Java 標準の適切な例外型は？(空欄に英単語 1 つ)",
     "starter": "throw new ___ Exception(\"negative not allowed\");",
     "answer": "IllegalArgument",
-    "alternatives": ["IllegalArgumentException"],
+    "alternatives": [
+      "IllegalArgumentException"
+    ],
     "hint": "「不正な引数」を意味する 2 単語の頭文字。",
     "explanation": "IllegalArgumentException は「メソッド/コンストラクタに渡された引数が不正」のときの定石。RuntimeException 系なので throws 宣言は不要 (unchecked)。"
   },
@@ -93,14 +134,27 @@
     "hint": "元の例外を「原因 cause」として渡します。",
     "explanation": "RuntimeException(message, cause) のような コンストラクタに元の例外 e を渡すと、原因がスタックトレースに載るので調査が楽。throw new ... と書きつつ「元の e は捨てない」のが定石。"
   },
-
+  {
+    "id": "ch06-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · 例外の伝播",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "static void inner() { throw new RuntimeException(); }\nstatic void outer() { inner(); }\n\ntry {\n    outer();\n} catch (RuntimeException e) {\n    System.out.println(\"caught\");\n}",
+    "answer": "caught",
+    "hint": "投げた場所で catch が無くても、呼び出し元を遡って探す。",
+    "explanation": "inner で throw → inner には catch 無し → outer に遡る → outer にも catch 無し → さらに呼び出し元の try に到達して catch される。例外は呼び出しスタックを上に遡って catch を探しに行く。"
+  },
   {
     "id": "ch06-3-01",
     "subtopic": "6-3 Checked vs Unchecked",
     "prompt": "RuntimeException とその子クラスは何例外？",
     "starter": "// RuntimeException 系 = ___ 例外",
     "answer": "unchecked",
-    "alternatives": ["アンチェック", "非検査", "非チェック"],
+    "alternatives": [
+      "アンチェック",
+      "非検査",
+      "非チェック"
+    ],
     "hint": "checked の反対側です。",
     "explanation": "RuntimeException 系は unchecked。コンパイラがチェックしない (= throws / try-catch を強制しない) のでコードが軽くなりますが、見落としやすくもある。NullPointerException, IllegalArgumentException, ArithmeticException などが代表例。"
   },
@@ -110,7 +164,9 @@
     "prompt": "null のオブジェクトに対してメソッド呼び出しをすると発生する例外は？",
     "starter": "String s = null;\ns.length();  // ___ Exception",
     "answer": "NullPointer",
-    "alternatives": ["NullPointerException"],
+    "alternatives": [
+      "NullPointerException"
+    ],
     "hint": "「null を指している参照」が原因。",
     "explanation": "NullPointerException (NPE)。null の参照に対して . でメソッドやフィールドにアクセスすると発生。Java の最も典型的なバグ。Optional や事前チェックで予防するのが基本。"
   },
@@ -120,7 +176,10 @@
     "prompt": "配列で範囲外のインデックスにアクセスしたとき発生する例外は？",
     "starter": "int[] a = new int[3];\nint x = a[10];  // ___ Exception",
     "answer": "ArrayIndexOutOfBounds",
-    "alternatives": ["IndexOutOfBounds", "ArrayIndexOutOfBoundsException"],
+    "alternatives": [
+      "IndexOutOfBounds",
+      "ArrayIndexOutOfBoundsException"
+    ],
     "hint": "「インデックスが範囲外」を意味する英語名。",
     "explanation": "ArrayIndexOutOfBoundsException。List だと IndexOutOfBoundsException。範囲外アクセスはランタイムでしか分からないので unchecked 例外として実行時に投げられます。"
   },
@@ -130,7 +189,9 @@
     "prompt": "全ての例外の共通の親クラスは？",
     "starter": "// すべての例外の親 = ___",
     "answer": "Throwable",
-    "alternatives": ["java.lang.Throwable"],
+    "alternatives": [
+      "java.lang.Throwable"
+    ],
     "hint": "「投げられるもの」を意味する英単語。",
     "explanation": "Throwable は Exception と Error の共通の親。catch には書けますが、Error (OutOfMemoryError など重大) を捕まえる意味は通常無いので、普段は Exception や RuntimeException 以下を catch するのが普通。"
   },
@@ -140,18 +201,49 @@
     "prompt": "Error と Exception はどちらも Throwable の子。Error を catch すべき？",
     "starter": "// Error は通常 ___",
     "answer": "catch しない",
-    "alternatives": ["捕まえない", "扱わない", "そのまま落とす", "止める"],
+    "alternatives": [
+      "捕まえない",
+      "扱わない",
+      "そのまま落とす",
+      "止める"
+    ],
     "hint": "Error は OutOfMemoryError など、回復不能な状況。",
     "explanation": "Error はメモリ不足やスタックオーバーフローなど、プログラムでは回復不能な状況を表します。基本的には catch せず、そのままアプリを終了させるのが正しい挙動。"
   },
-
+  {
+    "id": "ch06-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · NullPointerException",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "String s = null;\ntry {\n    int n = s.length();\n    System.out.println(n);\n} catch (NullPointerException e) {\n    System.out.println(\"npe\");\n}",
+    "answer": "npe",
+    "hint": "null.length() を呼んだ瞬間に NPE。",
+    "explanation": "s は null。s.length() を呼んだ瞬間に NullPointerException が投げられ、println(n) は実行されず catch 側に飛ぶ。Java で最も多いバグの再現例。"
+  },
+  {
+    "id": "ch06-c-01",
+    "type": "choice",
+    "subtopic": "択一 · checked vs unchecked",
+    "prompt": "次のうち、コンパイル時に try-catch または throws を強制される (checked) 例外はどれ？",
+    "choices": [
+      "NullPointerException",
+      "ArrayIndexOutOfBoundsException",
+      "IOException",
+      "IllegalArgumentException"
+    ],
+    "answerIndex": 2,
+    "hint": "RuntimeException の子は unchecked。それ以外の Exception は checked。",
+    "explanation": "IOException は Exception の直系の子で RuntimeException 系ではないので checked。残り 3 つは RuntimeException の子なので unchecked で、宣言しなくてもコンパイルが通る (= 油断するとランタイムで落ちる)。"
+  },
   {
     "id": "ch06-4-01",
     "subtopic": "6-4 finally / try-with-resources",
     "prompt": "ファイルなどリソースを必ず閉じたい。Java 7 以降の便利な構文の名前は？",
     "starter": "try (___ reader = new FileReader(...)) { ... }",
     "answer": "FileReader",
-    "alternatives": ["BufferedReader"],
+    "alternatives": [
+      "BufferedReader"
+    ],
     "hint": "try の () 内に「自動 close 対象」を宣言します。",
     "explanation": "try-with-resources。try の () 内で AutoCloseable な変数を宣言すると、try ブロックを抜けるときに自動で close() が呼ばれます。finally で手動 close するより安全。"
   },
@@ -161,7 +253,9 @@
     "prompt": "try-with-resources で扱える型は、どの interface を実装していなければいけない？",
     "starter": "// () の中の変数の型は ___ を実装している必要がある",
     "answer": "AutoCloseable",
-    "alternatives": ["Closeable"],
+    "alternatives": [
+      "Closeable"
+    ],
     "hint": "「自動的に閉じられる」を意味する英単語。",
     "explanation": "AutoCloseable interface (close() メソッドを 1 つ持つ) を実装した型しか try-with-resources に書けません。InputStream, Reader, Connection など標準 API のリソースは全部対応済み。"
   },
@@ -189,41 +283,14 @@
     "prompt": "「例外を握り潰す」(catch だけして何もしない) のは何故ダメ？1 単語で。",
     "starter": "// 例外の ___ が消えるから",
     "answer": "情報",
-    "alternatives": ["原因", "info", "詳細", "ログ"],
+    "alternatives": [
+      "原因",
+      "info",
+      "詳細",
+      "ログ"
+    ],
     "hint": "後で原因を辿るときに重要なものが消える。",
     "explanation": "catch (Exception e) { } のように何もしないと、何が起きたかが完全に消えてバグ調査が不可能になります。最低でもログ出力 (e.printStackTrace() など) するのが原則。"
-  },
-
-  {
-    "id": "ch06-c-01",
-    "type": "choice",
-    "subtopic": "択一 · checked vs unchecked",
-    "prompt": "次のうち、コンパイル時に try-catch または throws を強制される (checked) 例外はどれ？",
-    "choices": [
-      "NullPointerException",
-      "ArrayIndexOutOfBoundsException",
-      "IOException",
-      "IllegalArgumentException"
-    ],
-    "answerIndex": 2,
-    "hint": "RuntimeException の子は unchecked。それ以外の Exception は checked。",
-    "explanation": "IOException は Exception の直系の子で RuntimeException 系ではないので checked。残り 3 つは RuntimeException の子なので unchecked で、宣言しなくてもコンパイルが通る (= 油断するとランタイムで落ちる)。"
-  },
-  {
-    "id": "ch06-c-02",
-    "type": "choice",
-    "subtopic": "択一 · catch の順序",
-    "prompt": "下のコードはコンパイルエラーになります。原因として正しいのはどれ？",
-    "code": "try {\n    // ...\n} catch (Exception e) {\n    // 1\n} catch (IOException e) {\n    // 2\n}",
-    "choices": [
-      "catch は 1 つの try に対して 1 つしか書けないから",
-      "上の catch (Exception e) が下の IOException も先に拾ってしまい、2 つ目が到達不能になるから",
-      "IOException は checked 例外なので throws 宣言が必要だから",
-      "Exception は親クラスなので catch できないから"
-    ],
-    "answerIndex": 1,
-    "hint": "catch は上から順に試されます。親型を先に書くと…",
-    "explanation": "Exception は IOException の親なので、最初の catch がすべての Exception を拾ってしまい、2 つ目の catch (IOException e) には絶対に到達しません。Java はこれを「unreachable catch」としてコンパイルエラーにします。子の例外型を先に書くのが鉄則。"
   },
   {
     "id": "ch06-c-03",

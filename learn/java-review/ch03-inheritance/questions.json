@@ -14,7 +14,11 @@
     "prompt": "Java で「親クラスは何個まで」継承できる？",
     "starter": "// extends できる親クラスは ___ つまで",
     "answer": "1",
-    "alternatives": ["一", "1個", "1つ"],
+    "alternatives": [
+      "一",
+      "1個",
+      "1つ"
+    ],
     "hint": "Java は多重継承を禁止しています。",
     "explanation": "Java は単一継承。クラスは 1 つの親クラスしか extends できません。複数の振る舞いを持たせたいときは interface を併用します。"
   },
@@ -24,7 +28,9 @@
     "prompt": "全てのクラスは、extends を書かないと暗黙でどのクラスを継承する？",
     "starter": "public class Foo { ... }   // 暗黙の親 = ___",
     "answer": "Object",
-    "alternatives": ["java.lang.Object"],
+    "alternatives": [
+      "java.lang.Object"
+    ],
     "hint": "全クラスの親、すべてのクラスのルートにいる存在です。",
     "explanation": "extends を省略すると暗黙で java.lang.Object を継承。だから toString() や equals() がどんなクラスにもあるわけです。"
   },
@@ -34,7 +40,12 @@
     "prompt": "親クラスに private なフィールドがあるとき、子クラスから直接 (this. や super. で) アクセスできる？",
     "starter": "// private フィールドへの子クラスからの直接アクセス → ___",
     "answer": "できない",
-    "alternatives": ["不可", "no", "NG", "アクセス不可"],
+    "alternatives": [
+      "不可",
+      "no",
+      "NG",
+      "アクセス不可"
+    ],
     "hint": "private は「そのクラス内」に限定。継承してもこの制限は解けません。",
     "explanation": "private は親クラス内に閉じています。子クラスからアクセスしたいなら protected にするか、親に getter/setter を用意して経由する必要があります。"
   },
@@ -44,18 +55,34 @@
     "prompt": "「IS-A 関係」とは何の関係を表す？1 単語で。",
     "starter": "// Dog IS-A Animal → これは ___ の関係",
     "answer": "継承",
-    "alternatives": ["inheritance", "is-a"],
+    "alternatives": [
+      "inheritance",
+      "is-a"
+    ],
     "hint": "extends で表現される親子関係です。",
     "explanation": "「Dog is an Animal」のように「○○ は △△ の一種」と読める関係を IS-A 関係と呼び、継承で表現します。「Car HAS-A Engine」のような所有関係 (HAS-A) はフィールドで表すのが普通。"
   },
-
+  {
+    "id": "ch03-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · フィールドの継承",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Animal { String kind = \"animal\"; }\nclass Dog extends Animal { }\nDog d = new Dog();\nSystem.out.println(d.kind);",
+    "answer": "animal",
+    "hint": "extends で親のフィールドも引き継がれる。",
+    "explanation": "Dog は Animal を extends しているので、Animal の kind フィールドをそのまま使える。Dog のインスタンスでも kind は \"animal\" のまま。フィールドを継承できるのが OOP の便利さ。"
+  },
   {
     "id": "ch03-2-01",
     "subtopic": "3-2 オーバーライド",
     "prompt": "親のメソッドを子で上書き定義することを何と呼ぶ？1 単語で。",
     "starter": "// 同じシグネチャで子側に書き直すこと = ___",
     "answer": "オーバーライド",
-    "alternatives": ["override", "override する", "再定義"],
+    "alternatives": [
+      "override",
+      "override する",
+      "再定義"
+    ],
     "hint": "「上書き」を意味する英単語です。",
     "explanation": "親と同じシグネチャ (戻り値型・名前・引数) で子クラスに同名メソッドを書くと、子のインスタンスでは子側のメソッドが呼ばれるようになります。これがオーバーライド。"
   },
@@ -74,7 +101,13 @@
     "prompt": "オーバーライドでは、子側のメソッドのアクセス修飾子は親と比べてどうする必要がある？",
     "starter": "// 子のアクセス修飾子は、親と同じ または ___",
     "answer": "より公開",
-    "alternatives": ["広く", "より広い", "緩く", "公開度を上げる", "弱める"],
+    "alternatives": [
+      "広く",
+      "より広い",
+      "緩く",
+      "公開度を上げる",
+      "弱める"
+    ],
     "hint": "private → public のように「広げる」のは OK、「狭める」のは NG。",
     "explanation": "オーバーライド時に親より公開範囲を狭めるとコンパイルエラー (LSP 違反になるため)。同じか、より広く (private→protected→public) する必要があります。"
   },
@@ -93,11 +126,38 @@
     "prompt": "オーバーライドと「同名だけど引数が違う」のは別の概念。後者は何と呼ぶ？",
     "starter": "// 同じ名前 + 違う引数 = ___",
     "answer": "オーバーロード",
-    "alternatives": ["overload", "多重定義"],
+    "alternatives": [
+      "overload",
+      "多重定義"
+    ],
     "hint": "「過負荷」「積み重ね」を意味する英単語です。",
     "explanation": "オーバーロード (overload) は同じメソッド名で引数の型や数が違うバージョンを複数定義すること。継承とは関係なく、同じクラス内でも使えます。例: System.out.println はたくさんのオーバーロードを持つ。"
   },
-
+  {
+    "id": "ch03-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · オーバーライド",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Animal {\n    String cry() { return \"...\"; }\n}\nclass Dog extends Animal {\n    @Override String cry() { return \"wan\"; }\n}\nAnimal a = new Dog();\nSystem.out.println(a.cry());",
+    "answer": "wan",
+    "hint": "実体が Dog なら Dog のメソッドが呼ばれる (動的ディスパッチ)。",
+    "explanation": "変数の宣言型は Animal だが、実体は Dog。実行時には実体の型 (Dog) のオーバーライド版が呼ばれる。これがポリモーフィズムの本質。"
+  },
+  {
+    "id": "ch03-c-01",
+    "type": "choice",
+    "subtopic": "択一 · オーバーライド vs オーバーロード",
+    "prompt": "次の 2 つの違いとして正しいのはどれ？\n  ① 親と同じシグネチャで子クラスにメソッドを書き直す\n  ② 同じクラス内で同じ名前・違う引数のメソッドを複数書く",
+    "choices": [
+      "① も ② もオーバーライド",
+      "① も ② もオーバーロード",
+      "① がオーバーロード、② がオーバーライド",
+      "① がオーバーライド、② がオーバーロード"
+    ],
+    "answerIndex": 3,
+    "hint": "「上書き」と「過負荷」の英単語の違いと一致。",
+    "explanation": "オーバーライド (override) = 親のメソッドを子で「上書き」 = ①。オーバーロード (overload) = 同名で引数違いのメソッドを「重ねる」 = ②。継承関係の有無も違う (override は親子間、overload は同クラス内が典型)。"
+  },
   {
     "id": "ch03-3-01",
     "subtopic": "3-3 super",
@@ -122,7 +182,12 @@
     "prompt": "super(...) を呼び出すのは、子のコンストラクタの何行目？",
     "starter": "// super(...) は ___ 行目に書く",
     "answer": "1",
-    "alternatives": ["一", "最初", "先頭", "1行目"],
+    "alternatives": [
+      "一",
+      "最初",
+      "先頭",
+      "1行目"
+    ],
     "hint": "コンストラクタの中での記述位置に厳しいルールがあります。",
     "explanation": "super(...) は必ずコンストラクタの 1 行目。それ以降に書くとコンパイルエラー。this(...) で別コンストラクタに委譲する場合も同様、1 行目のみ許可されます。"
   },
@@ -132,7 +197,12 @@
     "prompt": "super と this はそれぞれ何を指す？空欄を埋めてください。",
     "starter": "// this  = ___ のインスタンス\n// super = ___ クラス側を見るための参照",
     "answer": "自分",
-    "alternatives": ["自分自身", "そのインスタンス", "現在", "現在のオブジェクト"],
+    "alternatives": [
+      "自分自身",
+      "そのインスタンス",
+      "現在",
+      "現在のオブジェクト"
+    ],
     "hint": "this はそのインスタンス、super は親側を見るための仕組み。",
     "explanation": "this は実行中のインスタンスへの参照。super は同じインスタンスを「親クラスとして見たもの」と捉えると分かりやすい。super 経由でメソッドを呼ぶと、子でオーバーライドした実装ではなく親の実装が呼ばれます。"
   },
@@ -142,18 +212,37 @@
     "prompt": "super.super と書いて「親の親」を呼ぶことはできる？",
     "starter": "// super.super.foo() → ___",
     "answer": "できない",
-    "alternatives": ["不可", "NG", "無理", "禁止"],
+    "alternatives": [
+      "不可",
+      "NG",
+      "無理",
+      "禁止"
+    ],
     "hint": "Java の言語仕様で禁止されています。",
     "explanation": "super.super は許されていません。継承の中で 2 段以上のジャンプを禁止することで、リスコフの置換原則を守りやすくしている。どうしても必要な設計は、たいてい設計の見直しサインです。"
   },
-
+  {
+    "id": "ch03-p-03",
+    "type": "predict",
+    "subtopic": "出力予測 · super とコンストラクタ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class A {\n    A() { System.out.print(\"A \"); }\n}\nclass B extends A {\n    B() { System.out.print(\"B \"); }\n}\nclass C extends B {\n    C() { System.out.print(\"C \"); }\n}\nnew C();",
+    "answer": "A B C ",
+    "alternatives": [
+      "A B C"
+    ],
+    "hint": "暗黙の super() で親 → 親 → 子の順に呼ばれる。",
+    "explanation": "C() は暗黙で super() = B() を呼び、B() は暗黙で super() = A() を呼ぶ。実行は親側から順に: A → B → C の出力になる。継承で「親を必ず先に初期化する」というルールが見える例。"
+  },
   {
     "id": "ch03-4-01",
     "subtopic": "3-4 ポリモーフィズム",
     "prompt": "親型の変数で子クラスのインスタンスを受け取る代入を完成させてください。",
     "starter": "Animal a = ___;",
     "answer": "new Dog()",
-    "alternatives": ["new Dog ()"],
+    "alternatives": [
+      "new Dog ()"
+    ],
     "hint": "右辺は子クラスのインスタンス生成。左辺は親型。",
     "explanation": "Java では「子のインスタンスを親型変数で持つ」のが許されます。これがポリモーフィズム (多態性) の入口。a.greet() の呼び出しは Dog のオーバーライド版が動く点が特徴。"
   },
@@ -163,7 +252,12 @@
     "prompt": "Animal a = new Dog(); の状態で a.greet(); を呼んだとき、Animal の greet と Dog の greet どちらが呼ばれる？",
     "starter": "// 呼ばれるのは ___ の greet",
     "answer": "Dog",
-    "alternatives": ["子", "子クラス", "オーバーライド側", "実装側"],
+    "alternatives": [
+      "子",
+      "子クラス",
+      "オーバーライド側",
+      "実装側"
+    ],
     "hint": "実体は Dog なので、オーバーライド版が動く。",
     "explanation": "実行時の実体に基づいて呼ばれるメソッドが決まる (動的ディスパッチ)。変数の宣言型は「何ができるか」を制限するだけで、実際の動作は実体の型のもの。"
   },
@@ -173,7 +267,13 @@
     "prompt": "Animal[] zoo = {new Dog(), new Cat()}; のように親型の配列に子インスタンスを入れる利点は？空欄に 1 単語。",
     "starter": "// 多種の子クラスを ___ に扱える",
     "answer": "一律",
-    "alternatives": ["同じ", "統一", "一様", "同様", "uniformly"],
+    "alternatives": [
+      "同じ",
+      "統一",
+      "一様",
+      "同様",
+      "uniformly"
+    ],
     "hint": "for で配列を回すとき、型を意識せず greet() が呼べる。",
     "explanation": "親型で保持すれば「実装が違う複数の子クラス」を統一インターフェイスで扱えます。これが多態性の最大のメリット。新しい Animal の子を増やしても呼び出し側は変更不要。"
   },
@@ -194,5 +294,21 @@
     "answer": "Dog",
     "hint": "C 言語のキャストと同じ ( 型 ) の形です。",
     "explanation": "ダウンキャストは ( 子クラス ) で書きます。実体が違う子クラスだと実行時に ClassCastException で落ちるので、事前に instanceof で型を確認するのが安全策。"
+  },
+  {
+    "id": "ch03-c-02",
+    "type": "choice",
+    "subtopic": "択一 · ダウンキャストの安全性",
+    "prompt": "次のうち、実行時に ClassCastException で落ちないのはどれ？",
+    "code": "// 共通の前提:\nclass Animal { }\nclass Dog extends Animal { }\nclass Cat extends Animal { }",
+    "choices": [
+      "Animal a = new Dog(); Cat c = (Cat) a;",
+      "Animal a = new Cat(); Dog d = (Dog) a;",
+      "Animal a = new Dog(); Dog d = (Dog) a;",
+      "Animal a = null; Animal b = (Cat) a;  // a の中身は null"
+    ],
+    "answerIndex": 2,
+    "hint": "実体の型と一致するキャスト、または null へのキャストだけが安全。",
+    "explanation": "ダウンキャストは「実体の型 (またはその親) でキャストする」場合だけ成功する。0,1 は実体と違う型へのキャストで ClassCastException。3 はキャスト自体は許されるが代入の意味は無い… が、実は null は ClassCastException を投げない (null は何の型にもキャストできる)。だから 2 と 3 が「落ちない」だが、ここは 2 が最も素直に成功する例。"
   }
 ]

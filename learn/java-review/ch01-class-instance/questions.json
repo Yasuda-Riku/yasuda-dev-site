@@ -41,18 +41,36 @@
     "prompt": "「フィールドにアクセスする」とは、クラスの中のどんな要素にアクセスすることを指す？ 1 単語で答えてください。",
     "starter": "Person p = new Person();\np.name = \"taro\";  // ← この name はクラスの ___",
     "answer": "field",
-    "alternatives": ["フィールド"],
+    "alternatives": [
+      "フィールド"
+    ],
     "hint": "日本語ではフィールド、英語では field。",
     "explanation": "クラスの中で宣言した変数 (state) のことを field と呼びます。インスタンスごとに値が独立。"
   },
-
+  {
+    "id": "ch01-c-01",
+    "type": "choice",
+    "subtopic": "択一 · クラスとファイル名",
+    "prompt": "ファイル MyClass.java の中身として書ける宣言はどれ？",
+    "choices": [
+      "public class myclass { }",
+      "public class MyClass { } と class Helper { } を同じファイルに書く",
+      "public class MyClass { } と public class Helper { } を同じファイルに書く",
+      "class MyClass { } と class HelperClass { } を同じファイルに書く (どちらも public 無し)"
+    ],
+    "answerIndex": 1,
+    "hint": "1 ファイルに public クラスは 1 つまで、ファイル名と一致が必須。",
+    "explanation": "public クラスは 1 ファイルに 1 個 + ファイル名と一致。それ以外の (package-private な) クラスは何個書いても OK。選択肢 0 はクラス名がファイル名と不一致。選択肢 2 は public が 2 つで NG。選択肢 3 は public 無しなら複数 OK だがファイル名と一致する public クラスが無い (= まれな書き方)。一番素直で正しいのは 1。"
+  },
   {
     "id": "ch01-2-01",
     "subtopic": "1-2 インスタンス化と new",
     "prompt": "Person クラスのインスタンスを 1 つ作る式を答えてください。コンストラクタの引数は無し。",
     "starter": "Person p = ___;",
     "answer": "new Person()",
-    "alternatives": ["new Person ()"],
+    "alternatives": [
+      "new Person ()"
+    ],
     "hint": "「新しく作る」のキーワードと、クラス名の () です。",
     "explanation": "new クラス名(引数...) でインスタンスを生成し、参照を返します。p はその参照を持つ変数になります。"
   },
@@ -62,7 +80,11 @@
     "prompt": "「クラスは設計図、インスタンスは ___」という関係性。1 単語で。",
     "starter": "// クラス = 設計図 / インスタンス = ___",
     "answer": "実物",
-    "alternatives": ["インスタンス", "オブジェクト", "実体"],
+    "alternatives": [
+      "インスタンス",
+      "オブジェクト",
+      "実体"
+    ],
     "hint": "設計図に対して、それを元に実際に作られたものを指します。",
     "explanation": "クラスから new で生み出された実体がインスタンス。設計図 (クラス) は 1 つでも、実体 (インスタンス) は何個でも作れます。"
   },
@@ -90,11 +112,23 @@
     "prompt": "Person p1 = new Person(); Person p2 = p1; のとき、p1 と p2 は同じインスタンスを指す? それとも別?",
     "starter": "// p1 と p2 は ___ インスタンスを指す",
     "answer": "同じ",
-    "alternatives": ["same", "おなじ"],
+    "alternatives": [
+      "same",
+      "おなじ"
+    ],
     "hint": "= はコピーではなく、参照の付け替えです。",
     "explanation": "Person 型変数は「参照」を保持しています。p2 = p1 は同じインスタンスへの参照のコピー。p2.name の変更は p1 からも見えます。"
   },
-
+  {
+    "id": "ch01-p-02",
+    "type": "predict",
+    "subtopic": "出力予測 · 参照渡し",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Box { int v; }\nBox a = new Box();\na.v = 10;\nBox b = a;\nb.v = 99;\nSystem.out.println(a.v);",
+    "answer": "99",
+    "hint": "Box b = a; は値のコピーではなく「同じ箱を指す参照のコピー」です。",
+    "explanation": "オブジェクトを変数に代入してもオブジェクトは複製されず、参照 (アドレス) だけが共有されます。b.v を書き換えると、同じ Box を指している a.v も 99 になります。"
+  },
   {
     "id": "ch01-3-01",
     "subtopic": "1-3 メソッド呼び出し",
@@ -119,7 +153,9 @@
     "prompt": "戻り値が int のメソッド getAge() の中身を完成させてください。フィールド age を返したい。",
     "starter": "public int getAge() {\n    ___;\n}",
     "answer": "return age",
-    "alternatives": ["return this.age"],
+    "alternatives": [
+      "return this.age"
+    ],
     "hint": "値を呼び出し元に返すキーワードがあります。",
     "explanation": "return 式; で値を呼び出し元に返します。型は戻り値型 int と一致する必要があります。"
   },
@@ -141,14 +177,44 @@
     "hint": "戻り値型 と 変数名 を書きます。",
     "explanation": "戻り値型に合った型の変数を宣言して受け取ります。getAge() の戻り値型が int なので int で受ける。"
   },
-
+  {
+    "id": "ch01-c-02",
+    "type": "choice",
+    "subtopic": "択一 · 戻り値型と return",
+    "prompt": "次のメソッドはコンパイルエラーになる。原因として正しいのは？",
+    "code": "public int add(int a, int b) {\n    if (a > 0) return a + b;\n}",
+    "choices": [
+      "メソッド名 add は予約語だから",
+      "if が false のとき return が無く、戻り値が保証されないから",
+      "int 型は + で足し算できないから",
+      "{ } の中に if は書けないから"
+    ],
+    "answerIndex": 1,
+    "hint": "return される経路が分岐の片側だけ。",
+    "explanation": "戻り値型 int を宣言したメソッドは、すべての実行パスで return しないとコンパイルエラー。if が false の経路で return が抜けているため「missing return statement」と怒られる。else 側も return するか、最後に return 0; のようなフォールバックを書く。"
+  },
+  {
+    "id": "ch01-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · インスタンス",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "class Counter {\n    int n;\n    void up() { n++; }\n}\nCounter c = new Counter();\nc.up();\nc.up();\nc.up();\nSystem.out.println(c.n);",
+    "answer": "3",
+    "hint": "n はフィールドなので 0 から始まり、up() を呼ぶたびに 1 増えます。",
+    "explanation": "int 型フィールドの初期値は 0。up() を 3 回呼ぶと n は 3 になります。println は最後に改行を入れますが「出力された値」としては 3。"
+  },
   {
     "id": "ch01-4-01",
     "subtopic": "1-4 this の意味",
     "prompt": "this とは何を指す? 1 単語で。",
     "starter": "// this = ___ インスタンス",
     "answer": "自分",
-    "alternatives": ["自分自身", "自身", "現在", "そのインスタンス"],
+    "alternatives": [
+      "自分自身",
+      "自身",
+      "現在",
+      "そのインスタンス"
+    ],
     "hint": "メソッドが呼ばれているインスタンスのこと。",
     "explanation": "this は「いま実行中のメソッドが属しているインスタンス」を指す参照。フィールドとパラメータの名前が衝突するときの区別に使えます。"
   },
@@ -176,7 +242,13 @@
     "prompt": "static メソッドの中で this は使える?",
     "starter": "// static メソッドで this を使うのは ___",
     "answer": "できない",
-    "alternatives": ["不可", "NG", "不正", "no", "できません"],
+    "alternatives": [
+      "不可",
+      "NG",
+      "不正",
+      "no",
+      "できません"
+    ],
     "hint": "static はインスタンスに紐付かないメソッド。",
     "explanation": "static メソッドはインスタンスに属さないので this が指すものが存在しません。コンパイルエラーになります。"
   },
@@ -188,27 +260,6 @@
     "answer": "this",
     "hint": "そのまま this を返します。",
     "explanation": "this を返すと、p.rename(\"taro\").rename(\"jiro\") のようにメソッドチェーンが書けます。Builder パターンの基本形。"
-  },
-
-  {
-    "id": "ch01-p-01",
-    "type": "predict",
-    "subtopic": "出力予測 · インスタンス",
-    "prompt": "次のコードを実行したときの出力は？",
-    "code": "class Counter {\n    int n;\n    void up() { n++; }\n}\nCounter c = new Counter();\nc.up();\nc.up();\nc.up();\nSystem.out.println(c.n);",
-    "answer": "3",
-    "hint": "n はフィールドなので 0 から始まり、up() を呼ぶたびに 1 増えます。",
-    "explanation": "int 型フィールドの初期値は 0。up() を 3 回呼ぶと n は 3 になります。println は最後に改行を入れますが「出力された値」としては 3。"
-  },
-  {
-    "id": "ch01-p-02",
-    "type": "predict",
-    "subtopic": "出力予測 · 参照渡し",
-    "prompt": "次のコードを実行したときの出力は？",
-    "code": "class Box { int v; }\nBox a = new Box();\na.v = 10;\nBox b = a;\nb.v = 99;\nSystem.out.println(a.v);",
-    "answer": "99",
-    "hint": "Box b = a; は値のコピーではなく「同じ箱を指す参照のコピー」です。",
-    "explanation": "オブジェクトを変数に代入してもオブジェクトは複製されず、参照 (アドレス) だけが共有されます。b.v を書き換えると、同じ Box を指している a.v も 99 になります。"
   },
   {
     "id": "ch01-p-03",
