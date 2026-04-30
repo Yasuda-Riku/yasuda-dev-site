@@ -109,6 +109,54 @@
   font-size: 18px;
 }
 
+/* ---------- 「間違えた問題」専用カード (両セクションから分離) ---------- */
+.review-wrong-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px 22px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  background: #FFF8F4;
+  text-decoration: none;
+  color: inherit;
+  transition: background 140ms var(--ease), border-color 140ms var(--ease);
+}
+.review-wrong-card:hover {
+  background: #FFEFE6;
+  border-color: var(--accent);
+}
+.review-wrong-card__label {
+  font-family: var(--font-fraunces);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.review-wrong-card__meta {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.review-wrong-card__cta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  white-space: nowrap;
+  font-weight: 500;
+}
+@media (max-width: 600px) {
+  .review-wrong-card {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .review-wrong-card__cta {
+    justify-self: end;
+  }
+}
+
 /* ---------- Quiz layout ---------- */
 .quiz {
   padding-bottom: clamp(80px, 8vw, 120px);

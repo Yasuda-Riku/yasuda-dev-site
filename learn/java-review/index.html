@@ -81,14 +81,6 @@
         </header>
 
         <div class="review-sections">
-          <a class="review-section-card" href="./review/" data-section="review-wrong" id="card-review-wrong">
-            <span class="review-section-card__no">復習</span>
-            <span class="review-section-card__title">間違えた問題</span>
-            <span class="review-section-card__meta" id="card-review-meta">
-              まだ正解できていない問題だけを章をまたいで集めて出題
-            </span>
-          </a>
-
           <a class="review-section-card" href="./warmup/" data-section="warmup">
             <span class="review-section-card__no">Phase A · ウォームアップ</span>
             <span class="review-section-card__title">言語入門の確認 (29 問)</span>
@@ -250,6 +242,26 @@
             <span class="review-section-card__done-mark" hidden>✓</span>
           </a>
         </div>
+      </div>
+    </section>
+
+    <section class="course-section course-section--review" aria-labelledby="review-heading">
+      <div class="course-section__inner">
+        <header class="section-head">
+          <p class="eyebrow">復習</p>
+          <h2 id="review-heading" class="section-title">苦手だけ、まとめて。</h2>
+          <p class="course-prose" style="max-width:680px;">
+            通常章 + 応用準備の全範囲から、まだ正解できていない問題だけを集めて出題します。
+            正解した問題は自動でこのリストから外れます。
+          </p>
+        </header>
+        <a class="review-wrong-card" href="./review/" data-section="review-wrong" id="card-review-wrong">
+          <span class="review-wrong-card__label">間違えた問題</span>
+          <span class="review-wrong-card__meta" id="card-review-meta">
+            まだ正解できていない問題だけを章をまたいで集めて出題
+          </span>
+          <span class="review-wrong-card__cta">復習する →</span>
+        </a>
       </div>
     </section>
 
