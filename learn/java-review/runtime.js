@@ -84,7 +84,7 @@ async function start(rootEl) {
           <h2>まだ間違えた問題はありません</h2>
           <p>各章を解いて、間違えた問題があるとここに溜まります。<br>
              正解できた問題は自動的にこのリストから消えます。</p>
-          <p><a href="../">コースに戻る</a></p>
+          <p><a href="/learn/java-review/">コースに戻る</a></p>
         </div>`;
       return;
     }
@@ -324,7 +324,7 @@ function finish(ctx) {
     <h2>このセクションは以上です。お疲れさま！</h2>
     <p>間違えた問題は「間違えた問題」セクションから後でまとめて復習できます。</p>
     <p>
-      <a href="../">コースに戻る</a>
+      <a href="/learn/java-review/">コースに戻る</a>
     </p>
   `;
   const nav = ctx.rootEl.querySelector(".quiz__nav");
