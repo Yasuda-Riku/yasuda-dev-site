@@ -5,7 +5,9 @@
     "prompt": "DAO の findAll メソッドで、検索結果を Employee の List で返す宣言を完成させてください。",
     "starter": "public ___ findAll() throws SQLException { ... }",
     "answer": "List<Employee>",
-    "alternatives": ["List <Employee>"],
+    "alternatives": [
+      "List <Employee>"
+    ],
     "hint": "List のジェネリック型に Employee を入れます。",
     "explanation": "DAO の findAll は List<Employee> を返すのが定石。具体クラス ArrayList<Employee> ではなく interface 型 List<Employee> で受けると、内部で別実装に差し替えても呼び出し側に影響しない。"
   },
@@ -15,7 +17,9 @@
     "prompt": "DAO 内で結果を詰めるための空の ArrayList を作る式を完成させてください。",
     "starter": "List<Employee> result = new ___;",
     "answer": "ArrayList<>()",
-    "alternatives": ["ArrayList<Employee>()"],
+    "alternatives": [
+      "ArrayList<Employee>()"
+    ],
     "hint": "ダイヤモンド演算子 <> を使うと型を省略できます。",
     "explanation": "Java 7 以降は new ArrayList<>() で型推論。左辺の List<Employee> から自動で <Employee> と推論されます。型を 2 度書く必要なし。"
   },
@@ -43,8 +47,35 @@
     "prompt": "リクエストパラメータをまとめて受け取りたい。HttpServletRequest.getParameterMap() の戻り値型は？",
     "starter": "// 戻り値型: ___",
     "answer": "Map<String, String[]>",
-    "alternatives": ["Map<String,String[]>"],
+    "alternatives": [
+      "Map<String,String[]>"
+    ],
     "hint": "キーはパラメータ名、値は同名で複数送られた可能性がある文字列の配列。",
     "explanation": "getParameterMap() は Map<String, String[]>。キーがパラメータ名、値が String の配列なのは、チェックボックスなど同名で複数値が送られるケースに対応するため。普通の単一値は配列の最初の要素を取り出す。"
+  },
+  {
+    "id": "prep-sec03-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · List の走査",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "List<String> names = new ArrayList<>();\nnames.add(\"taro\");\nnames.add(\"hanako\");\nnames.add(\"jiro\");\nfor (String n : names) {\n    System.out.print(n.charAt(0));\n}",
+    "answer": "thj",
+    "hint": "拡張 for で各要素の最初の文字を順に取り出す。",
+    "explanation": "names の各要素 (\"taro\" / \"hanako\" / \"jiro\") の charAt(0) でそれぞれ 't', 'h', 'j' を取り出して連結出力。print なので改行も区切りも入らず \"thj\"。"
+  },
+  {
+    "id": "prep-sec03-c-01",
+    "type": "choice",
+    "subtopic": "択一 · getParameterMap の戻り値型",
+    "prompt": "HttpServletRequest.getParameterMap() の戻り値が Map<String, String[]> (値が String 配列) になっている理由として最も適切なのは？",
+    "choices": [
+      "Map のキーは値より小さい型でないといけない仕様だから",
+      "チェックボックスのように同じ name で複数値が送られるパラメータに対応するため",
+      "String 1 個だと NullPointerException が出るから",
+      "Map<String, String> は Java で禁止されているから"
+    ],
+    "answerIndex": 1,
+    "hint": "HTML フォームでは <input type=\"checkbox\" name=\"hobby\"> が複数選ばれることがある。",
+    "explanation": "HTML フォームは同じ name で複数の値を送ることがある (例: hobby=read, hobby=movie)。サーバ側で配列で受け取る必要があるため、値が String[] になっている。単一値なら配列の最初の要素を取り出すか、req.getParameter(name) を使う。"
   }
 ]

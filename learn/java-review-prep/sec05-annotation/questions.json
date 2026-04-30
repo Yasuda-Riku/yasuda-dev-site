@@ -14,7 +14,14 @@
     "prompt": "アノテーションは、コードに付与する「___ 」と表現できます。1 単語で。",
     "starter": "// アノテーションは ___ ",
     "answer": "メタ情報",
-    "alternatives": ["メタデータ", "metadata", "メタ", "情報", "ラベル", "印"],
+    "alternatives": [
+      "メタデータ",
+      "metadata",
+      "メタ",
+      "情報",
+      "ラベル",
+      "印"
+    ],
     "hint": "「データについてのデータ」を意味する用語の前半。",
     "explanation": "アノテーションはクラス・メソッド・フィールドに付ける「メタ情報」。実行時や、コンパイル時にツールやフレームワークが読み取って動作を変える仕組み。コード自体の動作にはほぼ影響しません。"
   },
@@ -24,7 +31,14 @@
     "prompt": "@Override は、つけ忘れても動作はするが、つけることで何のミスを防げる？1 単語で。",
     "starter": "// @Override で防げるのは ___ ミス",
     "answer": "スペル",
-    "alternatives": ["typo", "タイポ", "綴り", "綴りミス", "シグネチャ", "署名"],
+    "alternatives": [
+      "typo",
+      "タイポ",
+      "綴り",
+      "綴りミス",
+      "シグネチャ",
+      "署名"
+    ],
     "hint": "メソッド名や引数を打ち間違えると、別の新しいメソッドを定義したことになる。",
     "explanation": "@Override は親クラスに同名同シグネチャのメソッドがないとコンパイルエラーにする注釈。doGet を typo で doget と書いても普通は気づきにくいが、@Override 付きならすぐエラーで気づける。"
   },
@@ -34,9 +48,36 @@
     "prompt": "ある Servlet を /admin と /administrator の両方に登録したい。@WebServlet の引数の書き方を答えてください (空欄に入る形)。",
     "starter": "@WebServlet(___)\npublic class AdminServlet extends HttpServlet { ... }",
     "answer": "{\"/admin\", \"/administrator\"}",
-    "alternatives": ["{\"/admin\",\"/administrator\"}"],
+    "alternatives": [
+      "{\"/admin\",\"/administrator\"}"
+    ],
     "regex": "^\\s*\\{\\s*\"/admin\"\\s*,\\s*\"/administrator\"\\s*\\}\\s*$",
     "hint": "配列リテラル { } で複数のパスを並べる。",
     "explanation": "@WebServlet の値は文字列 1 つでも、配列 { ... } で複数指定でも OK。複数のパスを 1 つの Servlet にマッピングしたいときに使います。"
+  },
+  {
+    "id": "prep-sec05-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · @WebServlet とアクセス URL",
+    "prompt": "次のコードがあるとき、ブラウザから http://localhost:8080/app/users にアクセスした。Servlet のどのメソッドが呼ばれて何が出力される？(コンテキストパスは /app)",
+    "code": "@WebServlet(\"/users\")\npublic class UsersServlet extends HttpServlet {\n    @Override\n    public void doGet(HttpServletRequest req, HttpServletResponse res)\n            throws ServletException, IOException {\n        res.getWriter().print(\"GET users\");\n    }\n    @Override\n    public void doPost(HttpServletRequest req, HttpServletResponse res)\n            throws ServletException, IOException {\n        res.getWriter().print(\"POST users\");\n    }\n}",
+    "answer": "GET users",
+    "hint": "ブラウザのアドレスバー直打ちは GET リクエスト。",
+    "explanation": "ブラウザのアドレスバーから直接アクセス = GET リクエストなので doGet が呼ばれる。@WebServlet(\"/users\") が /app/users (コンテキストパス + パターン) にマッピングされ、doGet が \"GET users\" を出力。"
+  },
+  {
+    "id": "prep-sec05-c-01",
+    "type": "choice",
+    "subtopic": "択一 · アノテーションの役割",
+    "prompt": "アノテーションがコードに与える「直接的な」効果として最も正確なのは？",
+    "choices": [
+      "アノテーション自体が新しいメソッドを生成する",
+      "アノテーション自体は普通のコードの動作にほぼ影響せず、ツールやコンテナがそれを「読み取って」動作を変える",
+      "アノテーションを書くと書いた行が高速で実行される",
+      "アノテーションは Java の文法上のコメントなので何も意味しない"
+    ],
+    "answerIndex": 1,
+    "hint": "アノテーション自身は「メタデータ」、それを読む側 (コンテナや IDE) が動作を決める。",
+    "explanation": "アノテーションはコードに付ける「メタデータ」。Java 言語自体は @WebServlet があっても何もしないが、Servlet コンテナがリフレクションで読み取って URL マッピングを設定する、というのが実際の動き。@Override も同様で、コンパイラがそれを読んで「親メソッドが存在するか」をチェックする。"
   }
 ]

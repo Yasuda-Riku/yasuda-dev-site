@@ -32,7 +32,12 @@
     "prompt": "Connection は interface なので、左辺の型を Connection にしておくと、PostgreSQL からほかの DB に切り替えても呼び出し側のコードは ___ で済む。",
     "starter": "// 呼び出し側のコードの変更は ___",
     "answer": "不要",
-    "alternatives": ["なし", "ゼロ", "変更不要", "そのまま"],
+    "alternatives": [
+      "なし",
+      "ゼロ",
+      "変更不要",
+      "そのまま"
+    ],
     "hint": "interface 越しに使えば、具体実装が変わってもメソッド呼び出し方は同じ。",
     "explanation": "interface 型で受けると、内部の実装クラス (PgConnection / OracleConnection など) が変わっても利用者のコードは変わりません。これが「実装ではなく interface に依存する」設計の利点。"
   },
@@ -51,7 +56,10 @@
     "prompt": "DriverManager は new で作らずに静的メソッドから Connection を取り出す。この呼び出し方を 1 単語で何と呼ぶ？",
     "starter": "// クラス名.静的メソッド() で呼ぶ → ___ メソッド",
     "answer": "static",
-    "alternatives": ["ファクトリ", "factory"],
+    "alternatives": [
+      "ファクトリ",
+      "factory"
+    ],
     "hint": "Math.max(...) のようなクラス名から直接呼ぶメソッドの種類。",
     "explanation": "DriverManager.getConnection は static メソッド (= ファクトリメソッドとも呼ばれる)。インスタンスを作らずクラス名から呼べる。Connection の実装オブジェクトはここで生成され、interface 越しに渡されます。"
   },
@@ -61,8 +69,57 @@
     "prompt": "「Connection は interface なので new できない」が正しい？",
     "starter": "// new Connection() は ___",
     "answer": "コンパイルエラー",
-    "alternatives": ["エラー", "できない", "不可"],
+    "alternatives": [
+      "エラー",
+      "できない",
+      "不可"
+    ],
     "hint": "interface はインスタンス化できないルール。",
     "explanation": "interface は「契約」だけで実装を持たないので new できません。実装クラスのインスタンスを取得するには DriverManager のような工場メソッドを通します。"
+  },
+  {
+    "id": "prep-sec01-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · interface 越しの呼び出し",
+    "prompt": "次の擬似 JDBC コードで、変数 conn / pstmt / rs の型はそれぞれ interface。実行したら何が出力される？",
+    "code": "Connection conn = DriverManager.getConnection(URL);\nPreparedStatement pstmt = conn.prepareStatement(\"SELECT name FROM emp WHERE id = ?\");\npstmt.setInt(1, 1);\nResultSet rs = pstmt.executeQuery();\nif (rs.next()) {\n    System.out.println(rs.getString(\"name\"));\n}\n// テーブルには id=1, name=\"taro\" の 1 件だけ存在",
+    "answer": "taro",
+    "hint": "rs.next() で 1 件目に進み、getString(\"name\") で列値を取り出す。",
+    "explanation": "rs.next() は次の行へカーソルを進めて行があれば true。1 件あるので true → getString(\"name\") で \"taro\" を取得 → 出力。実装クラスは DB ごとに違うが interface 越しの呼び出しコードは変わらない、というのが JDBC の設計。"
+  },
+  {
+    "id": "prep-sec01-c-01",
+    "type": "choice",
+    "subtopic": "択一 · なぜ DriverManager 経由？",
+    "prompt": "なぜ Connection を直接 new せず、DriverManager.getConnection(...) 経由で作るのか。最も適切な理由は？",
+    "choices": [
+      "Connection は interface なので new でインスタンス化できないから",
+      "Connection クラスは private だから外から見えない",
+      "new するとメモリリークするから",
+      "Java のルールで java.sql パッケージのクラスはすべて DriverManager 経由でしか作れないから"
+    ],
+    "answerIndex": 0,
+    "hint": "interface は実装を持たない契約。",
+    "explanation": "Connection は interface なので new で実体を作れない。DB ごとの実装クラス (PgConnection 等) を作るのは DriverManager の責務で、利用者は interface 越しに使うことで DB に依存しないコードが書ける。これがファクトリパターンの典型例。"
+  },
+  {
+    "id": "prep-sec01-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · JDBC の interface",
+    "prompt": "次のうち java.sql パッケージで「interface として定義されている」型をすべて選んでください。",
+    "choices": [
+      "Connection",
+      "PreparedStatement",
+      "ResultSet",
+      "DriverManager",
+      "SQLException"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "hint": "DriverManager と SQLException はクラス。",
+    "explanation": "Connection / PreparedStatement / ResultSet はすべて interface (DB 製品ごとに実装が変わる前提)。一方 DriverManager は static メソッド getConnection を持つクラス、SQLException は Exception の子クラス。「実装の差し替えが想定されるもの」が interface、それ以外がクラス、で覚える。"
   }
 ]

@@ -32,7 +32,9 @@
     "prompt": "doGet が宣言する例外型 2 つを書いてください (順不同、カンマ区切り)。",
     "starter": "public void doGet(HttpServletRequest req, HttpServletResponse res) throws ___ { ... }",
     "answer": "ServletException, IOException",
-    "alternatives": ["IOException, ServletException"],
+    "alternatives": [
+      "IOException, ServletException"
+    ],
     "regex": "^\\s*(ServletException\\s*,\\s*IOException|IOException\\s*,\\s*ServletException)\\s*$",
     "hint": "どちらも checked 例外。Servlet API 由来と入出力由来です。",
     "explanation": "doGet の親シグネチャは throws ServletException, IOException 固定。オーバーライドする側は同じか、より少ない例外しか宣言できません (LSP の制約)。"
@@ -54,5 +56,51 @@
     "answer": "getWriter",
     "hint": "「Writer を取得する」。",
     "explanation": "res.getWriter() は文字データ用の PrintWriter を返す。out.println(\"<html>...\") で HTML を書き出せる。バイナリは getOutputStream() を使う。"
+  },
+  {
+    "id": "prep-sec04-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · Servlet の処理フロー",
+    "prompt": "次の Servlet に GET /hello?name=taro でアクセスした。レスポンスとして書き出されるテキストは？",
+    "code": "@WebServlet(\"/hello\")\npublic class HelloServlet extends HttpServlet {\n    @Override\n    public void doGet(HttpServletRequest req, HttpServletResponse res)\n            throws ServletException, IOException {\n        String name = req.getParameter(\"name\");\n        PrintWriter out = res.getWriter();\n        out.print(\"Hello, \" + name + \"!\");\n    }\n}",
+    "answer": "Hello, taro!",
+    "hint": "?name=taro が getParameter(\"name\") で取り出され、Hello, ___! の連結になる。",
+    "explanation": "URL の ?name=taro が getParameter(\"name\") で \"taro\" を返す。out.print で \"Hello, \" + \"taro\" + \"!\" → \"Hello, taro!\"。Servlet の最も基本的な処理パターン。"
+  },
+  {
+    "id": "prep-sec04-c-01",
+    "type": "choice",
+    "subtopic": "択一 · doGet と doPost の使い分け",
+    "prompt": "doGet と doPost を「使い分けるべき」基準として最も妥当なのは？",
+    "choices": [
+      "doGet は無料、doPost は有料の API で使う",
+      "doGet は読み取り (検索・表示) に、doPost はサーバ側の状態を変える操作 (登録・更新・削除) に使うのが原則",
+      "doGet は HTML、doPost は JSON のレスポンスにしか使えない",
+      "doGet は古い書き方、doPost が新しい書き方なので doPost に統一する"
+    ],
+    "answerIndex": 1,
+    "hint": "GET は「冪等で副作用なし」、POST は「副作用あり」という HTTP の慣習。",
+    "explanation": "GET は読み取り (副作用なし、何度叩いても同じ)、POST は書き込み (副作用あり) というのが HTTP の慣習。検索や表示は doGet、フォーム送信や登録・更新は doPost が定石。POST を GET にすると URL に値が乗ってブラウザ履歴に残るなどの問題がある。"
+  },
+  {
+    "id": "prep-sec04-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · HttpServletRequest のメソッド",
+    "prompt": "HttpServletRequest が持つメソッドをすべて選んでください。",
+    "choices": [
+      "getParameter(String name) — リクエストパラメータを取得",
+      "getSession() — セッションを取得",
+      "getAttribute(String name) — リクエストスコープ属性を取得",
+      "getWriter() — レスポンス書き込み用",
+      "getMethod() — HTTP メソッド名 (GET/POST 等) を取得"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "getWriter は出力側 (HttpServletResponse) のメソッド。",
+    "explanation": "request はリクエスト情報を持つ: getParameter / getSession / getAttribute / getMethod など。一方 getWriter() は HttpServletResponse 側のメソッドで、リクエストではなくレスポンスに書き出すためのもの。"
   }
 ]

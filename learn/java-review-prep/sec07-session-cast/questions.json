@@ -32,7 +32,9 @@
     "prompt": "(User) session.getAttribute(\"user\"); で、もし保存されているのが Admin オブジェクトだったら何が起きる？",
     "starter": "// 結果: ___ Exception",
     "answer": "ClassCast",
-    "alternatives": ["ClassCastException"],
+    "alternatives": [
+      "ClassCastException"
+    ],
     "hint": "「クラスのキャスト」が失敗するの意味の例外名。",
     "explanation": "ClassCastException。実体の型がキャスト先の型 (またはそのサブクラス) でないとき発生。事前に instanceof で確認してからキャストすると安全。"
   },
@@ -44,5 +46,51 @@
     "answer": "invalidate",
     "hint": "「無効にする」を意味する英単語。",
     "explanation": "session.invalidate() は現在のセッションを破棄。ログアウト処理の定石。これ以降そのセッションオブジェクトにアクセスすると IllegalStateException が出るので、呼び出し後は触らない。"
+  },
+  {
+    "id": "prep-sec07-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · session のラウンドトリップ",
+    "prompt": "次のコードを実行したときの出力は？(2 回のリクエストで同じセッションを共有する想定)",
+    "code": "// --- 1 回目のリクエスト (ログイン処理) ---\nUser user = new User(\"taro\");\nsession.setAttribute(\"user\", user);\n\n// --- 2 回目のリクエスト (マイページ表示) ---\nUser u = (User) session.getAttribute(\"user\");\nSystem.out.println(u.getName());",
+    "answer": "taro",
+    "hint": "1 回目で保存したオブジェクトが 2 回目で取り出せる。getAttribute は Object なのでキャスト。",
+    "explanation": "session は同じユーザのリクエスト間で共有される。1 回目で setAttribute(\"user\", user) で保存し、2 回目で同じキーで取り出すと同じ User オブジェクトが取得できる。getAttribute の戻り値は Object なので (User) でキャストし、getName() で \"taro\" を取得。"
+  },
+  {
+    "id": "prep-sec07-c-01",
+    "type": "choice",
+    "subtopic": "択一 · ClassCastException の発生条件",
+    "prompt": "(User) session.getAttribute(\"user\"); を実行したときに ClassCastException が発生するのはどの場合？",
+    "choices": [
+      "session が null のとき",
+      "\"user\" キーで保存されているオブジェクトが User 型 (またはそのサブクラス) ではないとき",
+      "\"user\" キーで何も保存されていないとき (= getAttribute が null を返す)",
+      "User クラスにフィールドが 1 つも無いとき"
+    ],
+    "answerIndex": 1,
+    "hint": "ClassCastException は型変換の失敗。null へのキャストは通る。",
+    "explanation": "ClassCastException は「実体の型がキャスト先 (またはそのサブクラス) でない」ときに発生。\"user\" に Admin オブジェクトが入っていたら User へキャストできず CCE。一方、null へのキャストは Java の仕様で常に成功するため、何も保存されていない場合 (= null) は CCE ではなく、後で u.getName() を呼んだ時に NullPointerException で落ちる。"
+  },
+  {
+    "id": "prep-sec07-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · instanceof で確認すべき場面",
+    "prompt": "ダウンキャストの前に instanceof で確認するのが「特に有効」な場面をすべて選んでください。",
+    "choices": [
+      "session.getAttribute(...) の戻り値をキャスト",
+      "list.get(0) (List<Object> の場合) の戻り値をキャスト",
+      "new ArrayList<>() の戻り値をキャスト",
+      "外部からの Object 型引数を特定の型として扱いたい",
+      "親型変数 Animal a に Dog が入っているはず、を確認してダウンキャスト"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "hint": "「実行時にしか実体型がわからない」ものは instanceof で先に確認。",
+    "explanation": "session の getAttribute / List<Object> の get / 外部から渡される Object / 親型変数のダウンキャスト — いずれも実行時に実体型が確定し、間違うと ClassCastException になる場面なので instanceof による事前確認が有効。一方 new ArrayList<>() は型が宣言から自明なのでキャスト自体不要 (instanceof も不要)。"
   }
 ]

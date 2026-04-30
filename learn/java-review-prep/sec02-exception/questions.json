@@ -23,7 +23,9 @@
     "prompt": "try-with-resources で扱える型は、どの interface を実装している必要がある？",
     "starter": "// () の中の型は ___ を実装している",
     "answer": "AutoCloseable",
-    "alternatives": ["Closeable"],
+    "alternatives": [
+      "Closeable"
+    ],
     "hint": "「自動的に閉じられる」を意味する英単語。",
     "explanation": "AutoCloseable interface (close() メソッド 1 つ持つ) を実装した型のみ。Connection / Statement / ResultSet・InputStream などはすべて実装済み。"
   },
@@ -33,7 +35,13 @@
     "prompt": "ClassNotFoundException と SQLException の両方を 1 つの try で受けたい。どちらの catch を先に書くべき？",
     "starter": "// 親クラスは Exception。書く順は ___ → 共通の親、の順",
     "answer": "個別",
-    "alternatives": ["子クラス", "具体", "specific", "サブクラス", "より具体的"],
+    "alternatives": [
+      "子クラス",
+      "具体",
+      "specific",
+      "サブクラス",
+      "より具体的"
+    ],
     "hint": "Exception (親) を上に書くと、それより下の catch には届かなくなる。",
     "explanation": "catch は上から順に当てはまるものが選ばれるので、具体クラスを先に、共通の親 (Exception) を後に書きます。逆だと「以降の catch は到達不能」とコンパイラに怒られます。"
   },
@@ -61,8 +69,64 @@
     "prompt": "RuntimeException 系 (NullPointerException, IllegalArgumentException など) は、メソッド宣言で throws を書く必要がある？",
     "starter": "// 必要 / 不要 の二択 → ___",
     "answer": "不要",
-    "alternatives": ["なし", "no", "必要なし", "書かなくてよい"],
+    "alternatives": [
+      "なし",
+      "no",
+      "必要なし",
+      "書かなくてよい"
+    ],
     "hint": "コンパイラがチェックしないグループ (unchecked)。",
     "explanation": "RuntimeException 系は unchecked なので throws 宣言は不要。プログラマのミスで起きる例外 (引数不正・null 参照など) を実行時にだけ気にすればよい設計。"
+  },
+  {
+    "id": "prep-sec02-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · try-catch の流れ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "try {\n    System.out.print(\"A \");\n    if (true) throw new RuntimeException();\n    System.out.print(\"B \");\n} catch (RuntimeException e) {\n    System.out.print(\"C \");\n} finally {\n    System.out.print(\"D \");\n}\nSystem.out.print(\"E\");",
+    "answer": "A C D E",
+    "alternatives": [
+      "A C D E ",
+      "A C D E\n"
+    ],
+    "hint": "throw が走った瞬間、それ以降の try ブロックはスキップされる。",
+    "explanation": "A 出力 → throw で B はスキップ → catch で C 出力 → finally で D 出力 (例外が出ようが出まいが必ず通る) → try-catch を抜けて E 出力。例外発生時の流れの典型例。"
+  },
+  {
+    "id": "prep-sec02-c-01",
+    "type": "choice",
+    "subtopic": "択一 · throws の意味",
+    "prompt": "メソッド宣言 public List<Employee> findAll() throws SQLException { ... } の throws SQLException が意味するものとして最も正しいのは？",
+    "choices": [
+      "このメソッドは必ず SQLException を投げる",
+      "このメソッドは SQLException を投げる「可能性がある」と呼び出し元に契約する。呼び出し元は catch するか自分も throws する必要がある",
+      "このメソッドの中で SQLException が投げられたら自動的に握り潰す",
+      "戻り値の List<Employee> を SQLException に変換する"
+    ],
+    "answerIndex": 1,
+    "hint": "throws は「投げるかも」の宣言で、呼び出し元の対応を強制する。",
+    "explanation": "throws はメソッドが checked 例外を投げる「可能性」をシグネチャに書く契約宣言。「必ず投げる」ではなく、「投げるかもしれないので呼び出し元は対応してね」という意味。呼び出し元は try-catch で受けるか、自分も throws で投げ直すかを選ぶ。"
+  },
+  {
+    "id": "prep-sec02-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · AutoCloseable",
+    "prompt": "次のうち AutoCloseable を実装していて、try-with-resources の () に書ける型をすべて選んでください。",
+    "choices": [
+      "Connection (java.sql)",
+      "PreparedStatement",
+      "ResultSet",
+      "InputStream",
+      "String",
+      "List"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "hint": "「閉じる必要のあるリソース」だけが対象。値クラスやコレクションは違う。",
+    "explanation": "Connection / PreparedStatement / ResultSet / InputStream など「外部リソースを保持する」型は AutoCloseable を実装している。一方 String や List は閉じるリソースを持たないので AutoCloseable ではない。try-with-resources に書けるのは前者のみ。"
   }
 ]

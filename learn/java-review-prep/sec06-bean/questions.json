@@ -23,7 +23,9 @@
     "prompt": "boolean active フィールドの getter は、慣習として何という名前にする？",
     "starter": "public boolean ___() {\n    return active;\n}",
     "answer": "isActive",
-    "alternatives": ["IsActive"],
+    "alternatives": [
+      "IsActive"
+    ],
     "hint": "boolean は get ではなく別の接頭辞。",
     "explanation": "boolean の getter は慣習で is + フィールド名 (頭大文字)。「if (employee.isActive())」のように読み下しが自然になる。多くの IDE やフレームワークがこの慣習に従ってマッピングします。"
   },
@@ -33,7 +35,15 @@
     "prompt": "Bean は基本的に「___ コンストラクタ」を持つ必要がある。空欄に 1 単語。",
     "starter": "// Bean には ___ コンストラクタが必須 (省略すれば自動生成される)",
     "answer": "引数なし",
-    "alternatives": ["デフォルト", "default", "no-arg", "no-args", "0引数", "ゼロ引数", "引数のない"],
+    "alternatives": [
+      "デフォルト",
+      "default",
+      "no-arg",
+      "no-args",
+      "0引数",
+      "ゼロ引数",
+      "引数のない"
+    ],
     "hint": "JSP の useBean / リフレクションが new XXX() で作るので、引数が必要だと困ります。",
     "explanation": "Bean は引数なしコンストラクタが前提。JSP の <jsp:useBean> や Servlet コンテナが Class.newInstance() で作るので、引数が必要だと困ります。引数付きコンストラクタを書いたら、引数なしも併記しておくのが安全。"
   },
@@ -43,9 +53,60 @@
     "prompt": "DTO とは何の略？4 単語の頭文字から来ています。",
     "starter": "// DTO = ___",
     "answer": "Data Transfer Object",
-    "alternatives": ["data transfer object"],
+    "alternatives": [
+      "data transfer object"
+    ],
     "regex": "^\\s*[Dd]ata\\s+[Tt]ransfer\\s+[Oo]bject\\s*$",
     "hint": "「データの受け渡しのためのオブジェクト」をそのまま英訳した呼び名。",
     "explanation": "DTO = Data Transfer Object。レイヤー間 (DAO ↔ Servlet ↔ JSP) で値だけを運ぶための単純なオブジェクト。private フィールド + getter/setter のみ持ち、ロジックは持たないのが定石。"
+  },
+  {
+    "id": "prep-sec06-p-01",
+    "type": "predict",
+    "subtopic": "出力予測 · setter / getter のラウンドトリップ",
+    "prompt": "次のコードを実行したときの出力は？",
+    "code": "public class Employee {\n    private String name;\n    public String getName() { return name; }\n    public void setName(String name) { this.name = name; }\n}\n\nEmployee e = new Employee();\nSystem.out.println(e.getName());\ne.setName(\"taro\");\nSystem.out.println(e.getName());",
+    "answer": "null\ntaro",
+    "alternatives": [
+      "null taro",
+      "null\ntaro\n"
+    ],
+    "hint": "private String name; は明示的に初期化しないと null。",
+    "explanation": "name フィールドは String 型で初期化していないので null から始まる。getName() は最初 null を返す → println は \"null\" と出す → setName(\"taro\") で書き換え → getName() は \"taro\" を返す。Bean パターンの基本動作。"
+  },
+  {
+    "id": "prep-sec06-c-01",
+    "type": "choice",
+    "subtopic": "択一 · なぜフィールドは private",
+    "prompt": "JavaBean でフィールドを private にして getter/setter で公開する設計の最大の利点として最も適切なのは？",
+    "choices": [
+      "private の方がメモリ消費が少ないから",
+      "後から「値の検証」「変換」「ログ」などのロジックを setter に追加できるから (= カプセル化)",
+      "private にしないとコンパイルエラーになるから",
+      "private フィールドは速度が公開フィールドより速いから"
+    ],
+    "answerIndex": 1,
+    "hint": "「直接書き換えを禁止することで自分で関所を作れる」のが本質。",
+    "explanation": "フィールドを直接 public にすると、外から好き勝手に書き換えられて検証も入れられない。private + setter にしておくと、後で「負の値を拒否」「ログを取る」「null をデフォルト値に」など好きなロジックを足せる。これが「カプセル化」の実利。"
+  },
+  {
+    "id": "prep-sec06-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · JavaBean 規約",
+    "prompt": "JavaBean 規約として「正しい」ものをすべて選んでください。",
+    "choices": [
+      "フィールドは private にする",
+      "引数なしのコンストラクタを持つ (省略すれば自動生成される)",
+      "フィールドにアクセスするメソッドは getXxx / setXxx の形にする (boolean は isXxx も慣習)",
+      "クラスは必ず final にする",
+      "フィールドはすべて static にする"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "hint": "規約は「private フィールド + 引数なしコンストラクタ + getter/setter」の 3 点セット。",
+    "explanation": "JavaBean 規約: (1) private フィールド (2) 引数なしコンストラクタ (省略でも自動生成あり) (3) getXxx/setXxx (boolean は isXxx) の getter/setter。final と static は規約にない (むしろ static にすると Bean としてインスタンスごとに値を持たせられないので不適)。"
   }
 ]
