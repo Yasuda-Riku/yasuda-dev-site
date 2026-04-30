@@ -77,15 +77,15 @@ classDiagram
         +getConnection() Connection
     }
     class Connection {
-        <<interface>>
+        &lt;&lt;interface&gt;&gt;
         +prepareStatement() PreparedStatement
     }
     class PreparedStatement {
-        <<interface>>
+        &lt;&lt;interface&gt;&gt;
         +executeQuery() ResultSet
     }
     class ResultSet {
-        <<interface>>
+        &lt;&lt;interface&gt;&gt;
     }
     
     DriverManager ..> Connection : 戻り値として渡す
