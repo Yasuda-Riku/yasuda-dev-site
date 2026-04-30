@@ -331,5 +331,46 @@
     ],
     "hint": "static メソッドはオーバーライドではなく「隠蔽 (hiding)」。@Override は static には付けられない。",
     "explanation": "@Override は「親に同名・同シグネチャのインスタンスメソッドが存在する」ことをコンパイラに保証させるアノテーション。typo や引数違い (overload になってしまう) も検出してくれる。interface の実装も override 扱いなので OK。一方、static メソッドはオーバーライドではなく単なるメソッド隠蔽 (動的ディスパッチ無し) なので @Override は付けられない。"
+  },
+  {
+    "id": "ch03-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · オーバーライド時の制約",
+    "prompt": "親メソッド void greet() throws IOException を子クラスでオーバーライドするときに「許される」変更をすべて選んでください。",
+    "choices": [
+      "アクセス修飾子を public から protected に変える",
+      "アクセス修飾子を protected から public に変える",
+      "throws する例外を IOException から FileNotFoundException (IOException の子) に絞る",
+      "throws する例外を IOException から Exception (IOException の親) に広げる",
+      "throws を全部消して何も投げないようにする"
+    ],
+    "answerIndices": [
+      1,
+      2,
+      4
+    ],
+    "hint": "「公開度を狭めない」「例外を広げない」が原則。",
+    "explanation": "オーバーライドは LSP の観点で「親より厳しい契約にしてはいけない」。public→protected は公開度を狭めるので NG。throws を親より広い型にすると呼び出し側が新しい checked 例外の処理を強制されるので NG。逆に「公開度を広げる」「例外を絞る/消す」は呼び出し側を縛らないので OK。"
+  },
+  {
+    "id": "ch03-m-03",
+    "type": "multichoice",
+    "subtopic": "複数選択 · ポリモーフィズム",
+    "prompt": "下のコードのうち、コンパイルが通るものをすべて選んでください。",
+    "code": "class Animal { void cry() { } }\nclass Dog extends Animal { void bark() { } }",
+    "choices": [
+      "Animal a = new Dog();",
+      "Dog d = new Animal();",
+      "Animal a = new Dog(); a.cry();",
+      "Animal a = new Dog(); a.bark();",
+      "Animal a = new Dog(); ((Dog) a).bark();"
+    ],
+    "answerIndices": [
+      0,
+      2,
+      4
+    ],
+    "hint": "「親型変数 = 子インスタンス」は OK、逆はダメ。親型変数からは親のメソッドしか呼べない。",
+    "explanation": "アップキャスト (Animal = Dog) は安全なので OK。ダウンキャスト (Dog = Animal) は実体次第なのでそのままはコンパイルエラー (明示キャストが必要)。Animal 型変数からは Animal の API しか見えないので a.bark() は不可、ただし (Dog) でキャストすれば呼べる。"
   }
 ]

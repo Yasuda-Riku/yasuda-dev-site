@@ -243,5 +243,43 @@
     ],
     "hint": "java.lang パッケージのクラスは暗黙で import される。",
     "explanation": "java.lang は全 Java プログラムが暗黙で import するパッケージ。String / Integer / System / Math / Object / Throwable などはここにあるので import 不要。一方 ArrayList は java.util、Date は java.util / java.sql どちらかで、明示的な import が必要。"
+  },
+  {
+    "id": "ch07-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · package-private (修飾子なし) の挙動",
+    "prompt": "アクセス修飾子を書かないクラス/メソッドについて、正しい記述をすべて選んでください。",
+    "choices": [
+      "同じパッケージのクラスからアクセスできる",
+      "別パッケージのクラスからアクセスできる",
+      "別パッケージのサブクラスからアクセスできる",
+      "同じパッケージのサブクラスからアクセスできる",
+      "リフレクションを使えば必ずアクセスできる"
+    ],
+    "answerIndices": [
+      0,
+      3
+    ],
+    "hint": "「同じパッケージから」のみ。継承関係を持っていてもパッケージが違えばダメ。",
+    "explanation": "package-private (修飾子なし) は「同じパッケージから」のみ。継承していても別パッケージならアクセス不可 (これが protected との違い)。リフレクションは特殊な仕組みでアクセス可能になることもあるが、setAccessible(true) が SecurityManager に拒否されることもあり「必ず」とは言えない。"
+  },
+  {
+    "id": "ch07-m-03",
+    "type": "multichoice",
+    "subtopic": "複数選択 · protected の挙動",
+    "prompt": "protected で宣言されたメンバーについて、正しい記述をすべて選んでください。",
+    "choices": [
+      "同じパッケージのクラスからアクセスできる",
+      "同じパッケージのサブクラスからアクセスできる",
+      "別パッケージのサブクラスからアクセスできる",
+      "別パッケージの非サブクラスからアクセスできる"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "hint": "「同じパッケージ + 全サブクラス (パッケージ越境 OK)」が範囲。",
+    "explanation": "protected は「同じパッケージ + 全サブクラス (別パッケージのサブクラス含む)」の合算。別パッケージかつサブクラスでもないクラスからはアクセス不可。private より広く、public より狭い「中間」の修飾子。"
   }
 ]

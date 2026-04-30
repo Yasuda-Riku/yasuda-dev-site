@@ -290,5 +290,46 @@
     ],
     "hint": "this はインスタンスに紐づく参照。インスタンスを持たない場面では使えない。",
     "explanation": "this はインスタンスメソッド/コンストラクタの中でだけ使える。static メソッドはインスタンスに紐付かないので this 不可。親メソッドを呼ぶのは super (this.super という構文は無い)。残りの 3 つは正しい用法。"
+  },
+  {
+    "id": "ch01-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · インスタンスフィールドの初期値",
+    "prompt": "クラスのインスタンスフィールドを「明示的に初期化しない」とき、自動で入る値として正しいものをすべて選んでください。",
+    "choices": [
+      "int は 0",
+      "double は 0.0",
+      "boolean は false",
+      "String は \"\" (空文字列)",
+      "オブジェクト型 (List, Date 等) は null"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "オブジェクト型はすべて null。空文字列は別物。",
+    "explanation": "インスタンスフィールドは型ごとのゼロ値で自動初期化される: 数値型は 0/0.0、boolean は false、オブジェクト型 (String 含む) はすべて null (空文字列ではない)。「String が \"\"」は思い込みやすい誤解で、実際は null になり、そのままメソッド呼び出しすると NPE が出る。"
+  },
+  {
+    "id": "ch01-m-03",
+    "type": "multichoice",
+    "subtopic": "複数選択 · クラス vs インスタンス",
+    "prompt": "「インスタンスごとに値が独立している」のはどれ？すべて選んでください。",
+    "code": "class Counter {\n    int n;\n    static int total;\n}",
+    "choices": [
+      "n (int n;)",
+      "total (static int total;)",
+      "メソッドの引数",
+      "メソッド内のローカル変数"
+    ],
+    "answerIndices": [
+      0,
+      2,
+      3
+    ],
+    "hint": "static はクラスで 1 つ、それ以外はインスタンス/呼び出しごと。",
+    "explanation": "インスタンスフィールド (n) は new するたびに別。メソッドの引数とローカル変数も呼び出しごとに別 (スタックフレーム単位)。一方 static フィールド (total) はクラスで 1 つしか存在せず、すべての new された Counter インスタンスで値が共有される。"
   }
 ]

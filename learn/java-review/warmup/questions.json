@@ -273,6 +273,28 @@
     "explanation": "拡張 for は配列か Iterable インタフェースを実装したもの (List, Set など) を回せる。Map は Iterable ではないので map.keySet() / map.values() / map.entrySet() のいずれかに変換する必要がある。int 単一変数は反復対象ではない。"
   },
   {
+    "id": "warmup-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · プリミティブ型",
+    "prompt": "Java の「プリミティブ型 (基本型)」をすべて選んでください。",
+    "choices": [
+      "int",
+      "double",
+      "boolean",
+      "String",
+      "char",
+      "Integer"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "頭文字が小文字で、変数の値そのものを保持するのがプリミティブ。",
+    "explanation": "プリミティブ型は int / long / short / byte / float / double / boolean / char の 8 つ。すべて頭文字が小文字で、値そのものをスタックに置く。一方 String は java.lang.String クラスの参照型、Integer は int のラッパー (参照型)。"
+  },
+  {
     "id": "warmup-18",
     "subtopic": "メソッド",
     "prompt": "戻り値を返さないメソッドの戻り値型として書くキーワードを答えてください。",

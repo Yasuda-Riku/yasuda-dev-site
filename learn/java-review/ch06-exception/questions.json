@@ -328,5 +328,26 @@
     ],
     "hint": "RuntimeException 系は unchecked。それ以外の Exception の子は checked。",
     "explanation": "checked = Exception の直系の子で RuntimeException ではないもの。IOException / SQLException / ClassNotFoundException が該当 (ファイル / DB / クラスロードはランタイム外の事情で起きるため、コンパイラが対処を強制)。残り 3 つは RuntimeException の子なので unchecked = ランタイムでしか分からないバグ系で、宣言は不要だが見落とすと落ちる。"
+  },
+  {
+    "id": "ch06-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · try ブロックの組み合わせ",
+    "prompt": "try ブロックに対して「単独で書ける」組み合わせをすべて選んでください。",
+    "choices": [
+      "try と catch のみ",
+      "try と finally のみ (catch なし)",
+      "try と catch と finally",
+      "try のみ (catch も finally も無い)",
+      "try-with-resources で () に AutoCloseable を宣言した場合は try のみで OK"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "try-with-resources 以外は、catch か finally のどちらかは必須。",
+    "explanation": "通常の try には catch か finally が最低 1 つ必須 (try のみは NG)。try-with-resources の場合は () の中で自動 close されるので、catch も finally も省略できる。catch だけ / finally だけ / 両方、はいずれも OK。"
   }
 ]

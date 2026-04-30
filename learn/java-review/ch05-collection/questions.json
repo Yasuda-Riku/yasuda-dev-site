@@ -313,5 +313,50 @@
     ],
     "hint": "length は配列と String のもの。List は size。",
     "explanation": "List は add / get / size / remove / contains などを持つ。length は配列の (フィールド) または String のメソッドで、List には存在しない。「配列は length、String は length()、List/Set は size()」と 3 つの違いをセットで覚える。"
+  },
+  {
+    "id": "ch05-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · Map のメソッド",
+    "prompt": "Map<String, Integer> インタフェースで定義されているメソッドをすべて選んでください。",
+    "choices": [
+      "put(K key, V value)",
+      "get(Object key)",
+      "size()",
+      "add(V value)",
+      "keySet()",
+      "containsKey(Object key)"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4,
+      5
+    ],
+    "hint": "add は List のメソッド。Map にはキーが必要。",
+    "explanation": "Map はキー・値ペアで管理するので、要素追加は put(key, value)。add(value) というメソッドは Map にはない (List/Set のもの)。get / size / keySet / containsKey は Map の基本メソッド。"
+  },
+  {
+    "id": "ch05-m-03",
+    "type": "multichoice",
+    "subtopic": "複数選択 · ジェネリクスで使える型",
+    "prompt": "List< ___ > の空欄に書ける型をすべて選んでください。",
+    "choices": [
+      "String",
+      "Integer",
+      "int",
+      "List<String> (List のリスト)",
+      "?",
+      "double"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "hint": "プリミティブ型はジェネリクスに直接書けない。",
+    "explanation": "ジェネリクスは参照型のみ。プリミティブ (int, double) は不可で、ラッパー型 (Integer, Double) を使う。List<List<String>> のように入れ子も可能。? はワイルドカードでこれも OK。"
   }
 ]

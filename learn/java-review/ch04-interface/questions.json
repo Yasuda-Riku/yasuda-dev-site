@@ -322,5 +322,27 @@
     ],
     "hint": "interface は状態 (フィールド) を持たず、初期化も不要。",
     "explanation": "interface は abstract / default / static メソッドと、public static final な定数を書ける (Java 8 以降は default と static も可)。一方、コンストラクタは状態を持たないため不要、インスタンスフィールド (状態) は持てない。private なフィールドは interface には書けない (定数として public static final だけが許される)。"
+  },
+  {
+    "id": "ch04-m-02",
+    "type": "multichoice",
+    "subtopic": "複数選択 · interface 越しに呼べるメソッド",
+    "prompt": "次の宣言のとき、コンパイルが通る呼び出しをすべて選んでください。",
+    "code": "interface Greeter {\n    void greet();\n}\nclass JP implements Greeter {\n    public void greet() { }\n    public void bow() { }\n}",
+    "choices": [
+      "Greeter g = new JP(); g.greet();",
+      "Greeter g = new JP(); g.bow();",
+      "JP jp = new JP(); jp.greet();",
+      "JP jp = new JP(); jp.bow();",
+      "Greeter g = new JP(); ((JP) g).bow();"
+    ],
+    "answerIndices": [
+      0,
+      2,
+      3,
+      4
+    ],
+    "hint": "interface 型変数からは interface のメソッドしか見えない。",
+    "explanation": "Greeter 型の g からは Greeter にあるメソッド (greet) しか呼べない。bow は JP 独自なので g.bow() はコンパイルエラー。具体型 JP の変数 jp からは両方呼べる。Greeter 型をキャストして JP に戻せば bow も呼べる。"
   }
 ]
