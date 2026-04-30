@@ -307,5 +307,26 @@
     "answerIndex": 3,
     "hint": "finally は例外が出ても出なくても必ず通ります。catch で受け止めた後は通常実行が続きます。",
     "explanation": "A を出力 → 例外発生 → catch が拾って B を出力 → finally で C を出力。catch で例外を握り終えていれば、その後の finally まで実行されます。"
+  },
+  {
+    "id": "ch06-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · checked 例外",
+    "prompt": "次のうち、checked 例外 (try-catch または throws 宣言が必須) のものをすべて選んでください。",
+    "choices": [
+      "IOException",
+      "SQLException",
+      "NullPointerException",
+      "ArrayIndexOutOfBoundsException",
+      "ClassNotFoundException",
+      "ArithmeticException"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      4
+    ],
+    "hint": "RuntimeException 系は unchecked。それ以外の Exception の子は checked。",
+    "explanation": "checked = Exception の直系の子で RuntimeException ではないもの。IOException / SQLException / ClassNotFoundException が該当 (ファイル / DB / クラスロードはランタイム外の事情で起きるため、コンパイラが対処を強制)。残り 3 つは RuntimeException の子なので unchecked = ランタイムでしか分からないバグ系で、宣言は不要だが見落とすと落ちる。"
   }
 ]

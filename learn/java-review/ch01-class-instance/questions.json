@@ -270,5 +270,25 @@
     "answer": "abc",
     "hint": "String のメソッドは元の文字列を書き換えるのではなく、新しい文字列を返します。",
     "explanation": "String は不変 (immutable)。toUpperCase() は \"ABC\" という新しい String を返すだけで、s 自身は変わりません。s = s.toUpperCase(); と代入し直す必要があります。"
+  },
+  {
+    "id": "ch01-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · this の使い道",
+    "prompt": "this の使い方として「正しい」ものをすべて選んでください。",
+    "choices": [
+      "フィールドと引数の名前が衝突したとき、フィールド側を指す (this.x = x)",
+      "同じクラスの別コンストラクタを呼ぶ (this(...))",
+      "メソッドチェーンで自身を返す (return this)",
+      "static メソッド内で this.x のように使う",
+      "親クラスのメソッドを明示的に呼ぶ (this.super.method())"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2
+    ],
+    "hint": "this はインスタンスに紐づく参照。インスタンスを持たない場面では使えない。",
+    "explanation": "this はインスタンスメソッド/コンストラクタの中でだけ使える。static メソッドはインスタンスに紐付かないので this 不可。親メソッドを呼ぶのは super (this.super という構文は無い)。残りの 3 つは正しい用法。"
   }
 ]

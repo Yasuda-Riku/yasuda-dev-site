@@ -290,5 +290,28 @@
     "answerIndex": 1,
     "hint": "ラッパー型 Integer なら使える。",
     "explanation": "Java のジェネリクスは型消去で実装されており、参照型 (オブジェクト) のみ受け付ける。int などのプリミティブ型は使えず、Integer などのラッパー型を使う必要がある。書きたい場合は List<Integer>。"
+  },
+  {
+    "id": "ch05-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · List のメソッド",
+    "prompt": "List<String> インタフェースで定義されているメソッドをすべて選んでください。",
+    "choices": [
+      "add(E e)",
+      "get(int index)",
+      "size()",
+      "length()",
+      "remove(int index)",
+      "contains(Object o)"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4,
+      5
+    ],
+    "hint": "length は配列と String のもの。List は size。",
+    "explanation": "List は add / get / size / remove / contains などを持つ。length は配列の (フィールド) または String のメソッドで、List には存在しない。「配列は length、String は length()、List/Set は size()」と 3 つの違いをセットで覚える。"
   }
 ]

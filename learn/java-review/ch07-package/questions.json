@@ -221,5 +221,27 @@
     "answerIndex": 1,
     "hint": "「同じパッケージ + サブクラス」が protected の範囲。",
     "explanation": "protected は「同じパッケージ + 全サブクラス (パッケージ違いも OK)」からアクセス可能。継承関係でフィールド/メソッドを子に公開したいときに使う。private より広く、public より狭い「中間」の修飾子。"
+  },
+  {
+    "id": "ch07-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · import 不要なクラス",
+    "prompt": "import 文を書かなくてもそのまま使えるクラスをすべて選んでください。",
+    "choices": [
+      "String",
+      "Integer",
+      "System",
+      "ArrayList",
+      "Math",
+      "Date (java.util.Date)"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "java.lang パッケージのクラスは暗黙で import される。",
+    "explanation": "java.lang は全 Java プログラムが暗黙で import するパッケージ。String / Integer / System / Math / Object / Throwable などはここにあるので import 不要。一方 ArrayList は java.util、Date は java.util / java.sql どちらかで、明示的な import が必要。"
   }
 ]

@@ -492,6 +492,65 @@ const TYPES = {
       return `${q.prompt}\n\n--- 選択肢 ---\n${list}${codePart}`;
     },
   },
+
+  multichoice: {
+    renderBody(q) {
+      const codeBlock = q.code
+        ? `<pre class="quiz__starter"><code class="language-java">${escapeHtml(q.code)}</code></pre>`
+        : "";
+      const choices = (q.choices || []).map((c, i) => `
+        <label class="quiz__choice quiz__choice--multi">
+          <input type="checkbox" value="${i}" data-choice>
+          <span class="quiz__choice-key">${LETTERS[i]}</span>
+          <span class="quiz__choice-text">${escapeHtml(c)}</span>
+        </label>
+      `).join("");
+      return `
+        ${codeBlock}
+        <p class="quiz__multi-hint">正しいものを<strong>すべて</strong>選んでください (複数あり)</p>
+        <div class="quiz__choices" role="group">${choices}</div>
+        <div class="quiz__answer-row">
+          <button type="button" class="quiz__submit" data-submit disabled>解答</button>
+        </div>
+      `;
+    },
+    afterRender(card) {
+      const submit = card.querySelector("[data-submit]");
+      const update = () => {
+        const any = !!card.querySelector("[data-choice]:checked");
+        submit.disabled = !any;
+      };
+      card.querySelectorAll("[data-choice]").forEach((r) => {
+        r.addEventListener("change", update);
+      });
+    },
+    readUserAnswer(card) {
+      return [...card.querySelectorAll("[data-choice]:checked")]
+        .map((c) => Number(c.value))
+        .sort((a, b) => a - b);
+    },
+    isEmpty(v) { return !Array.isArray(v) || v.length === 0; },
+    judge(q, v) {
+      if (!Array.isArray(v) || !Array.isArray(q.answerIndices)) return false;
+      const exp = [...q.answerIndices].sort((a, b) => a - b);
+      if (v.length !== exp.length) return false;
+      return v.every((x, i) => x === exp[i]);
+    },
+    presentExpected(q) {
+      return (q.answerIndices || [])
+        .map((i) => `${LETTERS[i]}. ${q.choices?.[i] ?? ""}`)
+        .join(" / ");
+    },
+    presentUser(q, v) {
+      if (!Array.isArray(v) || v.length === 0) return "(未選択)";
+      return v.map((i) => `${LETTERS[i]}. ${q.choices?.[i] ?? ""}`).join(" / ");
+    },
+    enrichPrompt(q) {
+      const list = (q.choices || []).map((c, i) => `${LETTERS[i]}. ${c}`).join("\n");
+      const codePart = q.code ? `\n\n--- コード ---\n${q.code}` : "";
+      return `${q.prompt}\n\n--- 選択肢 (複数選択 / 正解は ${q.answerIndices?.length ?? "?"} 個) ---\n${list}${codePart}`;
+    },
+  },
 };
 
 function normalize(s) {

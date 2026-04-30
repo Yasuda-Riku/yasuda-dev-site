@@ -243,6 +243,45 @@
   border-color: var(--accent);
   background: #FFF8F4;
 }
+
+/* multichoice (複数選択) — checkbox ベース */
+.quiz__choice input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.quiz__choice input[type="checkbox"]::before {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: translateY(-1px) rotate(-45deg) scale(0);
+  transition: transform 0.1s ease;
+}
+.quiz__choice input[type="checkbox"]:checked {
+  border-color: var(--accent);
+}
+.quiz__choice input[type="checkbox"]:checked::before {
+  transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+.quiz__multi-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+.quiz__multi-hint strong {
+  color: var(--accent);
+  font-weight: 500;
+}
 .quiz__choice-key {
   font-family: var(--font-mono);
   font-size: 12px;

@@ -319,5 +319,26 @@
     "answerIndex": 1,
     "hint": "プログラムの一番最初に呼ばれるメソッドであることがヒント。",
     "explanation": "JVM はプログラムを起動した瞬間 main を呼ぶが、その時点では誰も new していないのでインスタンスは無い。インスタンス無しで呼べる = static である必要がある。逆に main 以外のメソッド名で static でなくても問題ない。"
+  },
+  {
+    "id": "ch02-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · static にしてよいもの",
+    "prompt": "static として宣言するのが「自然」な対象をすべて選んでください。",
+    "choices": [
+      "プログラムのエントリーポイント main",
+      "Math.PI のような数学定数 (public static final double PI)",
+      "ユーティリティ関数 (例: Integer.parseInt のような変換)",
+      "個々のユーザの age フィールド",
+      "Logger のシングルトンインスタンス"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "「インスタンスごとに違う値」は static に向かない。",
+    "explanation": "main は JVM がインスタンス無しで呼ぶので static 必須。定数 (PI) はクラスで 1 つでよく不変なので static final が定石。ユーティリティ関数は状態を持たないので static で OK。シングルトンも 1 つだけの存在なので static フィールドで保持する。一方 age はユーザごとに違うので static にしてしまうと全ユーザで共有されてしまう (バグ)。"
   }
 ]

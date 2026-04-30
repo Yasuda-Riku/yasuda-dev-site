@@ -115,9 +115,10 @@ async function handleExplain(request, env) {
 }
 
 const TYPE_LABELS = {
-  blank:   "穴埋め",
-  predict: "コードの出力予測",
-  choice:  "択一",
+  blank:       "穴埋め",
+  predict:     "コードの出力予測",
+  choice:      "択一",
+  multichoice: "複数選択",
 };
 
 function buildUserPrompt({ type, topic, level, prompt, expected, userAnswer, errors }) {
@@ -145,6 +146,12 @@ function buildUserPrompt({ type, topic, level, prompt, expected, userAnswer, err
     parts.push(
       "択一の問題です。生徒が選んだ選択肢が間違いである理由を端的に説明し、" +
         "正解の選択肢に向かうための着眼点をヒントとして示してください。正解の選択肢の記号や本文をそのまま書かないこと。",
+    );
+  } else if (type === "multichoice") {
+    parts.push(
+      "複数選択 (正しいものを全て選ぶ) の問題です。生徒の選んだ集合と正解の集合を比較し、" +
+        "「足りない正解」と「余分に選んでしまった誤答」のうち学習効果が高い 1〜2 点を中心に説明してください。" +
+        "正解の選択肢の記号や本文をそのまま書かないこと。",
     );
   } else {
     parts.push(

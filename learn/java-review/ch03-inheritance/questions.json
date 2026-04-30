@@ -310,5 +310,26 @@
     "answerIndex": 2,
     "hint": "実体の型と一致するキャスト、または null へのキャストだけが安全。",
     "explanation": "ダウンキャストは「実体の型 (またはその親) でキャストする」場合だけ成功する。0,1 は実体と違う型へのキャストで ClassCastException。3 はキャスト自体は許されるが代入の意味は無い… が、実は null は ClassCastException を投げない (null は何の型にもキャストできる)。だから 2 と 3 が「落ちない」だが、ここは 2 が最も素直に成功する例。"
+  },
+  {
+    "id": "ch03-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · @Override が必須/有効な場面",
+    "prompt": "@Override をつけるとコンパイラがミスを検出してくれるのはどの場面？すべて選んでください。",
+    "choices": [
+      "親クラスのメソッドと同じシグネチャで子クラスに書いたとき",
+      "interface のメソッドを implements 側で実装したとき",
+      "親メソッド名のスペルを間違えたとき (typo の検出)",
+      "親メソッドの引数の型を間違えたとき (overload になってしまうのを検出)",
+      "static メソッドを子クラスで「上書き」したとき"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "hint": "static メソッドはオーバーライドではなく「隠蔽 (hiding)」。@Override は static には付けられない。",
+    "explanation": "@Override は「親に同名・同シグネチャのインスタンスメソッドが存在する」ことをコンパイラに保証させるアノテーション。typo や引数違い (overload になってしまう) も検出してくれる。interface の実装も override 扱いなので OK。一方、static メソッドはオーバーライドではなく単なるメソッド隠蔽 (動的ディスパッチ無し) なので @Override は付けられない。"
   }
 ]

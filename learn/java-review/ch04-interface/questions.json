@@ -300,5 +300,27 @@
     "answerIndex": 1,
     "hint": "状態を持てるのは abstract クラス側だけ。",
     "explanation": "interface はフィールド (状態) を持てない。共通の状態 + 共通の処理 + 一部だけ子が実装する、というパターンには abstract クラスが向く。Template Method パターンの土台になる。"
+  },
+  {
+    "id": "ch04-m-01",
+    "type": "multichoice",
+    "subtopic": "複数選択 · interface に書けるもの",
+    "prompt": "interface の中に書ける要素をすべて選んでください。(Java 8 以降)",
+    "choices": [
+      "abstract メソッド (シグネチャだけ)",
+      "default メソッド (実装あり)",
+      "static メソッド",
+      "コンストラクタ",
+      "public static final な定数",
+      "private なインスタンスフィールド"
+    ],
+    "answerIndices": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "hint": "interface は状態 (フィールド) を持たず、初期化も不要。",
+    "explanation": "interface は abstract / default / static メソッドと、public static final な定数を書ける (Java 8 以降は default と static も可)。一方、コンストラクタは状態を持たないため不要、インスタンスフィールド (状態) は持てない。private なフィールドは interface には書けない (定数として public static final だけが許される)。"
   }
 ]
